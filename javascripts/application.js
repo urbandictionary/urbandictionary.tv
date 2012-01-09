@@ -1,15 +1,16 @@
-
 var megaplaya = false;
 var search_visible = true;
 var keyboard_disabled = false;
 
-
-$(document).ready(function(){
+$(window).resize(redraw);
+$(document).ready(function() {
   load_player();
+  redraw();
 });
 
 // Helpers
-function debug(string){
+function debug(string)
+{
   try {
     if(arguments.length > 1) {
       console.log(arguments);
@@ -17,17 +18,30 @@ function debug(string){
     else {
       console.log(string);
     }
-  } catch(e) { console.log('uh oh'); }
+  } catch(e) {
+    alert('uh oh');
+  }
 }
 
-function shuffle(v){
+function shuffle(v)
+{
   for(var j, x, i = v.length; i; j = parseInt(Math.random() * i, 0), x = v[--i], v[i] = v[j], v[j] = x);
   return v;
 }
 
+function redraw()
+{
+  var min_height = 500;
+  $('#player').height(min_height);
+
+  if ($(window).height() > min_height + 75 + $('#bottom').height()) {
+    $('#player').height($(window).height() - $('#bottom').height() - 115);
+  }
+}
 
 // VHX Megaplaya scaffolding
-function load_player(){
+function load_player()
+{
   $('#player').flash({
     swf: 'http://vhx.tv/embed/megaplaya',
     width: '100%;',
@@ -37,19 +51,22 @@ function load_player(){
   });
 }
 
-function megaplaya_loaded(){
+function megaplaya_loaded()
+{
   debug(">> megaplaya_loaded()");
   megaplaya = $('#player').children()[0];
+  //megaplaya.api_setColor('ffc652');
+  megaplaya.api_setColor('e86222');
   megaplaya_addListeners();
   load_urban_videos();
 }
 
-function megaplaya_call(method){
+function megaplaya_call(method) {
   // "pause" => megaplaya.api_pause();
   (megaplaya["api_" + method])();
 }
 
-function megaplaya_addListeners(){
+function megaplaya_addListeners() {
   var events = ['onVideoFinish', 'onVideoLoad', 'onError', 'onPause', 'onPlay', 'onFullscreen', 'onPlaybarShow', 'onPlaybarHide', 'onKeyboardDown'];
 
   $.each(events, function(index, value) {
@@ -65,7 +82,30 @@ function megaplaya_callback(event_name, args) {
   switch (event_name) {
     case 'onVideoLoad':
       var video = megaplaya.api_getCurrentVideo();
-      megaplaya.api_growl(video.word+': '+video.definition);
+      //megaplaya.api_growl(video.word + ': '+video.definition);
+      video.definition = video.definition.replace(/\n|\r/g, "<br />");
+
+
+      $('#word_txt')[0].innerHTML = video.word;
+      $('#definition_txt')[0].innerHTML = video.definition;
+
+      show_definition(video.word, video.definition);
+
+      var hide_delay = video.definition.length * 40;
+      if (hide_delay < 4000)
+        hide_delay = 4000;
+
+      if (hide_delay > 8000)
+        hide_delay = 8000;
+
+      // set next word button
+      $('#next_word')[0].innerHTML = urls[video.index + 1].word;
+
+      setTimeout(function() {
+        redraw();
+        hide_definition();
+      }, hide_delay);
+
       debug(video);
     default:
       debug("Unhandled megaplaya event: ", event_name, args);
@@ -73,9 +113,47 @@ function megaplaya_callback(event_name, args) {
   }
 }
 
+function next_definition()
+{
+  megaplaya.api_nextVideo();
+}
+
+function show_definition(word, def)
+{
+  $('#word_overlay, #word_overlay .word, #word_overlay .definition').show();
+  $('#word_overlay .word')[0].innerHTML = word ? word : '';
+  $('#word_overlay .definition')[0].innerHTML = def ? def : '';
+
+  $('#word_overlay .wrap')[0].style.marginTop = '0';
+  var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
+  $('#word_overlay .wrap')[0].style.marginTop =  ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos)  + 'px';
+
+  $('#word_overlay .word, #word_overlay .definition').hide();
+  $('#word_overlay')[0].style.top = "75px";
+  $('#word_overlay').height($(window).height() - 75);
+  $('#word_overlay').width($(window).width());
+  $('#word_overlay').fadeIn(400);
+
+  $('#word_overlay .word').delay(500).fadeIn(400);
+  $('#word_overlay .definition').delay(2000).fadeIn(400);
+
+  //megaplaya.api_pause();
+  //megaplaya.api_setVolume(0);
+}
+
+function hide_definition()
+{
+  $('#word_overlay').fadeOut(400)
+
+  //megaplaya.api_setVolume(1);
+  //megaplaya.api_seek(0);
+  setTimeout(function() {
+    $('#word_overlay')[0].style.top = $(window).height() + "px";
+  }, 500)
+}
 
 // Urban Dictionary data loaders
-function load_urban_videos(){
+function load_urban_videos() {
   var url = 'http://www.urbandictionary.com/iphone/search/videos?callback=load_urban_videos_callback&random=1';
   var script = document.createElement('script');
   script.setAttribute('type', 'text/javascript');
@@ -83,10 +161,12 @@ function load_urban_videos(){
   document.documentElement.firstChild.appendChild(script);
 }
 
-function load_urban_videos_callback(resp){
+var urls = false;
+function load_urban_videos_callback(resp) {
   debug(">> load_urban_videos_callback() - adding listeners", resp);
 
-  var urls = $.map(resp.videos, function (entry, i) {
+  urls = $.map(resp.videos, function (entry, i) {
+    entry.index = i;
     entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
     return entry;
   });
@@ -101,7 +181,7 @@ function load_urban_videos_callback(resp){
   // TODO...
 
   // 3rd: hide controls
-  var hide_controls_timer = setTimeout(function(){
+  var hide_controls_timer = setTimeout(function() {
 
     // TODO slide sidebar left
 
