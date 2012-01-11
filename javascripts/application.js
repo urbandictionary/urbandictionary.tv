@@ -85,7 +85,7 @@ function megaplaya_callback(event_name, args) {
       // megaplaya.api_growl(video.word + ': '+video.definition);
 
       var escaped_word = encodeURIComponent(video.word).replace('%20','+'); // they are nicer <3
-      $('#word_txt').html('<a href="http://urbanup.com/' + video.word + '" target="_blank">' +  + '</a>');
+      $('#word_txt').html('<a href="http://www.urbandictionary.com/define.php?term=' + video.word + '" target="_blank">' +  + '</a>');
       printBrackets(video.definition, $('#definition_txt').empty());
 
       show_definition(video.word, video.definition);
