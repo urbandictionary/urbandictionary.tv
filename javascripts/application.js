@@ -104,7 +104,11 @@ function megaplaya_callback(event_name, args) {
         hide_definition();
       }, hide_delay);
 
+      track_pageview("/" + video.word);
+
       debug(video);
+
+
     default:
       debug("Unhandled megaplaya event: ", event_name, args);
       break;
