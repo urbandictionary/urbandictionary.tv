@@ -46,6 +46,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 body { color: #555; font-family: sans-serif; }
 
 a { color: #fff; }
+#bottom a { color: black; }
 
 input::-moz-focus-inner, button::-moz-focus-inner { border: 0; outline: none; }
 input:focus, button:focus { outline: none; }

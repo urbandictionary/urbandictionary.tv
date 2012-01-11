@@ -83,11 +83,9 @@ function megaplaya_callback(event_name, args) {
     case 'onVideoLoad':
       var video = megaplaya.api_getCurrentVideo();
       //megaplaya.api_growl(video.word + ': '+video.definition);
-      video.definition = video.definition.replace(/\n|\r/g, "<br />");
 
-
-      $('#word_txt')[0].innerHTML = video.word;
-      $('#definition_txt')[0].innerHTML = video.definition;
+      $('#word_txt').text(video.word);
+      printBrackets(video.definition, $('#definition_txt').empty());
 
       show_definition(video.word, video.definition);
 
@@ -99,7 +97,7 @@ function megaplaya_callback(event_name, args) {
         hide_delay = 8000;
 
       // set next word button
-      $('#next_word')[0].innerHTML = urls[video.index + 1].word;
+      $('#next_word').html(urls[video.index + 1].word);
 
       setTimeout(function() {
         redraw();
@@ -121,8 +119,8 @@ function next_definition()
 function show_definition(word, def)
 {
   $('#word_overlay, #word_overlay .word, #word_overlay .definition').show();
-  $('#word_overlay .word')[0].innerHTML = word ? word : '';
-  $('#word_overlay .definition')[0].innerHTML = def ? def : '';
+  $('#word_overlay .word').text(word);
+  printBrackets(def, $('#word_overlay .definition').empty());
 
   $('#word_overlay .wrap')[0].style.marginTop = '0';
   var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
