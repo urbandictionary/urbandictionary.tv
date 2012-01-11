@@ -82,9 +82,10 @@ function megaplaya_callback(event_name, args) {
   switch (event_name) {
     case 'onVideoLoad':
       var video = megaplaya.api_getCurrentVideo();
-      //megaplaya.api_growl(video.word + ': '+video.definition);
+      // megaplaya.api_growl(video.word + ': '+video.definition);
 
-      $('#word_txt').text(video.word);
+      var escaped_word = encodeURIComponent(video.word).replace('%20','+'); // they are nicer <3
+      $('#word_txt').html('<a href="http://urbanup.com/' + video.word + '" target="_blank">' +  + '</a>');
       printBrackets(video.definition, $('#definition_txt').empty());
 
       show_definition(video.word, video.definition);
@@ -104,7 +105,7 @@ function megaplaya_callback(event_name, args) {
         hide_definition();
       }, hide_delay);
 
-      track_pageview("/" + video.word);
+      track_pageview("/" + escaped_word);
 
       debug(video);
 
