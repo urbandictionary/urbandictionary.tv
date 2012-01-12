@@ -1,8 +1,8 @@
+// Work
 var megaplaya = false;
 var search_visible = true;
 var keyboard_disabled = false;
 
-$(window).resize(redraw);
 $(document).ready(function() {
   load_player();
 
@@ -10,29 +10,40 @@ $(document).ready(function() {
     alert($('#video_info_text').text());
   });
 
+  $('#voting a').click(function(){
+    var defid = megaplaya.api_getCurrentVideo().defid,
+        direction = $(this).attr('rel');
+    send_vote(defid, direction);
+  });
+
   redraw();
 });
 
-// Helpers
-function debug(string)
-{
-  try {
-    if(arguments.length > 1) {
-      console.log(arguments);
-    }
-    else {
-      console.log(string);
-    }
-  } catch(e) {
-    alert('uh oh');
-  }
+function send_vote(defid, direction) {
+  var url = "http://www.urbandictionary.com/thumbs.php?defid=" + defid + "&direction=" + direction;
+  debug("send_vote", url);
+  $.ajax({
+    type: "GET",
+    url: url,
+    dataType: 'jsonp',
+    success: function(data){
+      debug("Vote response =>", data);
+      if (data.status == 'saved') {
+        var field = '#vote_' + direction + ' .vote_count',
+            delta = (direction == 'down' ? -1 : 1);
+        debug("Updating votecount by " + delta);
+        $(field).html(parseInt($(field).text()) + delta);
+      }
+      else {
+        alert("Bad status from vote: " + data.status);
+      }
+    },
+    error: function(){ alert("Error fetching data") }
+  });
+
 }
 
-function shuffle(v)
-{
-  for(var j, x, i = v.length; i; j = parseInt(Math.random() * i, 0), x = v[--i], v[i] = v[j], v[j] = x);
-  return v;
-}
+$(window).resize(redraw);
 
 function redraw()
 {
@@ -50,6 +61,27 @@ function redraw()
   $('#word_overlay')[0].style.top = "75px";
   $('#word_overlay').height($(window).height() - 75);
   $('#word_overlay').width($(window).width());
+}
+
+// Helpers
+function debug(string)
+{
+  try {
+    if(arguments.length > 1) {
+      console.log(arguments);
+    }
+    else {
+      console.log(string);
+    }
+  } catch(e) {
+    alert('uh oh, error in debug()');
+  }
+}
+
+function shuffle(v)
+{
+  for(var j, x, i = v.length; i; j = parseInt(Math.random() * i, 0), x = v[--i], v[i] = v[j], v[j] = x);
+  return v;
 }
 
 // VHX Megaplaya scaffolding
@@ -74,16 +106,16 @@ function megaplaya_loaded()
   load_urban_videos();
 }
 
-function megaplaya_call(method) {
-  // "pause" => megaplaya.api_pause();
-  (megaplaya["api_" + method])();
-}
-
 function megaplaya_addListeners() {
   var events = ['onVideoFinish', 'onVideoLoad', 'onError', 'onPause', 'onPlay', 'onFullscreen', 'onPlaybarShow', 'onPlaybarHide', 'onKeyboardDown'];
 
   $.each(events, function(index, value) {
     megaplaya.api_addListener(value, "function() { megaplaya_callback('" + value + "', arguments); }")
+
+    // "pause" => megaplaya.api_pause();
+    // function megaplaya_call(method) {
+    //   (megaplaya["api_" + method])();
+    // }
   });
 }
 
@@ -131,8 +163,10 @@ function megaplaya_onvideoload(args)
   debug("Current entry =>", video);
   track_pageview("/" + escaped_word);
 
-  // Fetch and display the actual video's info
-  // TODO factor this out
+  fetch_video_info();
+}
+
+function fetch_video_info() {
   $.ajax({
     type: "GET",
     url: "http://api.vhx.tv/info.json?callback=load_video_info&url="+video.url,
@@ -148,7 +182,6 @@ function megaplaya_onvideoload(args)
     },
     error: function(){ alert("Error fetching data") }
   });
-
 }
 
 function next_definition()
@@ -184,7 +217,7 @@ function hide_definition()
   }, 500)
 }
 
-// Urban Dictionary data loaders
+// Load data
 function load_urban_videos() {
   var url = 'http://www.urbandictionary.com/iphone/search/videos?callback=load_urban_videos_callback&random=1';
   var script = document.createElement('script');

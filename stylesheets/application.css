@@ -76,6 +76,16 @@ box-shadow: inset 0px 0px 20px rgba(0,0,0,.5); }
 
 #logo { position: absolute; top: 4px; z-index: 10; left: 20px; }
 
+#vhx_logo { position: absolute; z-index: 100; bottom: 0px; right: 5px; display: none; }
+#vhx_logo div { float: left; }
+#vhx_logo #logo { opacity: 0.7; }
+#vhx_logo #logo:hover { opacity: 1; }
+#vhx_logo #contact { opacity: 0.4; margin-top: 36px; margin-right: 2px; }
+#vhx_logo #contact:hover { opacity: 1; }
+
+#socialmedia { position: absolute; z-index: 100; top: 10px; right: 0px;}
+#socialmedia div { float: left; margin-left: 10px; }
+
 #player { -moz-box-shadow: 5px 5px 20px rgba(0,0,0,.5);
 -webkit-box-shadow: 5px 5px 20px rgba(0,0,0,.5);
 box-shadow: 5px 5px 20px rgba(0,0,0,.5); }
@@ -89,25 +99,12 @@ box-shadow: 5px 5px 20px rgba(0,0,0,.5); }
 #word_overlay .definition { color: #ccc; }
 #word_overlay .wrap { width: 600px; margin: 0 auto; }
 
-/*
-#overlay { position: absolute; z-index: 8; width: 100%; height: 100%; overflow: hidden; background: #000; color: #fff; font-size: 100pt; text-transform: uppercase; text-align: center; padding: 150px 0; }
-#sidebar { position: absolute; z-index: 6; width: 240px; height: 100%; overflow: hidden; font-size: 9pt;  background: #fff; color: #000; border-right: 2px solid #333; }
-#player { position: absolute; z-index: 2; width: 100%; height: 100%; }
+#voting { width: 160px; float: right; color: #333; font-size: 12pt; }
+#voting a { float: left; color: #666; text-decoration: none; text-align: center; }
+#voting img { }
+#voting .vote_count { }
 
-
-#socialmedia { position: absolute; z-index: 100; top: 10px; right: 0px;}
-#socialmedia div { float: left; margin-left: 10px; }
-
-#vhx_logo { position: absolute; z-index: 100; bottom: 0px; right: 5px; display: none; }
-#vhx_logo div { float: left; }
-#vhx_logo #logo { opacity: 0.7; }
-#vhx_logo #logo:hover { opacity: 1; }
-#vhx_logo #contact { opacity: 0.4; margin-top: 36px; margin-right: 2px; }
-#vhx_logo #contact:hover { opacity: 1; }
-*/
-
-#video_info { float: right; font-size: 14pt; }
-#video_info_button { }
-#video_info_button a { color: #aaa; }
+#video_info { clear: right; float: right; font-size: 14pt; }
+#video_info_button { padding: 20px; }
+#video_info_button a { color: #666; }
 #video_info_text { display: none; }
-
