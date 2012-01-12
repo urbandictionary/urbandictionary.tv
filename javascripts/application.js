@@ -5,6 +5,11 @@ var keyboard_disabled = false;
 $(window).resize(redraw);
 $(document).ready(function() {
   load_player();
+
+  $('#video_info_button').click(function(){
+    alert($('#video_info_text').text());
+  });
+
   redraw();
 });
 
@@ -37,6 +42,14 @@ function redraw()
   if ($(window).height() > min_height + 75 + $('#bottom').height()) {
     $('#player').height($(window).height() - $('#bottom').height() - 115);
   }
+
+  $('#word_overlay .wrap')[0].style.marginTop = '0';
+  var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
+  $('#word_overlay .wrap')[0].style.marginTop =  ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos)  + 'px';
+
+  $('#word_overlay')[0].style.top = "75px";
+  $('#word_overlay').height($(window).height() - 75);
+  $('#word_overlay').width($(window).width());
 }
 
 // VHX Megaplaya scaffolding
@@ -81,39 +94,61 @@ function megaplaya_callback(event_name, args) {
 
   switch (event_name) {
     case 'onVideoLoad':
-      var video = megaplaya.api_getCurrentVideo();
-      // megaplaya.api_growl(video.word + ': '+video.definition);
-
-      var escaped_word = encodeURIComponent(video.word).replace('%20','+'); // they are nicer <3
-      $('#word_txt').html('<a href="http://www.urbandictionary.com/define.php?term=' + escaped_word + '" target="_blank">' + video.word + '</a>');
-      printBrackets(video.definition, $('#definition_txt').empty());
-
-      show_definition(video.word, video.definition);
-
-      var hide_delay = video.definition.length * 40;
-      if (hide_delay < 4000)
-        hide_delay = 4000;
-
-      if (hide_delay > 8000)
-        hide_delay = 8000;
-
-      // set next word button
-      $('#next_word').html(urls[video.index + 1].word);
-
-      setTimeout(function() {
-        redraw();
-        hide_definition();
-      }, hide_delay);
-
-      track_pageview("/" + escaped_word);
-
-      debug(video);
-
-
+      megaplaya_onvideoload(args);
+      break;
     default:
-      debug("Unhandled megaplaya event: ", event_name, args);
+      // debug("Unhandled megaplaya event: ", event_name, args);
       break;
   }
+}
+
+function megaplaya_onvideoload(args)
+{
+  var video = megaplaya.api_getCurrentVideo();
+  // megaplaya.api_growl(video.word + ': '+video.definition);
+
+  var escaped_word = encodeURIComponent(video.word).replace('%20','+'); // they are nicer <3
+  $('#word_txt').html('<a href="http://www.urbandictionary.com/define.php?term=' + escaped_word + '" target="_blank">' + video.word + '</a>');
+  printBrackets(video.definition, $('#definition_txt').empty());
+
+  show_definition(video.word, video.definition);
+
+  var hide_delay = video.definition.length * 40;
+  if (hide_delay < 4000)
+    hide_delay = 4000;
+
+  if (hide_delay > 8000)
+    hide_delay = 8000;
+
+  // set next word button
+  $('#next_word').html(urls[video.index + 1].word);
+
+  setTimeout(function() {
+    redraw();
+    hide_definition();
+  }, hide_delay);
+
+  debug("Current entry =>", video);
+  track_pageview("/" + escaped_word);
+
+  // Fetch and display the actual video's info
+  // TODO factor this out
+  $.ajax({
+    type: "GET",
+    url: "http://api.vhx.tv/info.json?callback=load_video_info&url="+video.url,
+    dataType: 'jsonp',
+    success: function(data){
+      var vid = data.video;
+      debug("Video metadata => ", vid);
+      megaplaya.api_growl("Playing " + vid.title);
+      var pp = '<p>Title: ' + vid.title;
+      pp += '<p>URL: ' + vid.url;
+      pp += '<p>' + vid.description;
+      $('#video_info_text').html(pp);
+    },
+    error: function(){ alert("Error fetching data") }
+  });
+
 }
 
 function next_definition()
@@ -127,14 +162,8 @@ function show_definition(word, def)
   $('#word_overlay .word').text(word);
   printBrackets(def, $('#word_overlay .definition').empty());
 
-  $('#word_overlay .wrap')[0].style.marginTop = '0';
-  var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
-  $('#word_overlay .wrap')[0].style.marginTop =  ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos)  + 'px';
-
+  redraw();
   $('#word_overlay .word, #word_overlay .definition').hide();
-  $('#word_overlay')[0].style.top = "75px";
-  $('#word_overlay').height($(window).height() - 75);
-  $('#word_overlay').width($(window).width());
   $('#word_overlay').fadeIn(400);
 
   $('#word_overlay .word').delay(500).fadeIn(400);

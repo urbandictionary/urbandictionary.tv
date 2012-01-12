@@ -16,40 +16,39 @@
 </head>
 <body>
 
+
 <div id="header">
   <div class="next_definition" onclick="next_definition();">
     Up next
-    <a id="next_word" href="javascript:void(0)">Shit bic</a>
+    <a id="next_word" href="#" onclick="return false;"></a>
   </div>
 </div>
 
 <div id="player"></div>
 
-</body>
-
 <div id="bottom">
-  <div class="word" id="word_txt"></div>
-  <div class="definition" id="definition_txt">
-
+  <div id="video_info">
+    <div id="video_info_button"><a href="#" onclick="return false;">Video Info</a></div>
+    <div id="video_info_text"></div>
   </div>
+
+  <div class="word" id="word_txt"></div>
+  <div class="definition" id="definition_txt"></div>
 </div>
 
 <div id="word_overlay">
   <div class="wrap">
     <div class="word"></div>
-    <div class="definition">
-
-    </div>
+    <div class="definition"></div>
   </div>
 </div>
-
 
 <div id="logo">
   <a href="/"><img src="images/urbantv_logo.png" alt="Urban Dictionary TV" /></a>
 </div>
 
-<script type="text/javascript">
 
+<script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-28234268-1']);
   _gaq.push(['_trackPageview']);
@@ -59,7 +58,7 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-
 </script>
 
+</body>
 </html>

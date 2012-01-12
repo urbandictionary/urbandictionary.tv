@@ -105,3 +105,9 @@ box-shadow: 5px 5px 20px rgba(0,0,0,.5); }
 #vhx_logo #contact { opacity: 0.4; margin-top: 36px; margin-right: 2px; }
 #vhx_logo #contact:hover { opacity: 1; }
 */
+
+#video_info { float: right; font-size: 14pt; }
+#video_info_button { }
+#video_info_button a { color: #aaa; }
+#video_info_text { display: none; }
+
