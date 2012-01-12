@@ -18,7 +18,7 @@
 
 
 <div id="header">
-  <div class="next_definition" onclick="next_definition();">
+  <div id="next_definition" onclick="next_definition();">
     Up next
     <a id="next_word" href="#" onclick="return false;"></a>
   </div>
@@ -38,6 +38,10 @@
     </a>
   </div>
 
+  <div id="suggest_video">
+    <a href="#" onclick="return false;">Suggest a better video</a>
+  </div>
+
   <div id="video_info">
     <div id="video_info_button"><a href="#" onclick="return false;">Video Info</a></div>
     <div id="video_info_text"></div>
@@ -47,10 +51,19 @@
   <div class="definition" id="definition_txt"></div>
 </div>
 
-<div id="word_overlay">
+<div id="word_overlay" class="overlay">
   <div class="wrap">
     <div class="word"></div>
     <div class="definition"></div>
+  </div>
+</div>
+
+<div id="suggest_overlay" class="overlay">
+  <div class="wrap">
+    <p>Suggest a video for <span>definition</span></p>
+    [input field]
+    <p>or</p>
+    [Make your own video!]
   </div>
 </div>
 

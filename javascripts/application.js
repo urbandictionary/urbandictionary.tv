@@ -21,36 +21,12 @@ $(document).ready(function() {
     }
   });
 
-  redraw();
-});
-
-function send_vote(defid, direction) {
-  var url = "http://www.urbandictionary.com/thumbs.php?defid=" + defid + "&direction=" + direction;
-  debug("send_vote", url);
-  $.ajax({
-    type: "GET",
-    url: url,
-    dataType: 'jsonp',
-    success: function(data){
-      debug("Vote response =>", data);
-      if (data.status == 'saved') {
-        var field = '#vote_' + direction + ' .vote_count',
-            number_text = $(field).text();
-        if(number_text == undefined || number_text == '') {
-          $(field).html(1);
-        }
-        else {
-          $(field).html(parseInt(number_text) + 1);
-        }
-      }
-      else {
-        alert("Bad status from vote: " + data.status);
-      }
-    },
-    error: function(){ alert("Error fetching data") }
+  $('#suggest_video').click(function(){
+    $('#suggest_overlay').show();
   });
 
-}
+  redraw();
+});
 
 $(window).resize(redraw);
 
@@ -63,13 +39,14 @@ function redraw()
     $('#player').height($(window).height() - $('#bottom').height() - 115);
   }
 
+  // FIXME genercize for .overlay
   $('#word_overlay .wrap')[0].style.marginTop = '0';
   var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
   $('#word_overlay .wrap')[0].style.marginTop =  ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos)  + 'px';
 
-  $('#word_overlay')[0].style.top = "75px";
-  $('#word_overlay').height($(window).height() - 75);
-  $('#word_overlay').width($(window).width());
+  $('.overlay')[0].style.top = "75px";
+  $('.overlay').height($(window).height() - 75);
+  $('.overlay').width($(window).width());
 }
 
 // Helpers
@@ -144,12 +121,51 @@ function megaplaya_callback(event_name, args) {
   }
 }
 
+// Load data
+function load_urban_videos() {
+  var url = 'http://www.urbandictionary.com/iphone/search/videos?callback=load_urban_videos_callback&random=1';
+  var script = document.createElement('script');
+  script.setAttribute('type', 'text/javascript');
+  script.setAttribute('src', url);
+  document.documentElement.firstChild.appendChild(script);
+}
+
+var urls = false;
+function load_urban_videos_callback(resp) {
+  urls = $.map(resp.videos, function (entry, i) {
+    entry.index = i;
+    entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
+    return entry;
+  });
+  debug(">> callback(): loading "+urls.length+" videos...");
+
+  // 1st: show word, hide other controls
+  $('#overlay').show();
+  $('#sidebar').hide();
+
+  // 2nd: show definition slideout
+  $('#overlay').fadeOut('slow');
+  // TODO...
+
+  // 3rd: hide controls
+  var hide_controls_timer = setTimeout(function() {
+
+    // TODO slide sidebar left
+
+    $('#player').show();
+    $('#player').css('z-index', 10);
+  }, 3000);
+
+  urls = shuffle(urls);
+  return megaplaya.api_playQueue(urls);
+}
+
+// Called on every video load
 function megaplaya_onvideoload(args)
 {
-  var video = megaplaya.api_getCurrentVideo();
-  // megaplaya.api_growl(video.word + ': '+video.definition);
+  var video = megaplaya.api_getCurrentVideo(),
+      escaped_word = encodeURIComponent(video.word).replace('%20','+'); // they are nicer <3
 
-  var escaped_word = encodeURIComponent(video.word).replace('%20','+'); // they are nicer <3
   $('#word_txt').html('<a href="http://www.urbandictionary.com/define.php?term=' + escaped_word + '" target="_blank">' + video.word + '</a>');
   printBrackets(video.definition, $('#definition_txt').empty());
 
@@ -164,6 +180,7 @@ function megaplaya_onvideoload(args)
 
   // set next word button
   $('#next_word').html(urls[video.index + 1].word);
+  $('#next_definition').fadeIn(250);
 
   setTimeout(function() {
     redraw();
@@ -249,41 +266,31 @@ function hide_definition()
   }, 500)
 }
 
-// Load data
-function load_urban_videos() {
-  var url = 'http://www.urbandictionary.com/iphone/search/videos?callback=load_urban_videos_callback&random=1';
-  var script = document.createElement('script');
-  script.setAttribute('type', 'text/javascript');
-  script.setAttribute('src', url);
-  document.documentElement.firstChild.appendChild(script);
-}
-
-var urls = false;
-function load_urban_videos_callback(resp) {
-  urls = $.map(resp.videos, function (entry, i) {
-    entry.index = i;
-    entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
-    return entry;
+function send_vote(defid, direction) {
+  var url = "http://www.urbandictionary.com/thumbs.php?defid=" + defid + "&direction=" + direction;
+  debug("send_vote", url);
+  $.ajax({
+    type: "GET",
+    url: url,
+    dataType: 'jsonp',
+    success: function(data){
+      debug("Vote response =>", data);
+      if (data.status == 'saved') {
+        var field = '#vote_' + direction + ' .vote_count',
+            number_text = $(field).text();
+        if(number_text == undefined || number_text == '') {
+          $(field).html(1);
+        }
+        else {
+          $(field).html(parseInt(number_text) + 1);
+        }
+      }
+      else {
+        alert("Bad status from vote: " + data.status);
+      }
+    },
+    error: function(){ alert("Error fetching data") }
   });
-  debug(">> callback(): loading "+urls.length+" videos...");
 
-  // 1st: show word, hide other controls
-  $('#overlay').show();
-  $('#sidebar').hide();
-
-  // 2nd: show definition slideout
-  $('#overlay').fadeOut('slow');
-  // TODO...
-
-  // 3rd: hide controls
-  var hide_controls_timer = setTimeout(function() {
-
-    // TODO slide sidebar left
-
-    $('#player').show();
-    $('#player').css('z-index', 10);
-  }, 3000);
-
-  urls = shuffle(urls);
-  return megaplaya.api_playQueue(urls);
 }
+
