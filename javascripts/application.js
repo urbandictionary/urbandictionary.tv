@@ -25,6 +25,10 @@ $(document).ready(function() {
     $('#suggest_overlay').show();
   });
 
+  $('#suggest_overlay').click(function(){
+    $('#suggest_overlay').fadeOut(250);
+  });
+
   redraw();
 });
 
