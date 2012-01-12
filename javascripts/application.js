@@ -29,8 +29,14 @@ function send_vote(defid, direction) {
     success: function(data){
       debug("Vote response =>", data);
       if (data.status == 'saved') {
-        var field = '#vote_' + direction + ' .vote_count';
-        $(field).html(parseInt($(field).text()) + 1);
+        var field = '#vote_' + direction + ' .vote_count',
+            number_text = $(field).text();
+        if(number_text == undefined || number_text == '') {
+          $(field).html(1);
+        }
+        else {
+          $(field).html(parseInt(number_text) + 1);
+        }
       }
       else {
         alert("Bad status from vote: " + data.status);
@@ -86,11 +92,12 @@ function shuffle(v)
 function load_player()
 {
   $('#player').flash({
-    swf: 'http://vhx.tv/embed/megaplaya',
+    swf: 'http://vhx.tv/embed/megaplaya.swf',
     width: '100%;',
     height: '100%',
     allowFullScreen: true,
-    allowScriptAccess: "always"
+    allowScriptAccess: 'always',
+    // wmode: 'opaque'
   });
 }
 
@@ -158,18 +165,17 @@ function megaplaya_onvideoload(args)
     hide_definition();
   }, hide_delay);
 
-  debug("Current entry =>", video);
-  track_pageview("/" + escaped_word);
+  fetch_video_info(video.url);
+  fetch_vote_counts(video.defid);
 
-  fetch_vote_counts();
-  fetch_video_info();
+  // debug("Current entry =>", video);
+  track_pageview("/" + escaped_word);
 }
 
-function fetch_video_info() {
-  debug("fetch_video_info() ...");
+function fetch_video_info(video_url) {
   $.ajax({
     type: "GET",
-    url: "http://api.vhx.tv/info.json?callback=load_video_info&url=" + encodeURIComponent(video.url),
+    url: "http://api.vhx.tv/info.json?url=" + encodeURIComponent(video_url),
     dataType: 'jsonp',
     success: function(data){
       var vid = data.video;
@@ -184,31 +190,30 @@ function fetch_video_info() {
   });
 }
 
-function load_video_info(data) {
-  debug("load_video_info() data=>", data);
-}
-
 function fetch_vote_counts(defid) {
-  var url = 'http://www.urbandictionary.com/uncacheable.php?ids=' + defid + '&callback=load_vote_counts';
-  debug("fetch_vote_counts() url => ", url);
   $.ajax({
     type: 'GET',
-    url: url,
+    url: 'http://www.urbandictionary.com/uncacheable.php?ids=' + defid,
     dataType: 'jsonp',
     success: function(data){
       debug("fetch_vote_counts() success data=>", data);
+      var thumbs = data.thumbs[0];
+      if(thumbs) {
+        $('#vote_up .vote_count').html(thumbs.thumbs_up);
+        $('#vote_down .vote_count').html(thumbs.thumbs_down);
+      }
+      else {
+        debug("fetch_vote_counts: no thumbs data, aborting")
+      }
     },
     error: function(){ alert("Error fetching vote counts") }
   });
 }
 
-function load_vote_counts(data) {
-  debug("load_vote_counts()", data);
-}
-
 function next_definition()
 {
   megaplaya.api_nextVideo();
+  $('.vote_count').html('');
 }
 
 function show_definition(word, def)
@@ -250,8 +255,6 @@ function load_urban_videos() {
 
 var urls = false;
 function load_urban_videos_callback(resp) {
-  debug(">> load_urban_videos_callback() - adding listeners", resp);
-
   urls = $.map(resp.videos, function (entry, i) {
     entry.index = i;
     entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
