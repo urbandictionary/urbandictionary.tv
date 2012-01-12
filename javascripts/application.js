@@ -14,6 +14,11 @@ $(document).ready(function() {
     var defid = megaplaya.api_getCurrentVideo().defid,
         direction = $(this).attr('rel');
     send_vote(defid, direction);
+
+    // skip to next definition on thumbs down
+    if(this.id == 'vote_down') {
+      next_definition();
+    }
   });
 
   redraw();
