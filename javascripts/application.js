@@ -29,10 +29,8 @@ function send_vote(defid, direction) {
     success: function(data){
       debug("Vote response =>", data);
       if (data.status == 'saved') {
-        var field = '#vote_' + direction + ' .vote_count',
-            delta = (direction == 'down' ? -1 : 1);
-        debug("Updating votecount by " + delta);
-        $(field).html(parseInt($(field).text()) + delta);
+        var field = '#vote_' + direction + ' .vote_count';
+        $(field).html(parseInt($(field).text()) + 1);
       }
       else {
         alert("Bad status from vote: " + data.status);
