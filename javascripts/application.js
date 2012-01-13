@@ -37,6 +37,12 @@ function redraw()
   if ($(window).height() > min_height + 75 + $('#bottom').height()) {
     $('#player').height($(window).height() - $('#bottom').height() - 115);
   }
+
+  if ($(window).height() < $('#player').height() + 75)
+    $('#player').height($(window).height() - 75);
+
+  $('#word_overlay').height($(window).height() - 75);
+  $('#word_overlay').width($(window).width());
 }
 
 // VHX Megaplaya scaffolding
@@ -77,7 +83,6 @@ function megaplaya_addListeners() {
 var hide_timeout = false;
 function megaplaya_callback(event_name, args) {
 
-
   switch (event_name) {
     case 'onVideoLoad':
       var video = megaplaya.api_getCurrentVideo();
@@ -112,7 +117,6 @@ function megaplaya_callback(event_name, args) {
 
       debug(video);
 
-
     default:
       debug("Unhandled megaplaya event: ", event_name, args);
       break;
@@ -138,23 +142,24 @@ function show_definition(word, def)
 
   $('#word_overlay .word, #word_overlay .definition').hide();
   $('#word_overlay')[0].style.top = "75px";
-  $('#word_overlay').height($(window).height() - 75);
-  $('#word_overlay').width($(window).width());
+
   $('#word_overlay').fadeIn(400);
 
   $('#word_overlay .word').delay(500).fadeIn(400);
   $('#word_overlay .definition').delay(2000).fadeIn(400);
 
-  //megaplaya.api_pause();
-  //megaplaya.api_setVolume(0);
+  redraw();
 }
 
 function hide_definition()
 {
+  // TODO: Add getDuration hook to megaplaya
+  //if (megaplaya.api_getDuration() < 8000)
+  //  megaplaya.api_seek(0);
+
   $('#word_overlay').fadeOut(400)
   $(document.body).delay(400).removeClass("crop");
-  //megaplaya.api_setVolume(1);
-  //megaplaya.api_seek(0);
+
   setTimeout(function() {
     $('#word_overlay')[0].style.top = $(window).height() + "px";
   }, 500)
