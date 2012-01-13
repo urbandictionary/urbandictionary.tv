@@ -63,7 +63,6 @@ function megaplaya_loaded()
 }
 
 function megaplaya_call(method) {
-  // "pause" => megaplaya.api_pause();
   (megaplaya["api_" + method])();
 }
 
@@ -75,10 +74,9 @@ function megaplaya_addListeners() {
   });
 }
 
+var hide_timeout = false;
 function megaplaya_callback(event_name, args) {
 
-  // TODO just look for and call functions like "#{event_name}_callback" if defined
-  // all megaplaya apps could work like this, and the above scaffolding be builtin
 
   switch (event_name) {
     case 'onVideoLoad':
@@ -87,6 +85,11 @@ function megaplaya_callback(event_name, args) {
 
       $('#word_txt').text(video.word);
       printBrackets(video.definition, $('#definition_txt').empty());
+
+      if (hide_timeout) {
+        clearTimeout(hide_timeout);
+        hide_timeout = false;
+      }
 
       show_definition(video.word, video.definition);
 
@@ -100,7 +103,7 @@ function megaplaya_callback(event_name, args) {
       // set next word button
       $('#next_word').html(urls[video.index + 1].word);
 
-      setTimeout(function() {
+      hide_timeout = setTimeout(function() {
         redraw();
         hide_definition();
       }, hide_delay);
@@ -124,6 +127,7 @@ function next_definition()
 function show_definition(word, def)
 {
   $(document.body).addClass("crop");
+
   $('#word_overlay, #word_overlay .word, #word_overlay .definition').show();
   $('#word_overlay .word').text(word);
   printBrackets(def, $('#word_overlay .definition').empty());
