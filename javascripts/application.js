@@ -1,10 +1,17 @@
 // Work
 var megaplaya = false;
-var search_visible = true;
 var keyboard_disabled = false;
 
 $(document).ready(function() {
+
   load_player();
+
+  // would be chill to do this using History API
+  // even chiller with backbone.js + it's app.router
+  if(window.location.hash){
+    debug("window.location has a hash");
+    // TODO trigger hashchange event
+  }
 
   $('#video_info_button').click(function(){
     alert($('#video_info_text').text());
@@ -30,6 +37,10 @@ $(document).ready(function() {
   });
 
   redraw();
+});
+
+$(window).bind('hashchange', function() {
+  debug("hash was changed!");
 });
 
 $(window).resize(redraw);
