@@ -44,6 +44,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 .clear { clear: both; }
 
 body { color: #555; font-family: sans-serif; }
+body.crop { overflow: hidden; }
 
 a { color: #fff; }
 #bottom a { color: black; }

@@ -123,6 +123,7 @@ function next_definition()
 
 function show_definition(word, def)
 {
+  $(document.body).addClass("crop");
   $('#word_overlay, #word_overlay .word, #word_overlay .definition').show();
   $('#word_overlay .word').text(word);
   printBrackets(def, $('#word_overlay .definition').empty());
@@ -147,7 +148,7 @@ function show_definition(word, def)
 function hide_definition()
 {
   $('#word_overlay').fadeOut(400)
-
+  $(document.body).delay(400).removeClass("crop");
   //megaplaya.api_setVolume(1);
   //megaplaya.api_seek(0);
   setTimeout(function() {
