@@ -43,11 +43,12 @@ function redraw()
 function load_player()
 {
   $('#player').flash({
-    swf: 'http://vhx.tv/embed/megaplaya',
-    width: '100%;',
-    height: '100%',
-    allowFullScreen: true,
-    allowScriptAccess: "always"
+    'swf': 'http://vhx.tv/embed/megaplaya',
+    'width': '100%;',
+    'height': '100%',
+    'wmode': 'transparent',
+    'allowFullScreen': true,
+    'allowScriptAccess': "always"
   });
 }
 
