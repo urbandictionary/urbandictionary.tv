@@ -165,6 +165,11 @@ function hide_definition()
   }, 500)
 }
 
+function add_video()
+{
+
+}
+
 // Urban Dictionary data loaders
 function load_urban_videos() {
   var url = 'http://www.urbandictionary.com/iphone/search/videos?callback=load_urban_videos_callback&random=1';
