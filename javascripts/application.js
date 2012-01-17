@@ -143,21 +143,26 @@ function megaplaya_onvideoload(args)
     hide_timeout = false;
   }
 
+  var hide_delay = video.definition.length * 40;
+  if (hide_delay < 4000) {
+    hide_delay = 4000;
+  }
+  else if (hide_delay > 8000) {
+    hide_delay = 8000;
+  }
+
+  // Load things
   Permalink.set(escaped_word);
   show_definition(video.word, video.definition);
 
-  var hide_delay = video.definition.length * 40;
-  if (hide_delay < 4000)
-    hide_delay = 4000;
+  // Set next word button
+  var next_word = urls[video.index + 1] ? urls[video.index + 1].word : false;
+  if (next_word) {
+    $('#next_word').html('<a href="/#' + Permalink.encode(next_word) + '">' + next_word + '</a>');
+    $('#next_definition').fadeIn(250);
+  }
 
-  if (hide_delay > 8000)
-    hide_delay = 8000;
-
-  // set next word button
-  var next_word = urls[video.index + 1].word;
-  $('#next_word').html('<a href="/#' + Permalink.encode(next_word) + '">' + next_word + '</a>');
-  $('#next_definition').fadeIn(250);
-
+  // Hid eth ov
   hide_timeout = setTimeout(function() {
     redraw();
     hide_definition();
@@ -331,6 +336,7 @@ function load_videos_callback(resp) {
       inject_script(videos_api_url + '?callback=append_videos_callback&random=1');
     }
 
+    debug("Playing...");
     urls = shuffle(urls);
     return megaplaya.api_playQueue(urls);
   }
@@ -338,9 +344,8 @@ function load_videos_callback(resp) {
 
 // Add to the current playlist rather than replacing
 function append_videos_callback(resp) {
-  debug("APPENDING videos, not replacing");
   new_urls = parse_videos_from_response(resp);
-  debug(new_urls.length + ' new urls');
+  debug("append_videos_callback():" + new_urls.length + ' new urls');
 
   // FIXME
 
@@ -373,9 +378,9 @@ var Permalink = {
   },
 
   hashchange: function(){
-    debug("router.hashchange()");
+    debug("Permalink.hashchange()");
     if(permalink_skip_hashchange) {
-      debug("SKIPPING");
+      // debug("SKIPPING");
     }
     else {
       load_videos();
