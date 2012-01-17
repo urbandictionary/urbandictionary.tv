@@ -91,25 +91,19 @@ html, body { margin: 0; padding: 0; }
 .definition p:first { color: #f0f; }
 
 #more_info_btn {
-  font: normal 14px 'Helvetica Neue', Helvetica, Arial; color: #666;
-  border: 1px solid #ddd; border-top: 1px solid #fff;
+  font: normal 12px 'Helvetica Neue', Helvetica, Arial; color: #999;
+  border: 0;
+  border-top: 1px solid #f3f3f3;
   margin-top: 10px;
-  padding: 4px;
+  padding: 3px;
   cursor: pointer;
   text-align: center;
   -webkit-border-radius: 3px; -moz-border-radius: 3px;  border-radius: 3px;
-  background: #ffffff; /* Old browsers */
-  background: -moz-linear-gradient(top,  #ffffff 0%, #dddddd 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#dddddd)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  #ffffff 0%,#dddddd 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  #ffffff 0%,#dddddd 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  #ffffff 0%,#dddddd 100%); /* IE10+ */
-  background: linear-gradient(top,  #ffffff 0%,#dddddd 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#dddddd',GradientType=0 ); /* IE6-9 */
 }
 #more_info_btn:hover {
+  background: #f3f3f3;
   color: #333;
-  border: 1px solid #aaa; border-top: 1px solid #fff;
+  border: 1px solid #dedede; border-top: 1px solid #eee;
 }
 #more_info_btn:active { border: 1px solid #ddd; border-top: 1px solid #aaa; }
 
