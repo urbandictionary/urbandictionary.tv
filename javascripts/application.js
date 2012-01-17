@@ -29,6 +29,10 @@ $(document).ready(function() {
     $('#suggest_overlay').fadeOut(250);
   });
 
+  $('#word_overlay').click(function(){
+    hide_definition();
+  });
+
   redraw();
 });
 
