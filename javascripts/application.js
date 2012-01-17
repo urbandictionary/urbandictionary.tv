@@ -145,6 +145,8 @@ function megaplaya_callback(event_name, args) {
 var hide_timeout = false;
 function megaplaya_onvideoload(args)
 {
+  $(".vote_img").removeClass("on");
+
   var video = megaplaya.api_getCurrentVideo(),
       word = video.word,
       escaped_word = Permalink.encode(word);
