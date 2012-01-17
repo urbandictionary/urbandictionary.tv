@@ -178,17 +178,42 @@ function megaplaya_onvideoload(args)
     $('#next_definition').fadeIn(250);
   }
 
-  // Hid eth ov
+  // Hide definition overlay
   hide_timeout = setTimeout(function() {
     redraw();
     hide_definition();
   }, hide_delay);
 
+  // Load metadata for this video & definition
   fetch_video_info(video.url);
   fetch_vote_counts(video.defid);
 
+  inject_socialmedia(video);
+
   // debug("Current entry =>", video);
   track_pageview("/" + escaped_word);
+}
+
+function inject_socialmedia(video) {
+  debug("video", video);
+
+  // TODO parse "template" / inject args
+  // do we need to be re-injecting the tweet/g+ button each time?
+  var html = '',
+      server = window.location.protocol + '//' + window.location.host,
+      url = server + '/' + Permalink.encode(video.word),
+      word = video.word;
+
+  debug("injecting dem socialmedias");
+  html += '<div class="facebook"><iframe src="//www.facebook.com/plugins/like.php?href=' + url + '&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=dark&amp;font=lucida+grande&amp;height=21&amp;appId=202084943139708" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe></div>';
+  html += '<div class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-text="I\'m learning about "' + word.replace(/'/g, '\'') + '" on urbandictionary.tv: ' + url + '" data-count="none">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div>';
+
+  // <div class="google">
+  //   <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+  //   <div class="g-plusone" data-size="medium" data-annotation="none"></div>
+  // </div>
+
+  $('#socialmedia').html(html);
 }
 
 function fetch_video_info(video_url) {
