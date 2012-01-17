@@ -28,33 +28,30 @@
 
 <div id="bottom">
   <div id="voting">
-    <a id="vote_up" rel="up" href="#" onclick="return false;">
-      <img src="images/like_up_off.gif" alt="Vote Up" />
+    <div id="vote_up" class="vote" rel="up" href="#" onclick="return false;">
+      <div class="vote_img up">&nbsp;</div>
+      <div class="vote_count" id="vote_up_count">0</div>
+    </div>
+    <div id="vote_down" class="vote" rel="down" href="#" onclick="return false;">
+      <div class="vote_img down">&nbsp;</div>
       <div class="vote_count" id="vote_down_count">0</div>
-    </a>
-    <a id="vote_down" rel="down" href="#" onclick="return false;">
-      <img src="images/like_down_off.gif" alt="Vote Down" />
-      <div class="vote_count" id="vote_down_count">0</div>
-    </a>
+    </div>
   </div>
 
   <div id="suggest_video">
-    <a href="#" onclick="return false;">Suggest a better video</a>
+    Suggest a better video
   </div>
 
-  <div id="video_info">
+  <!-- <div id="video_info">
     <div id="video_info_button"><a href="#" onclick="return false;">Video Info</a></div>
     <div id="video_info_text"></div>
-  </div>
+  </div> -->
 
   <div class="word" id="word_txt"></div>
   <div class="definition" id="definition_txt"></div>
 
-  <!--
-  <div class="word" id="word_txt"></div>
-  <div class="definition" id="definition_txt"></div>
-  <div class="add_video_btn">Have a better video?</div>
-  -->
+  <div class="clear"></div>
+  <div class="more_info_btn">More info</div>
 </div>
 
 <div id="word_overlay" class="overlay">

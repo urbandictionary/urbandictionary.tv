@@ -10,9 +10,9 @@ $(document).ready(function() {
     alert($('#video_info_text').text());
   });
 
-  $('#voting a').click(function(){
+  $('#voting .vote').click(function(){
     var defid = megaplaya.api_getCurrentVideo().defid,
-        direction = $(this).attr('rel');
+     direction = $(this).attr('rel');
     send_vote(defid, direction);
 
     // skip to next definition on thumbs down
@@ -52,9 +52,9 @@ function redraw()
   }
 
   // FIXME genercize for .overlay too
-  $('#word_overlay .wrap')[0].style.marginTop = '0';
-  var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
-  $('#word_overlay .wrap')[0].style.marginTop =  ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos)  + 'px';
+  // $('#word_overlay .wrap')[0].style.marginTop = '0';
+  // var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
+  // $('#word_overlay .wrap')[0].style.marginTop =  ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos)  + 'px';
 
   $('.overlay')[0].style.top = "75px";
   $('.overlay').height($(window).height() - 75);
@@ -220,7 +220,7 @@ function fetch_vote_counts(defid) {
 function next_definition()
 {
   megaplaya.api_nextVideo();
-  $('.vote_count').html('');
+ // $('.vote_count').html('');
 
   // TODO if we're running low on videos, load more
 }
@@ -274,7 +274,10 @@ function send_vote(defid, direction) {
       if (data.status == 'saved') {
         var field = '#vote_' + direction + ' .vote_count',
             number_text = $(field).text();
-        if(number_text == undefined || number_text == '') {
+
+        $("#vote_" + direction + " .vote_img").addClass("on");
+
+        if (number_text == undefined || number_text == '') {
           $(field).html(1);
         }
         else {
@@ -282,10 +285,14 @@ function send_vote(defid, direction) {
         }
       }
       else {
-        alert("Bad status from vote: " + data.status);
+        if (data.status == "duplicate") {
+          // if dupe, still turn the like btn on anyway.
+          //$("#vote_" + direction + " .vote_img").addClass("on");
+        }
+        debug("Bad status from vote: " + data.status);
       }
     },
-    error: function(){ alert("Error fetching data") }
+    error: function(){ debug("Error fetching data") }
   });
 }
 
