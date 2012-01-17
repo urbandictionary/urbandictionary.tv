@@ -279,6 +279,8 @@ function show_suggest_overlay()
   document.body.scrollTop = 0;
   $('#suggest_overlay').fadeIn(200);
 
+  $('#suggest_overlay .wrap')[0].style.display = '';
+  $('#suggest_overlay .wrap')[1].style.display = 'none';
   // set data in overlay
   var vid = megaplaya.api_getCurrentVideo();
   $('#suggest_def').text(vid.word);
