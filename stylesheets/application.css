@@ -60,7 +60,7 @@ html, body { margin: 0; padding: 0; }
 #header #next_definition a { display: block; font: bold 24px Helvetica, Arial; }
 #header #next_definition:hover, #header #next_definition:active {
 =======*/
-#header #next_definition { position: absolute; top: 10px; right: 20px; cursor: pointer;  padding: 5px 10px; color: #fff; border: 1px solid #59829c; font: normal 14px 'Helvetica Neue', Helvetica, Arial; text-align: right;}
+#header #next_definition { position: absolute; top: 10px; right: 20px; cursor: pointer;  padding: 5px 10px; color: #fff; border: 1px solid #59829c; font: normal 14px 'Helvetica Neue', Helvetica, Arial; text-align: right; display: none; }
 #header #next_definition a { display: block; font: bold 24px 'Helvetica Neue', Helvetica, Arial; }
 #header #next_definition:hover, #header #next_definition:active {
   border: 1px solid #4d6f85; border-top: 1px solid #6b98b5;

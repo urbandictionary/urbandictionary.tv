@@ -6,13 +6,6 @@ $(document).ready(function() {
 
   load_player();
 
-  // would be chill to do this using History API
-  // even chiller with backbone.js + it's app.router
-  if(window.location.hash){
-    debug("window.location has a hash");
-    // TODO trigger hashchange event
-  }
-
   $('#video_info_button').click(function(){
     alert($('#video_info_text').text());
   });
@@ -39,10 +32,6 @@ $(document).ready(function() {
   redraw();
 });
 
-$(window).bind('hashchange', function() {
-  debug("hash was changed!");
-});
-
 $(window).resize(redraw);
 
 function redraw()
@@ -54,7 +43,11 @@ function redraw()
     $('#player').height($(window).height() - $('#bottom').height() - 115);
   }
 
-  // FIXME genercize for .overlay
+  if ($(window).height() < $('#player').height() + 75) {
+    $('#player').height($(window).height() - 75);
+  }
+
+  // FIXME genercize for .overlay too
   $('#word_overlay .wrap')[0].style.marginTop = '0';
   var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
   $('#word_overlay .wrap')[0].style.marginTop =  ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos)  + 'px';
@@ -85,23 +78,6 @@ function shuffle(v)
   return v;
 }
 
-
-function redraw()
-{
-  var min_height = 500;
-  $('#player').height(min_height);
-
-  if ($(window).height() > min_height + 75 + $('#bottom').height()) {
-    $('#player').height($(window).height() - $('#bottom').height() - 115);
-  }
-
-  if ($(window).height() < $('#player').height() + 75)
-    $('#player').height($(window).height() - 75);
-
-  $('#word_overlay').height($(window).height() - 75);
-  $('#word_overlay').width($(window).width());
-}
-
 // VHX Megaplaya scaffolding
 function load_player()
 {
@@ -122,7 +98,7 @@ function megaplaya_loaded()
   //megaplaya.api_setColor('ffc652');
   megaplaya.api_setColor('e86222');
   megaplaya_addListeners();
-  load_urban_videos();
+  load_videos(Permalink.get());
 }
 
 function megaplaya_addListeners() {
@@ -156,7 +132,8 @@ var hide_timeout = false;
 function megaplaya_onvideoload(args)
 {
   var video = megaplaya.api_getCurrentVideo(),
-      escaped_word = encodeURIComponent(video.word).replace('%20','+'); // they are nicer <3
+      word = video.word,
+      escaped_word = Permalink.encode(word);
 
   $('#word_txt').html('<a href="http://www.urbandictionary.com/define.php?term=' + escaped_word + '" target="_blank">' + video.word + '</a>');
   printBrackets(video.definition, $('#definition_txt').empty());
@@ -166,6 +143,7 @@ function megaplaya_onvideoload(args)
     hide_timeout = false;
   }
 
+  Permalink.set(escaped_word);
   show_definition(video.word, video.definition);
 
   var hide_delay = video.definition.length * 40;
@@ -176,7 +154,8 @@ function megaplaya_onvideoload(args)
     hide_delay = 8000;
 
   // set next word button
-  $('#next_word').html(urls[video.index + 1].word);
+  var next_word = urls[video.index + 1].word;
+  $('#next_word').html('<a href="/#' + Permalink.encode(next_word) + '">' + next_word + '</a>');
   $('#next_definition').fadeIn(250);
 
   hide_timeout = setTimeout(function() {
@@ -233,6 +212,8 @@ function next_definition()
 {
   megaplaya.api_nextVideo();
   $('.vote_count').html('');
+
+  // TODO if we're running low on videos, load more
 }
 
 function show_definition(word, def)
@@ -300,34 +281,108 @@ function send_vote(defid, direction) {
 }
 
 // Urban Dictionary data loaders
-function load_urban_videos() {
-  var url = 'http://www.urbandictionary.com/iphone/search/videos?callback=load_urban_videos_callback&random=1';
+function inject_script(url) {
   var script = document.createElement('script');
   script.setAttribute('type', 'text/javascript');
   script.setAttribute('src', url);
   document.documentElement.firstChild.appendChild(script);
 }
 
-// var urls = false;
-// function load_urban_videos_callback(resp) {
-//   debug(">> load_urban_videos_callback() - adding listeners", resp);
-//
-//   urls = $.map(resp.videos, function (entry, i) {
-//     entry.index = i;
-//     entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
-//     return entry;
-//   });
-// }
-
-var urls = false;
-function load_urban_videos_callback(resp) {
+function parse_videos_from_response(resp) {
   urls = $.map(resp.videos, function (entry, i) {
     entry.index = i;
     entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
     return entry;
   });
-  debug(">> callback(): loading " + urls.length + " videos...");
-
-  urls = shuffle(urls);
-  return megaplaya.api_playQueue(urls);
+  return urls;
 }
+
+var videos_api_url = 'http://www.urbandictionary.com/iphone/search/videos',
+    urban_current_word = false; // ghetto shimmy, FIXME
+function load_videos(word) {
+  if (word) {
+    urban_current_word = word;
+    debug("Loading for word: " + word);
+    inject_script(videos_api_url + '?callback=load_videos_callback&word=' + encodeURIComponent(word));
+  }
+  else {
+    urban_current_word = false;
+    inject_script(videos_api_url + '?callback=load_videos_callback&random=1');
+  }
+}
+
+// Replaces the current playlist
+var urls = false;
+function load_videos_callback(resp) {
+
+  debug("load_videos_callback()", resp);
+  urls = parse_videos_from_response(resp);
+
+  if (urls.length == 0) {
+    alert("Error, no videos found!");
+    return false;
+  }
+  else {
+    debug(">> callback(): loading " + urls.length + " videos...");
+
+    // If we're loading videos for a specific word, append other words
+    if (urban_current_word) {
+      debug("ADDING more words...");
+      inject_script(videos_api_url + '?callback=append_videos_callback&random=1');
+    }
+
+    urls = shuffle(urls);
+    return megaplaya.api_playQueue(urls);
+  }
+}
+
+// Add to the current playlist rather than replacing
+function append_videos_callback(resp) {
+  debug("APPENDING videos, not replacing");
+  new_urls = parse_videos_from_response(resp);
+  debug(new_urls.length + ' new urls');
+
+  // FIXME
+
+  // TODO what is the megaplaya API called for this?
+  // do we have an appendToQueue() call now...?
+  // urls = megaplaya.api_getQueue();
+  // debug(urls.length + ' existing urls');
+  // return megaplaya.api_loadQueue(urls + new_urls);
+}
+
+// permalink/url/history router
+permalink_disable_onchange = false;
+var Permalink = {
+  set: function(url){
+    debug("Permalink.set()", url);
+    permalink_skip_hashchange = true;
+    window.location.hash = this.encode(url);
+    return this.get();
+  },
+
+  get: function(){
+    var hash = window.location.hash.replace(/^\#/, '')
+    hash = decodeURIComponent(hash).replace(/\+/g, ' ');
+    return hash;
+  },
+
+  encode: function(word){
+    word = word.toLowerCase();
+    return encodeURIComponent(word).replace(/\%20/g,'+').replace(/\%2B/g, '+');
+  },
+
+  hashchange: function(){
+    debug("router.hashchange()");
+    if(permalink_skip_hashchange) {
+      debug("SKIPPING");
+    }
+    else {
+      load_videos();
+    }
+    if(permalink_skip_hashchange) permalink_skip_hashchange = false;
+  }
+}
+
+$(window).bind('hashchange', Permalink.hashchange);
+
