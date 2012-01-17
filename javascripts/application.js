@@ -6,8 +6,13 @@ $(document).ready(function() {
 
   load_player();
 
-  $('#video_info_button').click(function(){
-    alert($('#video_info_text').text());
+  $('#more_info_btn').click(function(){
+    $('#video_info_text').toggle();
+    if ($('#video_info_text').is(":visible"))
+      this.innerHTML = "Hide info";
+    else
+      this.innerHTML = "More info";
+
   });
 
   $('#voting .vote').click(function(){
@@ -22,17 +27,21 @@ $(document).ready(function() {
   });
 
   $('#suggest_video').click(function(){
-    $('#suggest_overlay').show();
+    show_suggest_overlay();
   });
 
   $('#suggest_overlay').click(function(){
-    $('#suggest_overlay').fadeOut(250);
+    hide_suggest_overlay();
   });
 
   $('#word_overlay').click(function(){
     hide_definition();
   });
 
+  $('#make_video').click(function(e){
+    e.stopPropagation();
+    $("#suggest_overlay .wrap").toggle();
+  });
   redraw();
 });
 
@@ -51,12 +60,14 @@ function redraw()
     $('#player').height($(window).height() - 75);
   }
 
-  // FIXME genercize for .overlay too
-  // $('#word_overlay .wrap')[0].style.marginTop = '0';
-  // var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
-  // $('#word_overlay .wrap')[0].style.marginTop =  ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos)  + 'px';
+  if ($('.overlay').is(":visible")) {
+    $(document.body).addClass("crop");
+  }
+  else {
+    $(document.body).removeClass("crop");
+  }
 
-  $('.overlay')[0].style.top = "75px";
+  $('.overlay').css("top", "75px");
   $('.overlay').height($(window).height() - 75);
   $('.overlay').width($(window).width());
 }
@@ -99,7 +110,6 @@ function megaplaya_loaded()
 {
   debug(">> megaplaya_loaded()");
   megaplaya = $('#player').children()[0];
-  //megaplaya.api_setColor('ffc652');
   megaplaya.api_setColor('e86222');
   megaplaya_addListeners();
   load_videos(Permalink.get());
@@ -188,9 +198,9 @@ function fetch_video_info(video_url) {
       var vid = data.video;
       debug("Video metadata => ", vid);
       megaplaya.api_growl("<p>You're watching <span class='title'>" + vid.title + "</span></p>");
-      var pp = '<p>Title: ' + vid.title;
-      pp += '<p>URL: ' + vid.url;
-      pp += '<p>' + vid.description;
+      var pp = '<p class="title">' + vid.title + '</p>';
+      pp += '<a href="' + vid.url + '" target="_blank">' + vid.url + '</a></p>';
+      pp += '<p class="desc">' + vid.description + '</p>';
       $('#video_info_text').html(pp);
     },
     error: function(){ alert("Error fetching data") }
@@ -228,6 +238,7 @@ function next_definition()
 function show_definition(word, def)
 {
   $(document.body).addClass("crop");
+  document.body.scrollTop = 0;
 
   $('#word_overlay, #word_overlay .word, #word_overlay .definition').show();
   $('#word_overlay .word').text(word);
@@ -255,11 +266,33 @@ function hide_definition()
   //  megaplaya.api_seek(0);
 
   $('#word_overlay').fadeOut(400)
-  $(document.body).delay(400).removeClass("crop");
+  $(document.body).delay(410).removeClass("crop");
 
   setTimeout(function() {
     $('#word_overlay')[0].style.top = $(window).height() + "px";
   }, 500)
+}
+
+function show_suggest_overlay()
+{
+  megaplaya.api_pause();
+  document.body.scrollTop = 0;
+  $('#suggest_overlay').fadeIn(200);
+
+  // set data in overlay
+  var vid = megaplaya.api_getCurrentVideo();
+  $('#suggest_def').text(vid.word);
+  $('#add_video_frame')[0].src = "http://www.urbandictionary.com/video.php?layout=tv&defid=" + vid.defid + "&word=" + encodeURIComponent(vid.word);
+
+  redraw();
+}
+
+function hide_suggest_overlay()
+{
+  megaplaya.api_play();
+  $('#suggest_overlay').fadeOut(200);
+
+  setTimeout(redraw, 250);
 }
 
 function send_vote(defid, direction) {
@@ -315,6 +348,7 @@ function parse_videos_from_response(resp) {
 
 var videos_api_url = 'http://www.urbandictionary.com/iphone/search/videos',
     urban_current_word = false; // ghetto shimmy, FIXME
+
 function load_videos(word) {
   if (word) {
     urban_current_word = word;

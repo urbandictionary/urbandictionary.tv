@@ -1,3 +1,23 @@
-body { background: #000; color: #fff; font-family: "Helvetica Neue", Helvetica, Arial; }
-
+body { background: #000; color: #fff; font-family: "Helvetica Neue", Helvetica, Arial; overflow: hidden; }
+h2 { display: none; }
 input[type="text"] { border: 0; padding: 5px; color: #000; width: 300px; font: normal 12px Helvetica, Arial; border-radius: 3px; }
+form p:first-child { display:none; }
+
+#video_submit {
+  font-size: 14px;
+  cursor: pointer;
+  margin: 10px 0px 0 0;
+  color: #000;
+  background: #fafafa;
+  background: -moz-linear-gradient(top,  #fafafa 0%, #e0e0e0 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fafafa), color-stop(100%,#e0e0e0)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #fafafa 0%,#e0e0e0 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #fafafa 0%,#e0e0e0 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #fafafa 0%,#e0e0e0 100%); /* IE10+ */
+  background: linear-gradient(top,  #fafafa 0%,#e0e0e0 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fafafa', endColorstr='#e0e0e0',GradientType=0 ); /* IE6-9 */
+  padding: 10px;
+  border: 1px solid #aaa; border-top: 1px solid #ddd;
+  border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px;
+}
+#video_submit:hover { background: #fafafa; color: #000; }

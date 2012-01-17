@@ -14,7 +14,7 @@
   <script src="javascripts/stats.js" type="text/javascript"></script>
   <script src="javascripts/application.js" type="text/javascript"></script>
 </head>
-<body>
+<body class="crop">
 
 
 <div id="header">
@@ -38,35 +38,48 @@
     </div>
   </div>
 
-  <div id="suggest_video">
+  <div class="btn" id="suggest_video">
     Suggest a better video
   </div>
 
   <!-- <div id="video_info">
     <div id="video_info_button"><a href="#" onclick="return false;">Video Info</a></div>
-    <div id="video_info_text"></div>
+
   </div> -->
 
   <div class="word" id="word_txt"></div>
   <div class="definition" id="definition_txt"></div>
+  <div id="video_info_text" style="display:none"></div>
+  <div id="more_info_btn">More info</div>
 
   <div class="clear"></div>
-  <div class="more_info_btn">More info</div>
+
 </div>
 
-<div id="word_overlay" class="overlay">
+<div id="word_overlay" class="overlay" style="top:75px;height:2000px">
   <div class="wrap">
     <div class="word"></div>
     <div class="definition"></div>
   </div>
 </div>
 
-<div id="suggest_overlay" class="overlay">
+<div id="suggest_overlay" class="overlay" style="display:none">
   <div class="wrap">
-    <p>Suggest a video for <span>[definition]</span></p>
-    [input field]
+    <p>Suggest a video for <span id="suggest_def">[definition]</span></p>
+    <p>
+      <iframe id="add_video_frame" src="about:blank" allowfullscreen frameborder="0" width="350" height="200"></iframe>
+    </p>
     <p>or</p>
-    [Make your own video!]
+    <div class="btn" id="make_video">Make your own video</div>
+  </div>
+
+  <div class="wrap create" style="display:none">
+    <ol>
+      <li>1. Create a video with you and your friends</li>
+      <li>2. Upload it to YouTube or Vimeo</li>
+      <li>3. Submit it to Urban TV</li>
+    </ol>
+    <div class="btn" id="upload_video"><a href="http://youtube.com/upload" target="_blank">Upload your video</a></div>
   </div>
 </div>
 
