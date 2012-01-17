@@ -396,13 +396,9 @@ function append_videos_callback(resp) {
   new_urls = parse_videos_from_response(resp);
   debug("append_videos_callback():" + new_urls.length + ' new urls');
 
-  // FIXME
-
-  // TODO what is the megaplaya API called for this?
-  // do we have an appendToQueue() call now...?
-  // urls = megaplaya.api_getQueue();
-  // debug(urls.length + ' existing urls');
-  // return megaplaya.api_loadQueue(urls + new_urls);
+  video_urls = video_urls.concat(new_urls);
+  megaplaya.api_loadQueue(video_urls);
+  megaplaya.api_setQueueAt(0);
 }
 
 // permalink/url/history router
