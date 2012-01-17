@@ -85,12 +85,10 @@ html, body { margin: 0; padding: 0; }
 #vhx_logo #contact { opacity: 0.4; margin-top: 36px; margin-right: 2px; }
 #vhx_logo #contact:hover { opacity: 1; }
 
-#socialmedia { position: absolute; z-index: 100; top: 10px; right: 0px;}
-#socialmedia div { float: left; margin-left: 10px; }
-
 #bottom { padding: 20px; }
 .word { font: bold 40px 'Helvetica Neue', Helvetica, Arial; color: #000; }
 .definition { font: normal 24px 'Helvetica Neue', Helvetica, Arial; color: #666; }
+.definition p:first { color: #f0f; }
 
 #more_info_btn {
   font: normal 14px 'Helvetica Neue', Helvetica, Arial; color: #666;
@@ -184,3 +182,16 @@ html, body { margin: 0; padding: 0; }
   border-radius: 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px;
 }
 .btn:hover { background: #fafafa; color: #000; }
+
+#socialmedia {
+  width: 220px;
+  height: 28px;
+  overflow: hidden;
+  clear: right;
+  float: right;
+  margin-top: 10px;
+}
+#socialmedia div { float: right; margin-left: 8px; }
+#socialmedia .google { }
+#socialmedia .twitter { padding-top: 2px }
+#socialmedia .facebook { padding-top: 2px; width: 84px; }
