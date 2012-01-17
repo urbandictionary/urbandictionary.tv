@@ -317,18 +317,18 @@ function load_videos(word) {
 }
 
 // Replaces the current playlist
-var urls = false;
+var video_urls = false;
 function load_videos_callback(resp) {
 
   debug("load_videos_callback()", resp);
-  urls = parse_videos_from_response(resp);
+  video_urls = parse_videos_from_response(resp);
 
-  if (urls.length == 0) {
+  if (video_urls.length == 0) {
     alert("Error, no videos found!");
     return false;
   }
   else {
-    debug(">> callback(): loading " + urls.length + " videos...");
+    debug(">> callback(): loading " + video_urls.length + " videos...");
 
     // If we're loading videos for a specific word, append other words
     if (urban_current_word) {
@@ -337,8 +337,8 @@ function load_videos_callback(resp) {
     }
 
     debug("Playing...");
-    urls = shuffle(urls);
-    return megaplaya.api_playQueue(urls);
+    video_urls = shuffle(video_urls);
+    return megaplaya.api_playQueue(video_urls);
   }
 }
 
