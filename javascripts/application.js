@@ -168,7 +168,7 @@ function megaplaya_onvideoload(args)
   }
 
   // Load things
-  Permalink.set(escaped_word + "-" + video.id);
+  Permalink.set(escaped_word); //  + "-" + video.id
   show_definition(video.word, video.definition);
 
   // Set next word button
