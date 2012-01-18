@@ -168,11 +168,11 @@ function megaplaya_onvideoload(args)
   }
 
   // Load things
-  Permalink.set(escaped_word);
+  Permalink.set(escaped_word + "-" + video.id);
   show_definition(video.word, video.definition);
 
   // Set next word button
-  var next_word = urls[video.index + 1] ? urls[video.index + 1].word : false;
+  var next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
   if (next_word) {
     $('#next_word').html('<a href="/#' + Permalink.encode(next_word) + '">' + next_word + '</a>');
     $('#next_definition').fadeIn(250);
@@ -366,9 +366,9 @@ function inject_script(url) {
   document.documentElement.firstChild.appendChild(script);
 }
 
-function parse_videos_from_response(resp) {
+function parse_videos_from_response(resp, offset) {
   urls = $.map(resp.videos, function (entry, i) {
-    entry.index = i;
+    entry.index = i + (offset > 0 ? offset : 0);
     entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
     return entry;
   });
@@ -382,9 +382,9 @@ var videos_api_url = 'http://' + api_host + '/iphone/search/videos',
 
 function load_videos(word) {
   if (word) {
-    urban_current_word = word;
-    debug("Loading for word: " + word);
-    inject_script(videos_api_url + '?callback=load_videos_callback&word=' + encodeURIComponent(word));
+    urban_current_word = word.split("-");
+    debug("Loading for word: " + urban_current_word);
+    inject_script(videos_api_url + '?callback=load_videos_callback&word=' + encodeURIComponent(urban_current_word[0])); //+ "&id=" + urban_current_word[1]);
   }
   else {
     urban_current_word = false;
@@ -398,6 +398,11 @@ function load_videos_callback(resp) {
 
   debug("load_videos_callback()", resp);
   video_urls = parse_videos_from_response(resp);
+
+  // only one video plz
+  if (urban_current_word) {
+    video_urls = [video_urls[0]];
+  }
 
   if (video_urls.length == 0) {
     alert("Error, no videos found!");
@@ -420,7 +425,7 @@ function load_videos_callback(resp) {
 
 // Add to the current playlist rather than replacing
 function append_videos_callback(resp) {
-  new_urls = parse_videos_from_response(resp);
+  new_urls = parse_videos_from_response(resp, 1);
   debug("append_videos_callback():" + new_urls.length + ' new urls');
 
   video_urls = video_urls.concat(new_urls);

@@ -1,7 +1,7 @@
 body { background: #000; color: #fff; font-family: "Helvetica Neue", Helvetica, Arial; overflow: hidden; }
 h2 { display: none; }
 input[type="text"] { border: 0; padding: 5px; color: #000; width: 300px; font: normal 12px Helvetica, Arial; border-radius: 3px; }
-form p:first-child { display:none; }
+form p.word_row { display:none; }
 
 #video_submit {
   font-size: 14px;
