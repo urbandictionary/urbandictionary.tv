@@ -237,7 +237,7 @@ function fetch_video_info(video_url) {
 function fetch_vote_counts(defid) {
   $.ajax({
     type: 'GET',
-    url: 'http://www.urbandictionary.com/uncacheable.php?ids=' + defid,
+    url: 'http://' + api_host + '/uncacheable.php?ids=' + defid,
     dataType: 'jsonp',
     success: function(data){
       debug("fetch_vote_counts() success data=>", data);
@@ -325,7 +325,7 @@ function hide_suggest_overlay()
 }
 
 function send_vote(defid, direction) {
-  var url = "http://www.urbandictionary.com/thumbs.php?defid=" + defid + "&direction=" + direction;
+  var url = "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction;
   debug("send_vote", url);
   $.ajax({
     type: "GET",
@@ -375,7 +375,9 @@ function parse_videos_from_response(resp) {
   return urls;
 }
 
-var videos_api_url = 'http://www.urbandictionary.com/iphone/search/videos',
+var api_host = document.location.hostname == "staging.urbandictionary.tv" ? "staging.urbandictionary.com" : "www.urbandictionary.com";
+
+var videos_api_url = 'http://' + api_host + '/iphone/search/videos',
     urban_current_word = false; // ghetto shimmy, FIXME
 
 function load_videos(word) {
