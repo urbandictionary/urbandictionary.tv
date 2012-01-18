@@ -184,10 +184,8 @@ html, body { margin: 0; padding: 0; }
   clear: right;
   float: right;
   margin-top: 10px;
-
-  display: none;
 }
 #socialmedia div { float: right; margin-left: 8px; }
 #socialmedia .google { }
-#socialmedia .twitter { }
-#socialmedia .facebook { width: 84px; }
+#socialmedia .twitter { width: 55px; }
+#socialmedia .facebook { width: 76px; }

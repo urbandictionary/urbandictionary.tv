@@ -204,9 +204,9 @@ function inject_socialmedia(video) {
       url = server + '/' + Permalink.encode(video.word),
       word = video.word;
 
-  debug("injecting dem socialmedias");
+  // html += '<div class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-text="I\'m learning about "' + word.replace(/'/g, '\'') + '" on urbandictionary.tv: ' + url + '" data-count="none">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div>';
   html += '<div class="facebook"><iframe src="//www.facebook.com/plugins/like.php?href=' + url + '&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=dark&amp;font=lucida+grande&amp;height=21&amp;appId=202084943139708" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe></div>';
-  html += '<div class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-text="I\'m learning about "' + word.replace(/'/g, '\'') + '" on urbandictionary.tv: ' + url + '" data-count="none">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div>';
+  html += '<div class="twitter"><iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/tweet_button.html?count=none&url=http://urbandictionary.tv&text=I\'m watching "' + word.replace(/'/g, '\'') + '" on urbandictionary.tv" style="width:130px; height:20px;"></iframe></div>';
 
   // <div class="google">
   //   <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
