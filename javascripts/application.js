@@ -5,6 +5,8 @@ var keyboard_disabled = false;
 $(document).ready(function() {
 
   load_player();
+  if (!jQuery.browser.mozilla)
+    $(document.body).addClass("crop");
 
   $('#more_info_btn').click(function(){
     $('#video_info_text').toggle();
@@ -66,7 +68,7 @@ function redraw()
     $('#player').height($(window).height() - 75);
   }
 
-  if ($('.overlay').is(":visible")) {
+  if ($('.overlay').is(":visible") && !jQuery.browser.mozilla) {
     $(document.body).addClass("crop");
   }
   else {
@@ -277,7 +279,9 @@ function next_definition()
 
 function show_definition(word, def)
 {
-  $(document.body).addClass("crop");
+  if (!jQuery.browser.mozilla)
+    $(document.body).addClass("crop");
+
   document.body.scrollTop = 0;
 
   $('#word_overlay, #word_overlay .word, #word_overlay .definition').show();
@@ -305,7 +309,7 @@ function hide_definition()
   //if (megaplaya.api_getDuration() < 8000)
   //  megaplaya.api_seek(0);
 
-  $('#word_overlay').fadeOut(400)
+  $('#word_overlay').fadeOut(400);
   $(document.body).delay(410).removeClass("crop");
 
   setTimeout(function() {
