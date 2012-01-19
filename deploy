@@ -1,4 +1,3 @@
 #!/bin/sh
 # This will push `master` branch to `gh-pages`
 git push -f origin master:gh-pages
-
