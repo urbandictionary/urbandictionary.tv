@@ -186,7 +186,7 @@ function megaplaya_onvideoload(args)
   // Load metadata for this video & definition
   fetch_video_info(video.url);
   fetch_vote_counts(video.defid);
-  inject_socialmedia(video);
+  // inject_socialmedia(video);
 
   track_pageview("/" + escaped_word);
 }
@@ -221,7 +221,7 @@ function inject_socialmedia(video) {
   //   <div class="g-plusone" data-size="medium" data-annotation="none"></div>
   // </div>
 
-  $('#socialmedia').html(html);
+  $('#socialmedia_entry').html(html);
 }
 
 function fetch_video_info(video_url) {

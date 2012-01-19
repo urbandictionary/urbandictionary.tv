@@ -174,15 +174,22 @@ html, body { margin: 0; padding: 0; }
 }
 .btn:hover { background: #fafafa; color: #000; }
 
-#socialmedia {
-  width: 220px;
+.socialmedia {
   height: 28px;
   overflow: hidden;
   clear: right;
   float: right;
   margin-top: 10px;
 }
-#socialmedia div { float: right; }
-#socialmedia .google { }
-#socialmedia .twitter { width: 58px; }
-#socialmedia .facebook { width: 86px; }
+.socialmedia div { float: left; }
+.socialmedia .google { }
+.socialmedia .twitter { width: 58px; }
+.socialmedia .facebook { width: 86px; }
+
+#socialmedai_entry { width: 220px; }
+#socialmedia_entry div { float: right; }
+
+#socialmedia_global { position: absolute; top: 39px; left: 380px; width: 260px; }
+#socialmedia_global div { margin-right: 14px; }
+
+
