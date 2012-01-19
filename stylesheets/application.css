@@ -192,4 +192,12 @@ html, body { margin: 0; padding: 0; }
 #socialmedia_global { position: absolute; top: 39px; left: 380px; width: 260px; }
 #socialmedia_global div { margin-right: 14px; }
 
+#about { position: absolute; right: 15px; bottom: 10px; font-size: 10pt; }
+#about ul li { float: left; margin-left: 12px;}
+#about ul li a { color: #999; font-weight: bold; }
+#about ul li a:hover { color: #aaa; }
+#about .powered_by { float: right;  }
+#about .powered_by a { display: block; margin: 0; padding: 0; }
+#about .powered_by a img { opacity: 0.9; }
+#about .powered_by a:hover img { opacity: 1; }
 
