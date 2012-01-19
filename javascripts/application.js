@@ -83,7 +83,7 @@ function debug(string)
       console.log(string);
     }
   } catch(e) {
-    alert('uh oh, error in debug()');
+
   }
 }
 
