@@ -4,10 +4,13 @@ describe("urbandictionary.tv", function() {
 		window.track_pageview = function() {};
 		window.megaplaya = {
 			api_getCurrentVideo: function() {
-				return {word: "asdf", definition: "asdf"};
+				return {definition: "asdf", word: "the word"};
 			}
 		};
 		
 		megaplaya_onvideoload();
+		
+		expect($("#word_txt a").text()).toEqual("the word");
+		expect($("#word_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=the+word");
 	});
 });
