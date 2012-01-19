@@ -368,9 +368,13 @@ function send_vote(defid, direction) {
 
         // if dupe, still turn the like btn on anyway.
         $("#vote_" + direction + " .vote_img").addClass("on");
+        track_event("send_vote_" + direction);
       }
     },
-    error: function(){ debug("Error fetching data") }
+    error: function(){
+      debug("Error fetching data");
+      track_event("send_vote_error");
+    }
   });
 }
 
