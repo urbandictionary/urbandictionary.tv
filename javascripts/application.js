@@ -26,7 +26,6 @@ function document_ready() {
 
     // skip to next definition on thumbs down
     if(this.id == 'vote_down') {
-      $(".vote_img").removeClass("on"); // FIXME; the onvideoload() handler not resetting the down buton correctly
       next_definition();
     }
   });
@@ -185,13 +184,10 @@ function megaplaya_onvideoload(args)
   }, hide_delay);
 
   // Load metadata for this video & definition
-  // debug("raw video object =>", video);
   fetch_video_info(video.url);
   fetch_vote_counts(video.defid);
-
   inject_socialmedia(video);
 
-  // debug("Current entry =>", video);
   track_pageview("/" + escaped_word);
 }
 
@@ -204,16 +200,12 @@ function load_next_word(video_urls) {
     $('#next_definition').fadeIn(250);
   }
   else {
-    debug("No #next_definition available, can't show");
+    // debug("No #next_definition available, can't show");
     $('#next_definition').hide();
   }
 }
 
 function inject_socialmedia(video) {
-  // debug("video", video);
-
-  // TODO parse "template" / inject args
-  // do we need to be re-injecting the tweet/g+ button each time?
   var html = '',
       server = window.location.protocol + '//' + window.location.host,
       url = server + '/' + Permalink.encode(video.word),
@@ -239,7 +231,7 @@ function fetch_video_info(video_url) {
     dataType: 'jsonp',
     success: function(data){
       var vid = data.video;
-      // debug("Video metadata => ", vid);
+      // debug("fetch_video_info() => ", vid);
       megaplaya.api_growl("<p>You're watching <span class='title'>" + vid.title + "</span></p>");
       var pp = '<p class="title">' + vid.title + '</p>';
       pp += '<a href="' + vid.url + '" target="_blank">' + vid.url + '</a></p>';
@@ -346,18 +338,21 @@ function hide_suggest_overlay()
 
 function send_vote(defid, direction) {
   var url = "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction;
-  debug("send_vote", url);
+  // debug(">> send_vote", url);
   $.ajax({
     type: "GET",
     url: url,
     dataType: 'jsonp',
     success: function(data){
-      debug("Vote response =>", data);
+      // debug("Vote response =>", data);
       if (data.status == 'saved') {
         var field = '#vote_' + direction + ' .vote_count',
             number_text = $(field).text();
 
-        $("#vote_" + direction + " .vote_img").addClass("on");
+        // Only light up the icon for upvotes; downvotes skip the video
+        if(direction == 'up') {
+          $("#vote_" + direction + " .vote_img").addClass("on");
+        }
 
         if (number_text == undefined || number_text == '') {
           $(field).html(1);
@@ -368,10 +363,10 @@ function send_vote(defid, direction) {
       }
       else {
         if (data.status == "duplicate") {
-          debug("Duplicate vote");
+          debug("send_vote() error: duplicate vote");
         }
         else {
-          debug("Unhandled vote error: " + data.status);
+          debug("send_vote() error: unhandled status => " + data.status);
         }
 
         // if dupe, still turn the like btn on anyway.
@@ -380,7 +375,7 @@ function send_vote(defid, direction) {
       }
     },
     error: function(){
-      debug("Error fetching data");
+      debug("send_vote: error fetching vote data");
       track_event("send_vote_error");
     }
   });
@@ -454,7 +449,6 @@ function append_videos_callback(resp) {
   video_urls = video_urls.concat(new_urls);
   megaplaya.api_loadQueue(video_urls);
   megaplaya.api_setQueueAt(0);
-
 
   if(!$('#next_definition').is(':visible')) {
     load_next_word(video_urls);
