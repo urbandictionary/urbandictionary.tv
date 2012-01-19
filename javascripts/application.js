@@ -95,12 +95,6 @@ function debug(string)
   }
 }
 
-function shuffle(v)
-{
-  for(var j, x, i = v.length; i; j = parseInt(Math.random() * i, 0), x = v[--i], v[i] = v[j], v[j] = x);
-  return v;
-}
-
 // VHX Megaplaya scaffolding
 function load_player()
 {
@@ -443,7 +437,6 @@ function load_videos_callback(resp) {
     }
 
     debug("Playing...");
-    video_urls = shuffle(video_urls);
     return megaplaya.api_playQueue(video_urls);
   }
 }
