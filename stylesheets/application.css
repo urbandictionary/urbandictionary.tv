@@ -184,14 +184,15 @@ html, body { margin: 0; padding: 0; }
 }
 .socialmedia div { float: left; }
 .socialmedia .google { }
-.socialmedia .twitter { width: 58px; }
+.socialmedia .twitter { width: 86px; }
 .socialmedia .facebook { width: 86px; }
 
 #socialmedai_entry { width: 220px; }
 #socialmedia_entry div { float: right; }
 
 #socialmedia_global { position: absolute; top: 39px; left: 380px; width: 260px; }
-#socialmedia_global div { margin-right: 14px; }
+#socialmedia_global div { margin-right: 10px; }
+#socialmedia_global .google { margin-left: 5px; }
 
 #about { float: right; clear: right; font-size: 12px; margin: 20px 0 0 0; }
 #about ul li { float: left; margin-left: 12px;}
