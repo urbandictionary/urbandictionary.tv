@@ -176,13 +176,7 @@ function megaplaya_onvideoload(args)
   // Load things
   Permalink.set(escaped_word); //  + "-" + video.id
   show_definition(video.word, video.definition);
-
-  // Set next word button
-  var next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
-  if (next_word) {
-    $('#next_word').html('<a href="/#' + Permalink.encode(next_word) + '">' + next_word + '</a>');
-    $('#next_definition').fadeIn(250);
-  }
+  load_next_word(video_urls);
 
   // Hide definition overlay
   hide_timeout = setTimeout(function() {
@@ -191,7 +185,7 @@ function megaplaya_onvideoload(args)
   }, hide_delay);
 
   // Load metadata for this video & definition
-  debug("raw video object =>", video);
+  // debug("raw video object =>", video);
   fetch_video_info(video.url);
   fetch_vote_counts(video.defid);
 
@@ -201,8 +195,22 @@ function megaplaya_onvideoload(args)
   track_pageview("/" + escaped_word);
 }
 
+function load_next_word(video_urls) {
+  var video = megaplaya.api_getCurrentVideo(),
+      next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
+  if (next_word) {
+    debug("Showing #next_definition: " + next_word);
+    $('#next_word').html('<a href="/#' + Permalink.encode(next_word) + '">' + next_word + '</a>');
+    $('#next_definition').fadeIn(250);
+  }
+  else {
+    debug("No #next_definition available, can't show");
+    $('#next_definition').hide();
+  }
+}
+
 function inject_socialmedia(video) {
-  debug("video", video);
+  // debug("video", video);
 
   // TODO parse "template" / inject args
   // do we need to be re-injecting the tweet/g+ button each time?
@@ -231,7 +239,7 @@ function fetch_video_info(video_url) {
     dataType: 'jsonp',
     success: function(data){
       var vid = data.video;
-      debug("Video metadata => ", vid);
+      // debug("Video metadata => ", vid);
       megaplaya.api_growl("<p>You're watching <span class='title'>" + vid.title + "</span></p>");
       var pp = '<p class="title">' + vid.title + '</p>';
       pp += '<a href="' + vid.url + '" target="_blank">' + vid.url + '</a></p>';
@@ -244,13 +252,13 @@ function fetch_video_info(video_url) {
 
 function fetch_vote_counts(defid) {
   var url = 'http://' + api_host + '/uncacheable.php?ids=' + defid;
-  debug("fetch_vote_counts() url=", url);
+  // debug("fetch_vote_counts() url=", url);
   $.ajax({
     type: 'GET',
     url: url,
     dataType: 'jsonp',
     success: function(data){
-      debug("fetch_vote_counts() success data=>", data);
+      // debug("fetch_vote_counts() success data=>", data);
       var thumbs = data.thumbs[0];
       if(thumbs) {
         $('#vote_up .vote_count').html(thumbs.thumbs_up);
@@ -403,7 +411,7 @@ var videos_api_url = 'http://' + api_host + '/iphone/search/videos',
 function load_videos(word) {
   if (word) {
     urban_current_word = word.split("-");
-    debug("Loading for word: " + urban_current_word);
+    debug("Loading videos for word: " + urban_current_word);
     inject_script(videos_api_url + '?callback=load_videos_callback&word=' + encodeURIComponent(urban_current_word[0])); //+ "&id=" + urban_current_word[1]);
   }
   else {
@@ -420,7 +428,7 @@ function load_videos_callback(resp) {
   video_urls = parse_videos_from_response(resp);
 
   // only one video plz
-  if (urban_current_word) {
+  if (urban_current_word && video_urls.length > 0) {
     video_urls = [video_urls[0]];
   }
 
@@ -429,15 +437,11 @@ function load_videos_callback(resp) {
     return false;
   }
   else {
-    debug(">> callback(): loading " + video_urls.length + " videos...");
-
     // If we're loading videos for a specific word, append other words
     if (urban_current_word) {
-      debug("ADDING more words...");
       inject_script(videos_api_url + '?callback=append_videos_callback&random=1');
     }
 
-    debug("Playing...");
     return megaplaya.api_playQueue(video_urls);
   }
 }
@@ -445,15 +449,20 @@ function load_videos_callback(resp) {
 // Add to the current playlist rather than replacing
 function append_videos_callback(resp) {
   new_urls = parse_videos_from_response(resp, 1);
-  debug("append_videos_callback():" + new_urls.length + ' new urls');
+  debug("append_videos_callback(): " + new_urls.length + ' new urls');
 
   video_urls = video_urls.concat(new_urls);
   megaplaya.api_loadQueue(video_urls);
   megaplaya.api_setQueueAt(0);
+
+
+  if(!$('#next_definition').is(':visible')) {
+    load_next_word(video_urls);
+  }
 }
 
 // permalink/url/history router
-permalink_disable_onchange = false;
+permalink_skip_hashchange = false;
 var Permalink = {
   set: function(url){
     debug("Permalink.set()", url);
@@ -474,12 +483,11 @@ var Permalink = {
   },
 
   hashchange: function(){
-    debug("Permalink.hashchange()");
+    debug("Permalink.hashchange(), skip="+permalink_skip_hashchange+" permalink="+Permalink.get());
     if(permalink_skip_hashchange) {
-      // debug("SKIPPING");
     }
     else {
-      load_videos();
+      load_videos(Permalink.get());
     }
     if(permalink_skip_hashchange) permalink_skip_hashchange = false;
   }
