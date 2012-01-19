@@ -1,7 +1,7 @@
 function printBrackets(string, element) {
 	function onInsideBracket(string) {
 		var href = "http://www.urbandictionary.com/define.php?term=" + encodeURIComponent(string);
-		var anchor = $("<a>").attr("href", href).text(string);
+		var anchor = $("<a>").attr("href", href).attr('target', '_blank').text(string);
 		element.append(anchor);
 	}
 
