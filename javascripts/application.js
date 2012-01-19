@@ -8,26 +8,31 @@ $(document).ready(function() {
 
   $('#more_info_btn').click(function(){
     $('#video_info_text').toggle();
-    if ($('#video_info_text').is(":visible"))
+    if ($('#video_info_text').is(":visible")) {
       this.innerHTML = "Hide info";
-    else
+      track_event('hide_more_info');
+    }
+    else {
       this.innerHTML = "More info";
-
+      track_event('show_more_info');
+    }
   });
 
   $('#voting .vote').click(function(){
     var defid = megaplaya.api_getCurrentVideo().defid,
-     direction = $(this).attr('rel');
+                direction = $(this).attr('rel');
     send_vote(defid, direction);
 
     // skip to next definition on thumbs down
     if(this.id == 'vote_down') {
+      $(".vote_img").removeClass("on"); // FIXME; the onvideoload() handler not resetting the down buton correctly
       next_definition();
     }
   });
 
   $('#suggest_video').click(function(){
     show_suggest_overlay();
+    track_event('show_suggest_video');
   });
 
   $('#suggest_overlay').click(function(){
@@ -41,6 +46,7 @@ $(document).ready(function() {
   $('#make_video').click(function(e){
     e.stopPropagation();
     $("#suggest_overlay .wrap").toggle();
+    track_event('show_make_video');
   });
   redraw();
 });
@@ -154,6 +160,9 @@ function megaplaya_onvideoload(args)
   $('#word_txt').html('<a href="http://www.urbandictionary.com/define.php?term=' + escaped_word + '" target="_blank">' + video.word + '</a>');
   printBrackets(video.definition, $('#definition_txt').empty());
 
+  $('#example_txt').html(video.example);
+  printBrackets(video.example, $('#example_txt').empty());
+
   if (hide_timeout) {
     clearTimeout(hide_timeout);
     hide_timeout = false;
@@ -185,6 +194,7 @@ function megaplaya_onvideoload(args)
   }, hide_delay);
 
   // Load metadata for this video & definition
+  debug("raw video object =>", video);
   fetch_video_info(video.url);
   fetch_vote_counts(video.defid);
 
@@ -235,9 +245,11 @@ function fetch_video_info(video_url) {
 }
 
 function fetch_vote_counts(defid) {
+  var url = 'http://' + api_host + '/uncacheable.php?ids=' + defid;
+  debug("fetch_vote_counts() url=", url);
   $.ajax({
     type: 'GET',
-    url: 'http://' + api_host + '/uncacheable.php?ids=' + defid,
+    url: url,
     dataType: 'jsonp',
     success: function(data){
       debug("fetch_vote_counts() success data=>", data);
@@ -247,7 +259,7 @@ function fetch_vote_counts(defid) {
         $('#vote_down .vote_count').html(thumbs.thumbs_down);
       }
       else {
-        debug("fetch_vote_counts: no thumbs data, aborting")
+        debug("fetch_vote_counts: no thumbs data! aborting", data)
       }
     },
     error: function(){ alert("Error fetching vote counts") }
@@ -348,10 +360,14 @@ function send_vote(defid, direction) {
       }
       else {
         if (data.status == "duplicate") {
-          // if dupe, still turn the like btn on anyway.
-          //$("#vote_" + direction + " .vote_img").addClass("on");
+          debug("Duplicate vote");
         }
-        debug("Bad status from vote: " + data.status);
+        else {
+          debug("Unhandled vote error: " + data.status);
+        }
+
+        // if dupe, still turn the like btn on anyway.
+        $("#vote_" + direction + " .vote_img").addClass("on");
       }
     },
     error: function(){ debug("Error fetching data") }

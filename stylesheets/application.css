@@ -85,11 +85,6 @@ html, body { margin: 0; padding: 0; }
 #vhx_logo #contact { opacity: 0.4; margin-top: 36px; margin-right: 2px; }
 #vhx_logo #contact:hover { opacity: 1; }
 
-#bottom { padding: 20px; }
-.word { font: bold 40px 'Helvetica Neue', Helvetica, Arial; color: #000; }
-.definition { font: normal 24px 'Helvetica Neue', Helvetica, Arial; color: #666; }
-.definition p:first { color: #f0f; }
-
 #more_info_btn {
   font: normal 12px 'Helvetica Neue', Helvetica, Arial; color: #999;
   border: 0;
@@ -137,15 +132,17 @@ html, body { margin: 0; padding: 0; }
 #suggest_overlay .btn { color: #000; text-decoration: underline; font: normal 28px Helvetica, Arial; width: 310px; margin: 0 auto; margin-top: 10px; }
 
 #bottom { padding: 20px; }
-.word { font: bold 40px Helvetica, Arial; color: #000; }
-.definition { font: normal 24px Helvetica, Arial; color: #666; }
+.word { font: bold 40px 'Helvetica Neue', Helvetica, Arial; color: #000; }
+.definition, .example { font: normal 24px Helvetica, Arial; color: #666; }
+.example { font-style: italic; }
 
 #definition_txt { padding-right: 200px; }
+#example_txt { padding-right: 240px; padding-left: 40px; margin-top: 25px; }
 #video_info_text { border-top: 1px dotted #eee; margin: 10px 200px 0 0; padding-top: 10px; font: normal 18px Helvetica, Arial; color: #666; }
 #video_info_text .title { color: #000; font-weight: bold; }
 #video_info_text a { font-size: 14px; }
 #video_info_text .desc { margin-top: 5px; font-size: 14px; }
-#more_info_btn { margin-right: 200px; }
+#more_info_btn {  }
 
 #voting { width: 140px; float: right; color: #333; font-size: 12pt; }
 #voting #vote_up { margin-right: 20px; float: left; cursor: pointer; }
@@ -188,4 +185,4 @@ html, body { margin: 0; padding: 0; }
 #socialmedia div { float: right; margin-left: 8px; }
 #socialmedia .google { }
 #socialmedia .twitter { width: 55px; }
-#socialmedia .facebook { width: 76px; }
+#socialmedia .facebook { } /* setting width causes it to stop being clickable in Chrome? weird */
