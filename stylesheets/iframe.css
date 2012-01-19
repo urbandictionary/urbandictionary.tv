@@ -2,6 +2,7 @@ body { background: #000; color: #fff; font-family: "Helvetica Neue", Helvetica, 
 h2 { display: none; }
 input[type="text"] { border: 0; padding: 5px; color: #000; width: 300px; font: normal 12px Helvetica, Arial; border-radius: 3px; }
 form p.word_row { display:none; }
+h3 { margin:0; font: normal 14px Arial; color: #59829c; }
 
 #video_submit {
   font-size: 14px;
