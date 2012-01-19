@@ -50,6 +50,8 @@ function document_ready() {
     track_event('show_make_video');
   });
   redraw();
+
+  $(window).bind('hashchange', Permalink.hashchange);
 }
 
 $(window).resize(redraw);
@@ -481,7 +483,4 @@ var Permalink = {
     }
     if(permalink_skip_hashchange) permalink_skip_hashchange = false;
   }
-}
-
-$(window).bind('hashchange', Permalink.hashchange);
-
+};
