@@ -8,7 +8,7 @@ describe("megaplaya_onvideoload", function() {
       }
     };
 
-    megaplaya_onvideoload();
+    megaplaya_callback('onVideoLoad');
   });
 
   it("prints the word and links to urbandic", function() {

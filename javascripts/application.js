@@ -2,8 +2,7 @@
 var megaplaya = false;
 var keyboard_disabled = false;
 
-$(document).ready(function() {
-
+function document_ready() {
   load_player();
   if (!jQuery.browser.mozilla)
     $(document.body).addClass("crop");
@@ -51,7 +50,7 @@ $(document).ready(function() {
     track_event('show_make_video');
   });
   redraw();
-});
+}
 
 $(window).resize(redraw);
 
