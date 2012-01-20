@@ -190,9 +190,9 @@ html, body { margin: 0; padding: 0; }
 #socialmedai_entry { width: 220px; }
 #socialmedia_entry div { float: right; }
 
-#socialmedia_global { position: absolute; top: 39px; left: 380px; width: 260px; }
+#socialmedia_global { position: absolute; top: 39px; left: 380px; width: 360px; }
 #socialmedia_global div { margin-right: 10px; }
-#socialmedia_global .google { margin-left: 5px; }
+#socialmedia_global .google { margin-left: 8px; }
 
 #about { float: right; clear: right; font-size: 12px; margin: 20px 0 0 0; }
 #about ul li { float: left; margin-left: 12px;}
