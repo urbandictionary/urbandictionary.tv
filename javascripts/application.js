@@ -1,9 +1,11 @@
 // Work
 var megaplaya = false;
 var keyboard_disabled = false;
+var is_mobile = /iphone|ipad|ipod|android|mobile/i.exec(navigator.userAgent) != undefined;
 
 function document_ready() {
   load_player();
+
   if (!jQuery.browser.mozilla)
     $(document.body).addClass("crop");
 
@@ -20,13 +22,12 @@ function document_ready() {
   });
 
   $('#voting .vote').click(function(){
-    var defid = megaplaya.api_getCurrentVideo().defid,
+    var defid = megaplaya_call("getCurrentVideo").defid,
                 direction = $(this).attr('rel');
     send_vote(defid, direction);
 
     // skip to next definition on thumbs down
     if(this.id == 'vote_down') {
-      $(".vote_img").removeClass("on"); // FIXME; the onvideoload() handler not resetting the down buton correctly
       next_definition();
     }
   });
@@ -99,22 +100,30 @@ function debug(string)
 // VHX Megaplaya scaffolding
 function load_player()
 {
-  $('#player').flash({
-    'swf': 'http://vhx.tv/embed/megaplaya',
-    'width': '100%;',
-    'height': '100%',
-    'wmode': 'transparent',
-    'allowFullScreen': true,
-    'allowScriptAccess': 'always'
-  });
+  if (!is_mobile) {
+    $('#player').flash({
+      'swf': 'http://vhx.tv/embed/megaplaya',
+      'width': '100%;',
+      'height': '100%',
+      'wmode': 'transparent',
+      'allowFullScreen': true,
+      'allowScriptAccess': 'always'
+    });
+  }
+  else {
+    megaplaya_loaded();
+  }
 }
 
 function megaplaya_loaded()
 {
-  debug(">> megaplaya_loaded()");
-  megaplaya = $('#player').children()[0];
-  megaplaya.api_setColor('e86222');
-  megaplaya_addListeners();
+  if (!is_mobile) {
+    debug(">> megaplaya_loaded()");
+    megaplaya = $('#player').children()[0];
+    megaplaya_call("setColor", "e86222");
+    megaplaya_addListeners();
+  }
+
   load_videos(Permalink.get());
 }
 
@@ -129,6 +138,44 @@ function megaplaya_addListeners() {
     //   (megaplaya["api_" + method])();
     // }
   });
+}
+
+var current_video_index = 0;
+
+function megaplaya_call(method, arg1, arg2) {
+  if (is_mobile) {
+    switch (method) {
+      case "playQueue":
+        current_video_index = 0;
+        megaplaya_onvideoload();
+        break;
+
+      case "getCurrentVideo":
+        return video_urls[current_video_index];
+        break;
+
+      case "nextVideo":
+        $('#player').html("");
+        current_video_index++;
+        megaplaya_onvideoload();
+        break;
+    }
+  }
+
+  // If megaplaya is loaded
+  if (megaplaya) {
+    if (arg1 != undefined) {
+      return (megaplaya["api_" + method])(arg1);
+    }
+    else if (arg2 != undefined) {
+      return (megaplaya["api_" + method])(arg1, arg2);
+    }
+    else {
+      return (megaplaya["api_" + method])();
+    }
+  }
+
+  return false;
 }
 
 function megaplaya_callback(event_name, args) {
@@ -150,7 +197,7 @@ function megaplaya_onvideoload(args)
 {
   $(".vote_img").removeClass("on");
 
-  var video = megaplaya.api_getCurrentVideo(),
+  var video = megaplaya_call("getCurrentVideo"),
       word = video.word,
       escaped_word = Permalink.encode(word);
 
@@ -185,18 +232,15 @@ function megaplaya_onvideoload(args)
   }, hide_delay);
 
   // Load metadata for this video & definition
-  // debug("raw video object =>", video);
   fetch_video_info(video.url);
   fetch_vote_counts(video.defid);
+  // inject_socialmedia(video);
 
-  inject_socialmedia(video);
-
-  // debug("Current entry =>", video);
   track_pageview("/" + escaped_word);
 }
 
 function load_next_word(video_urls) {
-  var video = megaplaya.api_getCurrentVideo(),
+  var video = megaplaya_call("getCurrentVideo"),
       next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
   if (next_word) {
     debug("Showing #next_definition: " + next_word);
@@ -204,16 +248,12 @@ function load_next_word(video_urls) {
     $('#next_definition').fadeIn(250);
   }
   else {
-    debug("No #next_definition available, can't show");
+    // debug("No #next_definition available, can't show");
     $('#next_definition').hide();
   }
 }
 
 function inject_socialmedia(video) {
-  // debug("video", video);
-
-  // TODO parse "template" / inject args
-  // do we need to be re-injecting the tweet/g+ button each time?
   var html = '',
       server = window.location.protocol + '//' + window.location.host,
       url = server + '/' + Permalink.encode(video.word),
@@ -229,7 +269,7 @@ function inject_socialmedia(video) {
   //   <div class="g-plusone" data-size="medium" data-annotation="none"></div>
   // </div>
 
-  $('#socialmedia').html(html);
+  $('#socialmedia_entry').html(html);
 }
 
 function fetch_video_info(video_url) {
@@ -239,8 +279,9 @@ function fetch_video_info(video_url) {
     dataType: 'jsonp',
     success: function(data){
       var vid = data.video;
-      // debug("Video metadata => ", vid);
-      megaplaya.api_growl("<p>You're watching <span class='title'>" + vid.title + "</span></p>");
+      // debug("fetch_video_info() => ", vid);
+      megaplaya_call("growl", "<p>You're watching <span class='title'>" + vid.title + "</span></p>");
+
       var pp = '<p class="title">' + vid.title + '</p>';
       pp += '<a href="' + vid.url + '" target="_blank">' + vid.url + '</a></p>';
       pp += '<p class="desc">' + vid.description + '</p>';
@@ -274,8 +315,7 @@ function fetch_vote_counts(defid) {
 
 function next_definition()
 {
-  megaplaya.api_nextVideo();
- // $('.vote_count').html('');
+  megaplaya_call("nextVideo");
 
   // TODO if we're running low on videos, load more
 }
@@ -308,6 +348,11 @@ function show_definition(word, def)
 
 function hide_definition()
 {
+  // show video once the definition is hidden (mobile-only)
+  if (is_mobile) {
+    $('#player').html('<object width="100%" height="100%"><param name="movie" value="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id +  '?version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id +  '?version=3" type="application/x-shockwave-flash" width="100%" height="100%" allowscriptaccess="always" allowfullscreen="true"></embed></object>')
+  }
+
   // TODO: Add getDuration hook to megaplaya
   //if (megaplaya.api_getDuration() < 8000)
   //  megaplaya.api_seek(0);
@@ -322,14 +367,14 @@ function hide_definition()
 
 function show_suggest_overlay()
 {
-  megaplaya.api_pause();
+  megaplaya_call("pause");
   document.body.scrollTop = 0;
   $('#suggest_overlay').fadeIn(200);
 
   $('#suggest_overlay .wrap')[0].style.display = '';
   $('#suggest_overlay .wrap')[1].style.display = 'none';
   // set data in overlay
-  var vid = megaplaya.api_getCurrentVideo();
+  var vid = megaplaya_call("getCurrentVideo");
   $('#suggest_def').text(vid.word);
   $('#add_video_frame')[0].src = "http://www.urbandictionary.com/video.php?layout=tv&defid=" + vid.defid + "&word=" + encodeURIComponent(vid.word);
 
@@ -338,7 +383,7 @@ function show_suggest_overlay()
 
 function hide_suggest_overlay()
 {
-  megaplaya.api_play();
+  megaplaya_call("play");
   $('#suggest_overlay').fadeOut(200);
 
   setTimeout(redraw, 250);
@@ -346,18 +391,21 @@ function hide_suggest_overlay()
 
 function send_vote(defid, direction) {
   var url = "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction;
-  debug("send_vote", url);
+  // debug(">> send_vote", url);
   $.ajax({
     type: "GET",
     url: url,
     dataType: 'jsonp',
     success: function(data){
-      debug("Vote response =>", data);
+      // debug("Vote response =>", data);
       if (data.status == 'saved') {
         var field = '#vote_' + direction + ' .vote_count',
             number_text = $(field).text();
 
-        $("#vote_" + direction + " .vote_img").addClass("on");
+        // Only light up the icon for upvotes; downvotes skip the video
+        if(direction == 'up') {
+          $("#vote_" + direction + " .vote_img").addClass("on");
+        }
 
         if (number_text == undefined || number_text == '') {
           $(field).html(1);
@@ -368,10 +416,10 @@ function send_vote(defid, direction) {
       }
       else {
         if (data.status == "duplicate") {
-          debug("Duplicate vote");
+          debug("send_vote() error: duplicate vote");
         }
         else {
-          debug("Unhandled vote error: " + data.status);
+          debug("send_vote() error: unhandled status => " + data.status);
         }
 
         // if dupe, still turn the like btn on anyway.
@@ -380,7 +428,7 @@ function send_vote(defid, direction) {
       }
     },
     error: function(){
-      debug("Error fetching data");
+      debug("send_vote: error fetching vote data");
       track_event("send_vote_error");
     }
   });
@@ -442,7 +490,7 @@ function load_videos_callback(resp) {
       inject_script(videos_api_url + '?callback=append_videos_callback&random=1');
     }
 
-    return megaplaya.api_playQueue(video_urls);
+    return megaplaya_call("playQueue", video_urls);
   }
 }
 
@@ -452,9 +500,8 @@ function append_videos_callback(resp) {
   debug("append_videos_callback(): " + new_urls.length + ' new urls');
 
   video_urls = video_urls.concat(new_urls);
-  megaplaya.api_loadQueue(video_urls);
-  megaplaya.api_setQueueAt(0);
-
+  megaplaya_call("loadQueue", video_urls);
+  megaplaya_call("setQueueAt", 0);
 
   if(!$('#next_definition').is(':visible')) {
     load_next_word(video_urls);

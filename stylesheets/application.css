@@ -91,6 +91,7 @@ html, body { margin: 0; padding: 0; }
   border-top: 1px solid #f3f3f3;
   margin-top: 10px;
   padding: 3px;
+  margin-right: 200px;
   cursor: pointer;
   text-align: center;
   -webkit-border-radius: 3px; -moz-border-radius: 3px;  border-radius: 3px;
@@ -174,15 +175,31 @@ html, body { margin: 0; padding: 0; }
 }
 .btn:hover { background: #fafafa; color: #000; }
 
-#socialmedia {
-  width: 220px;
+.socialmedia {
   height: 28px;
   overflow: hidden;
   clear: right;
   float: right;
   margin-top: 10px;
 }
-#socialmedia div { float: right; }
-#socialmedia .google { }
-#socialmedia .twitter { width: 58px; }
-#socialmedia .facebook { width: 86px; }
+.socialmedia div { float: left; }
+.socialmedia .google { }
+.socialmedia .twitter { width: 86px; }
+.socialmedia .facebook { width: 86px; }
+
+#socialmedai_entry { width: 220px; }
+#socialmedia_entry div { float: right; }
+
+#socialmedia_global { position: absolute; top: 39px; left: 380px; width: 360px; }
+#socialmedia_global div { margin-right: 10px; }
+#socialmedia_global .google { margin-left: 8px; }
+
+#about { float: right; clear: right; font-size: 12px; margin: 20px 0 0 0; }
+#about ul li { float: left; margin-left: 12px;}
+#about ul li a { color: #666; font-weight: bold; }
+#about ul li a:hover { color: #000; }
+#about .powered_by { float: right;  }
+#about .powered_by a { display: block; margin: 0; padding: 0; }
+#about .powered_by a img { opacity: 0.9; }
+#about .powered_by a:hover img { opacity: 1; }
+
