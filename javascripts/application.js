@@ -131,7 +131,7 @@ function megaplaya_addListeners() {
   var events = ['onVideoFinish', 'onVideoLoad', 'onError', 'onPause', 'onPlay', 'onFullscreen', 'onPlaybarShow', 'onPlaybarHide', 'onKeyboardDown'];
 
   $.each(events, function(index, value) {
-    megaplaya.api_addListener(value, "function() { megaplaya_callback('" + value + "', arguments); }")
+    megaplaya.api_addListener(value, "function() { megaplaya_callback('" + value + "', arguments); }");
 
     // "pause" => megaplaya.api_pause();
     // function megaplaya_call(method) {
@@ -434,14 +434,6 @@ function send_vote(defid, direction) {
   });
 }
 
-// Urban Dictionary data loaders
-function inject_script(url) {
-  var script = document.createElement('script');
-  script.setAttribute('type', 'text/javascript');
-  script.setAttribute('src', url);
-  document.documentElement.firstChild.appendChild(script);
-}
-
 function parse_videos_from_response(resp, offset) {
   urls = $.map(resp.videos, function (entry, i) {
     entry.index = i + (offset > 0 ? offset : 0);
@@ -460,11 +452,23 @@ function load_videos(word) {
   if (word) {
     urban_current_word = word.split("-");
     debug("Loading videos for word: " + urban_current_word);
-    inject_script(videos_api_url + '?callback=load_videos_callback&word=' + encodeURIComponent(urban_current_word[0])); //+ "&id=" + urban_current_word[1]);
+    
+    $.ajax({
+      type: "GET",
+      url: videos_api_url + '?word=' + encodeURIComponent(urban_current_word[0]),
+      dataType: 'jsonp',
+      success: load_videos_callback
+    });
   }
   else {
     urban_current_word = false;
-    inject_script(videos_api_url + '?callback=load_videos_callback&random=1');
+    
+    $.ajax({
+      type: "GET",
+      url: videos_api_url + '?random=1',
+      dataType: 'jsonp',
+      success: load_videos_callback
+    });
   }
 }
 
@@ -487,7 +491,12 @@ function load_videos_callback(resp) {
   else {
     // If we're loading videos for a specific word, append other words
     if (urban_current_word) {
-      inject_script(videos_api_url + '?callback=append_videos_callback&random=1');
+      $.ajax({
+        type: "GET",
+        url: videos_api_url + '?random=1',
+        dataType: 'jsonp',
+        success: append_videos_callback
+      });
     }
 
     return megaplaya_call("playQueue", video_urls);
