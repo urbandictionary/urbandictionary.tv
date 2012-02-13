@@ -78,8 +78,10 @@ describe("Application", function () {
       window.is_mobile = true;
       megaplaya_loaded();
 
-      expect($.ajax).toHaveBeenCalled();
-      $.ajax.mostRecentCall.args[0].success({videos:[]});
+      Ajax.callSuccess(
+        'http://www.urbandictionary.com/iphone/search/videos?random=1',
+        {videos:[]}
+      );
 
       expect(window.alert).toHaveBeenCalledWith("Error, no videos found!");
     });
