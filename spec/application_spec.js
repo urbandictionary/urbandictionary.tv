@@ -2,6 +2,8 @@ describe("Application", function () {
   beforeEach(function () {
     spyOn($, 'ajax');
     spyOn(window, 'alert');
+    spyOn(Permalink, 'set');
+    spyOn(Permalink, 'get');
 
     window.urls = [];
     window.track_pageview = function () {
