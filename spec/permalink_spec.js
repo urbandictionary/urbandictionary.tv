@@ -22,9 +22,10 @@ describe("Permalink", function () {
     expect($.ajax).not.toHaveBeenCalled();
   });
 
-  it("cleans and escapes the location hash", function () {
-    expect(Permalink.set("some string")).toEqual("some string");
-    expect(mockLocation.hash).toEqual("some+string");
+  it("escapes spaces, ampersands and plus signs in the location hash (bug?)", function () {
+    Permalink.set("space & +");
+    expect(Permalink.get()).toEqual("space &  ");
+    expect(mockLocation.hash).toEqual("space+%26++");
   });
 
   it("strips the leading pound sign", function () {
