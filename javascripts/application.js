@@ -523,12 +523,16 @@ var Permalink = {
   set: function(url){
     debug("Permalink.set()", url);
     permalink_skip_hashchange = true;
-    window.location.hash = this.encode(url);
+    this._windowLocation().hash = this.encode(url);
     return this.get();
   },
 
+  _windowLocation: function() {
+    return window.location;
+  },
+
   get: function(){
-    var hash = window.location.hash.replace(/^\#/, '')
+    var hash = this._windowLocation().hash.replace(/^\#/, '')
     hash = decodeURIComponent(hash).replace(/\+/g, ' ');
     return hash;
   },
