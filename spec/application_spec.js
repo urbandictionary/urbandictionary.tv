@@ -3,6 +3,7 @@ describe("Application", function () {
     it("double encodes the word in Permalink.set on line 224");
     it("doesn't pass the video URL to the VHX API, so the growl doesn't show");
     it("doesn't HTML escape the video title in the growl");
+    it("splits the current word by spaces on line 446");
   });
 
   beforeEach(function () {
@@ -76,10 +77,12 @@ describe("Application", function () {
   });
 
   describe("megaplaya_loaded", function () {
-    it("shows an error if the API returns zero videos", function () {
+    beforeEach(function () {
       window.is_mobile = true;
       megaplaya_loaded();
+    });
 
+    it("shows an error if the API returns zero videos", function () {
       Ajax.callSuccess(
         'http://www.urbandictionary.com/iphone/search/videos?random=1',
         {videos: []}
@@ -89,9 +92,6 @@ describe("Application", function () {
     });
 
     it("adds videos to the queue when they are returned by the API", function () {
-      window.is_mobile = true;
-      megaplaya_loaded();
-
       var videos = [
         {
           "defid": 1,
