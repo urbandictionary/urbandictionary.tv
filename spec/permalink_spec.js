@@ -7,7 +7,7 @@ describe("Permalink", function () {
     mockLocation = {};
     spyOn(Permalink, "_windowLocation").andReturn(mockLocation);
 
-    window.permalink_skip_hashchange = false;
+    Permalink.ignoreHashchange = false;
   });
 
   it("sets the location hash", function () {

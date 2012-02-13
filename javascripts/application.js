@@ -518,14 +518,15 @@ function append_videos_callback(resp) {
 }
 
 // permalink/url/history router
-permalink_skip_hashchange = false;
 var Permalink = {
   set: function(url){
     debug("Permalink.set()", url);
-    permalink_skip_hashchange = true;
+    this.ignoreHashchange = true;
     this._windowLocation().hash = this.encode(url);
     return this.get();
   },
+
+  ignoreHashchange: false,
 
   _windowLocation: function() {
     return window.location;
@@ -542,13 +543,11 @@ var Permalink = {
     return encodeURIComponent(word).replace(/\%20/g,'+').replace(/\%2B/g, '+');
   },
 
-  hashchange: function(){
-    debug("Permalink.hashchange(), skip="+permalink_skip_hashchange+" permalink="+Permalink.get());
-    if(permalink_skip_hashchange) {
-    }
-    else {
+  hashchange: function() {
+    debug("Permalink.hashchange(), skip=" + this.ignoreHashchange + " permalink=" + Permalink.get());
+    if (!this.ignoreHashchange) {
       load_videos(Permalink.get());
     }
-    if(permalink_skip_hashchange) permalink_skip_hashchange = false;
+    this.ignoreHashchange = false;
   }
 };
