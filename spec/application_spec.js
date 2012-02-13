@@ -13,7 +13,10 @@ describe("Application", function () {
     spyOn(Permalink, 'get');
 
     window.urls = [];
+
     window.track_pageview = jasmine.createSpy();
+    window.track_event = jasmine.createSpy();
+
     window.megaplaya = {
       api_getCurrentVideo: jasmine.createSpy(),
       api_addListener: jasmine.createSpy(),
@@ -109,6 +112,22 @@ describe("Application", function () {
       );
 
       expect(megaplaya.api_playQueue).toHaveBeenCalledWith(videos);
+    });
+  });
+
+  describe("voting", function () {
+    it("sends an up-vote", function () {
+      document_ready();
+      $("#voting .vote[rel='up']").click();
+
+      Ajax.callSuccess(
+        'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
+        {}
+      );
+    });
+
+    it("sends a down-vote and skips to the next video", function () {
+
     });
   });
 });
