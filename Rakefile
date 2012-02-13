@@ -6,5 +6,9 @@ task :deploy do
 end
 
 task :server do
-  system "python -mSimpleHTTPServer"
+  sh 'python -mSimpleHTTPServer'
+end
+
+task :spec do
+  sh 'open -a /Applications/Safari.app specs.html'
 end
