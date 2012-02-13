@@ -1,4 +1,10 @@
 describe("Application", function () {
+  describe("bugs found while writing tests", function () {
+    it("double encodes the word in Permalink.set on line 224");
+    it("doesn't pass the video URL to the VHX API, so the growl doesn't show");
+    it("doesn't HTML escape the video title in the growl");
+  });
+
   beforeEach(function () {
     spyOn($, 'ajax');
     spyOn(window, 'alert');
@@ -19,7 +25,10 @@ describe("Application", function () {
       megaplaya.api_getCurrentVideo.andReturn({
         definition:"the bird [is the word]",
         word:"the word",
-        example:"everybody knows the [bird] is the word"
+        example:"everybody knows the [bird] is the word",
+        defid:1,
+        id:1,
+        youtube_id:"5154daf9e73"
       });
 
       megaplaya_callback('onVideoLoad');
@@ -46,7 +55,15 @@ describe("Application", function () {
       expect(Permalink.set).toHaveBeenCalledWith("the+word");
     });
 
-    it("double encodes the word in Permalink.set on line 224");
+    it("fetches video info from VHX and fetches thumbs from UD", function () {
+      var urlForArgs = function (args) { return args[0].url };
+      var urls = $.map($.ajax.argsForCall, urlForArgs);
+
+      expect(urls).toEqual([
+        'http://api.vhx.tv/info.json?url=undefined',
+        'http://www.urbandictionary.com/uncacheable.php?ids=1'
+      ]);
+    })
   });
 
   describe("megaplaya_loaded", function () {
