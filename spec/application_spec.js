@@ -6,20 +6,22 @@ describe("Application", function () {
     spyOn(Permalink, 'get');
 
     window.urls = [];
-    window.track_pageview = function () {
-    };
+    window.track_pageview = jasmine.createSpy();
     window.megaplaya = {
-      api_getCurrentVideo:function () {
-        return {definition:"the bird [is the word]", word:"the word", example:"everybody knows the [bird] is the word"};
-      },
-      api_addListener:function () {
-      },
+      api_getCurrentVideo:jasmine.createSpy(),
+      api_addListener:jasmine.createSpy(),
       api_playQueue:jasmine.createSpy()
     };
   });
 
   describe("megaplaya_onvideoload", function () {
     beforeEach(function () {
+      megaplaya.api_getCurrentVideo.andReturn({
+        definition:"the bird [is the word]",
+        word:"the word",
+        example:"everybody knows the [bird] is the word"
+      });
+
       megaplaya_callback('onVideoLoad');
     });
 
@@ -39,6 +41,12 @@ describe("Application", function () {
       expect($("#example_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=bird");
       expect($("#example_txt a")).toHaveAttr("target", "_blank");
     });
+
+    it("sets the permalink", function () {
+      expect(Permalink.set).toHaveBeenCalledWith("the+word");
+    });
+
+    it("double encodes the word in Permalink.set on line 224");
   });
 
   describe("megaplaya_loaded", function () {
