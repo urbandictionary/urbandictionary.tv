@@ -6,8 +6,9 @@ var Ajax = {
   },
 
   callSuccess:function (url, data) {
-    var ajaxOptions;
+    expect($.ajax).toHaveBeenCalled();
 
+    var ajaxOptions;
     $.each($.ajax.argsForCall, function (index, args) {
       if (args[0].url == url) {
         ajaxOptions = args[0];

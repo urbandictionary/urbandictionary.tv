@@ -101,8 +101,10 @@ describe("Application", function () {
         }
       ];
 
-      expect($.ajax).toHaveBeenCalled();
-      $.ajax.mostRecentCall.args[0].success({ "videos":videos });
+      Ajax.callSuccess(
+        'http://www.urbandictionary.com/iphone/search/videos?random=1',
+        {videos:videos}
+      );
 
       expect(megaplaya.api_playQueue).toHaveBeenCalledWith(videos);
     });
