@@ -1,13 +1,13 @@
 function printBrackets(string, element) {
-	function onInsideBracket(string) {
-		var href = "http://www.urbandictionary.com/define.php?term=" + encodeURIComponent(string);
-		var anchor = $("<a>").attr("href", href).attr('target', '_blank').text(string);
-		element.append(anchor);
-	}
+  function onInsideBracket(string) {
+    var href = "http://www.urbandictionary.com/define.php?term=" + encodeURIComponent(string);
+    var anchor = $("<a>").attr("href", href).attr('target', '_blank').text(string);
+    element.append(anchor);
+  }
 
-	function onOutsideBracket(string) {
-		element.append($("<span>").text(string).html().replace(/\n/g, "<br/>"));
-	}
+  function onOutsideBracket(string) {
+    element.append($("<span>").text(string).html().replace(/\n/g, "<br/>"));
+  }
 
   if (string) {
     string = string.replace(/\[word\]/g, "[");

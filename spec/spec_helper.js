@@ -1,11 +1,11 @@
 var Ajax = {
-  allUrls:function () {
+  allUrls: function () {
     return $.map($.ajax.argsForCall, function (args) {
       return args[0].url;
     });
   },
 
-  callSuccess:function (url, data) {
+  callSuccess: function (url, data) {
     expect($.ajax).toHaveBeenCalled();
 
     var ajaxOptions;

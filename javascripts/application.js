@@ -9,7 +9,7 @@ function document_ready() {
   if (!jQuery.browser.mozilla)
     $(document.body).addClass("crop");
 
-  $('#more_info_btn').click(function(){
+  $('#more_info_btn').click(function () {
     $('#video_info_text').toggle();
     if ($('#video_info_text').is(":visible")) {
       this.innerHTML = "Hide info";
@@ -21,31 +21,31 @@ function document_ready() {
     }
   });
 
-  $('#voting .vote').click(function(){
+  $('#voting .vote').click(function () {
     var defid = megaplaya_call("getCurrentVideo").defid,
-                direction = $(this).attr('rel');
+      direction = $(this).attr('rel');
     send_vote(defid, direction);
 
     // skip to next definition on thumbs down
-    if(this.id == 'vote_down') {
+    if (this.id == 'vote_down') {
       next_definition();
     }
   });
 
-  $('#suggest_video').click(function(){
+  $('#suggest_video').click(function () {
     show_suggest_overlay();
     track_event('show_suggest_video');
   });
 
-  $('#suggest_overlay').click(function(){
+  $('#suggest_overlay').click(function () {
     hide_suggest_overlay();
   });
 
-  $('#word_overlay').click(function(){
+  $('#word_overlay').click(function () {
     hide_definition();
   });
 
-  $('#make_video').click(function(e){
+  $('#make_video').click(function (e) {
     e.stopPropagation();
     $("#suggest_overlay .wrap").toggle();
     track_event('show_make_video');
@@ -57,8 +57,7 @@ function document_ready() {
 
 $(window).resize(redraw);
 
-function redraw()
-{
+function redraw() {
   var min_height = 500;
   $('#player').height(min_height);
 
@@ -83,23 +82,21 @@ function redraw()
 }
 
 // Helpers
-function debug(string)
-{
+function debug(string) {
   try {
-    if(arguments.length > 1) {
+    if (arguments.length > 1) {
       console.log(arguments);
     }
     else {
       console.log(string);
     }
-  } catch(e) {
+  } catch (e) {
 
   }
 }
 
 // VHX Megaplaya scaffolding
-function load_player()
-{
+function load_player() {
   if (!is_mobile) {
     $('#player').flash({
       'swf': 'http://vhx.tv/embed/megaplaya',
@@ -115,8 +112,7 @@ function load_player()
   }
 }
 
-function megaplaya_loaded()
-{
+function megaplaya_loaded() {
   if (!is_mobile) {
     debug(">> megaplaya_loaded()");
     megaplaya = $('#player').children()[0];
@@ -130,7 +126,7 @@ function megaplaya_loaded()
 function megaplaya_addListeners() {
   var events = ['onVideoFinish', 'onVideoLoad', 'onError', 'onPause', 'onPlay', 'onFullscreen', 'onPlaybarShow', 'onPlaybarHide', 'onKeyboardDown'];
 
-  $.each(events, function(index, value) {
+  $.each(events, function (index, value) {
     megaplaya.api_addListener(value, "function() { megaplaya_callback('" + value + "', arguments); }");
 
     // "pause" => megaplaya.api_pause();
@@ -193,13 +189,12 @@ function megaplaya_callback(event_name, args) {
 
 // Called on every video load
 var hide_timeout = false;
-function megaplaya_onvideoload(args)
-{
+function megaplaya_onvideoload(args) {
   $(".vote_img").removeClass("on");
 
   var video = megaplaya_call("getCurrentVideo"),
-      word = video.word,
-      escaped_word = Permalink.encode(word);
+    word = video.word,
+    escaped_word = Permalink.encode(word);
 
   $('#word_txt').html('<a href="http://www.urbandictionary.com/define.php?term=' + escaped_word + '" target="_blank">' + video.word + '</a>');
   printBrackets(video.definition, $('#definition_txt').empty());
@@ -226,7 +221,7 @@ function megaplaya_onvideoload(args)
   load_next_word(video_urls);
 
   // Hide definition overlay
-  hide_timeout = setTimeout(function() {
+  hide_timeout = setTimeout(function () {
     redraw();
     hide_definition();
   }, hide_delay);
@@ -241,7 +236,7 @@ function megaplaya_onvideoload(args)
 
 function load_next_word(video_urls) {
   var video = megaplaya_call("getCurrentVideo"),
-      next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
+    next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
   if (next_word) {
     debug("Showing #next_definition: " + next_word);
     $('#next_word').html('<a href="/#' + Permalink.encode(next_word) + '">' + next_word + '</a>');
@@ -255,9 +250,9 @@ function load_next_word(video_urls) {
 
 function inject_socialmedia(video) {
   var html = '',
-      server = window.location.protocol + '//' + window.location.host,
-      url = server + '/' + Permalink.encode(video.word),
-      word = video.word;
+    server = window.location.protocol + '//' + window.location.host,
+    url = server + '/' + Permalink.encode(video.word),
+    word = video.word;
 
   // html += '<div class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-text="I\'m learning about "' + word.replace(/'/g, '\'') + '" on urbandictionary.tv: ' + url + '" data-count="none">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div>';
 
@@ -277,7 +272,7 @@ function fetch_video_info(video_url) {
     type: "GET",
     url: "http://api.vhx.tv/info.json?url=" + encodeURIComponent(video_url),
     dataType: 'jsonp',
-    success: function(data){
+    success: function (data) {
       var vid = data.video;
       // debug("fetch_video_info() => ", vid);
       megaplaya_call("growl", "<p>You're watching <span class='title'>" + vid.title + "</span></p>");
@@ -287,7 +282,9 @@ function fetch_video_info(video_url) {
       pp += '<p class="desc">' + vid.description + '</p>';
       $('#video_info_text').html(pp);
     },
-    error: function(){ alert("Error fetching data") }
+    error: function () {
+      alert("Error fetching data")
+    }
   });
 }
 
@@ -298,10 +295,10 @@ function fetch_vote_counts(defid) {
     type: 'GET',
     url: url,
     dataType: 'jsonp',
-    success: function(data){
+    success: function (data) {
       // debug("fetch_vote_counts() success data=>", data);
       var thumbs = data.thumbs[0];
-      if(thumbs) {
+      if (thumbs) {
         $('#vote_up .vote_count').html(thumbs.thumbs_up);
         $('#vote_down .vote_count').html(thumbs.thumbs_down);
       }
@@ -309,19 +306,19 @@ function fetch_vote_counts(defid) {
         debug("fetch_vote_counts: no thumbs data! aborting", data)
       }
     },
-    error: function(){ alert("Error fetching vote counts") }
+    error: function () {
+      alert("Error fetching vote counts")
+    }
   });
 }
 
-function next_definition()
-{
+function next_definition() {
   megaplaya_call("nextVideo");
 
   // TODO if we're running low on videos, load more
 }
 
-function show_definition(word, def)
-{
+function show_definition(word, def) {
   if (!jQuery.browser.mozilla)
     $(document.body).addClass("crop");
 
@@ -333,7 +330,7 @@ function show_definition(word, def)
 
   $('#word_overlay .wrap')[0].style.marginTop = '0';
   var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
-  $('#word_overlay .wrap')[0].style.marginTop =  ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos)  + 'px';
+  $('#word_overlay .wrap')[0].style.marginTop = ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos) + 'px';
 
   $('#word_overlay .word, #word_overlay .definition').hide();
   $('#word_overlay')[0].style.top = "75px";
@@ -346,11 +343,10 @@ function show_definition(word, def)
   redraw();
 }
 
-function hide_definition()
-{
+function hide_definition() {
   // show video once the definition is hidden (mobile-only)
   if (is_mobile) {
-    $('#player').html('<object width="100%" height="100%"><param name="movie" value="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id +  '?version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id +  '?version=3" type="application/x-shockwave-flash" width="100%" height="100%" allowscriptaccess="always" allowfullscreen="true"></embed></object>')
+    $('#player').html('<object width="100%" height="100%"><param name="movie" value="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3" type="application/x-shockwave-flash" width="100%" height="100%" allowscriptaccess="always" allowfullscreen="true"></embed></object>')
   }
 
   // TODO: Add getDuration hook to megaplaya
@@ -360,13 +356,12 @@ function hide_definition()
   $('#word_overlay').fadeOut(400);
   $(document.body).delay(410).removeClass("crop");
 
-  setTimeout(function() {
+  setTimeout(function () {
     $('#word_overlay')[0].style.top = $(window).height() + "px";
   }, 500)
 }
 
-function show_suggest_overlay()
-{
+function show_suggest_overlay() {
   megaplaya_call("pause");
   document.body.scrollTop = 0;
   $('#suggest_overlay').fadeIn(200);
@@ -381,8 +376,7 @@ function show_suggest_overlay()
   redraw();
 }
 
-function hide_suggest_overlay()
-{
+function hide_suggest_overlay() {
   megaplaya_call("play");
   $('#suggest_overlay').fadeOut(200);
 
@@ -396,14 +390,14 @@ function send_vote(defid, direction) {
     type: "GET",
     url: url,
     dataType: 'jsonp',
-    success: function(data){
+    success: function (data) {
       // debug("Vote response =>", data);
       if (data.status == 'saved') {
         var field = '#vote_' + direction + ' .vote_count',
-            number_text = $(field).text();
+          number_text = $(field).text();
 
         // Only light up the icon for upvotes; downvotes skip the video
-        if(direction == 'up') {
+        if (direction == 'up') {
           $("#vote_" + direction + " .vote_img").addClass("on");
         }
 
@@ -427,7 +421,7 @@ function send_vote(defid, direction) {
         track_event("send_vote_" + direction);
       }
     },
-    error: function(){
+    error: function () {
       debug("send_vote: error fetching vote data");
       track_event("send_vote_error");
     }
@@ -451,7 +445,7 @@ function load_videos(word) {
   if (word) {
     urban_current_word = word.split("-");
     debug("Loading videos for word: " + urban_current_word);
-    
+
     $.ajax({
       type: "GET",
       url: videos_api_url + '?word=' + encodeURIComponent(urban_current_word[0]),
@@ -461,7 +455,7 @@ function load_videos(word) {
   }
   else {
     urban_current_word = false;
-    
+
     $.ajax({
       type: "GET",
       url: videos_api_url + '?random=1',
@@ -511,14 +505,14 @@ function append_videos_callback(resp) {
   megaplaya_call("loadQueue", video_urls);
   megaplaya_call("setQueueAt", 0);
 
-  if(!$('#next_definition').is(':visible')) {
+  if (!$('#next_definition').is(':visible')) {
     load_next_word(video_urls);
   }
 }
 
 // permalink/url/history router
 var Permalink = {
-  set: function(url){
+  set: function (url) {
     debug("Permalink.set()", url);
     this.ignoreHashchange = true;
     this._windowLocation().hash = this.encode(url);
@@ -527,22 +521,22 @@ var Permalink = {
 
   ignoreHashchange: false,
 
-  _windowLocation: function() {
+  _windowLocation: function () {
     return window.location;
   },
 
-  get: function(){
+  get: function () {
     var hash = this._windowLocation().hash.replace(/^\#/, '')
     hash = decodeURIComponent(hash).replace(/\+/g, ' ');
     return hash;
   },
 
-  encode: function(word){
+  encode: function (word) {
     word = word.toLowerCase();
-    return encodeURIComponent(word).replace(/\%20/g,'+').replace(/\%2B/g, '+');
+    return encodeURIComponent(word).replace(/\%20/g, '+').replace(/\%2B/g, '+');
   },
 
-  hashchange: function() {
+  hashchange: function () {
     debug("Permalink.hashchange(), skip=" + this.ignoreHashchange + " permalink=" + Permalink.get());
     if (!this.ignoreHashchange) {
       load_videos(Permalink.get());

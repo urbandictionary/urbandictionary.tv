@@ -14,21 +14,21 @@ describe("Application", function () {
     window.urls = [];
     window.track_pageview = jasmine.createSpy();
     window.megaplaya = {
-      api_getCurrentVideo:jasmine.createSpy(),
-      api_addListener:jasmine.createSpy(),
-      api_playQueue:jasmine.createSpy()
+      api_getCurrentVideo: jasmine.createSpy(),
+      api_addListener: jasmine.createSpy(),
+      api_playQueue: jasmine.createSpy()
     };
   });
 
   describe("megaplaya_onvideoload", function () {
     beforeEach(function () {
       megaplaya.api_getCurrentVideo.andReturn({
-        definition:"the bird [is the word]",
-        word:"the word",
-        example:"everybody knows the [bird] is the word",
-        defid:1,
-        id:1,
-        youtube_id:"5154daf9e73"
+        definition: "the bird [is the word]",
+        word: "the word",
+        example: "everybody knows the [bird] is the word",
+        defid: 1,
+        id: 1,
+        youtube_id: "5154daf9e73"
       });
 
       megaplaya_callback('onVideoLoad');
@@ -65,7 +65,9 @@ describe("Application", function () {
     it("shows the vote counts", function () {
       Ajax.callSuccess(
         'http://www.urbandictionary.com/uncacheable.php?ids=1',
-        {thumbs:[ {thumbs_up:5, thumbs_down:8} ]}
+        {thumbs: [
+          {thumbs_up: 5, thumbs_down: 8}
+        ]}
       );
 
       expect($('#vote_up .vote_count')).toHaveText(5);
@@ -80,7 +82,7 @@ describe("Application", function () {
 
       Ajax.callSuccess(
         'http://www.urbandictionary.com/iphone/search/videos?random=1',
-        {videos:[]}
+        {videos: []}
       );
 
       expect(window.alert).toHaveBeenCalledWith("Error, no videos found!");
@@ -92,18 +94,18 @@ describe("Application", function () {
 
       var videos = [
         {
-          "defid":1,
-          "definition":"Minus distinctio aperiam facere. In veniam quia sed error.",
-          "example":"Word Omnis error placeat nulla. Omnis natus sed beatae.",
-          "id":1,
-          "word":"yeah yeah",
-          "youtube_id":"5154daf9e73"
+          "defid": 1,
+          "definition": "Minus distinctio aperiam facere. In veniam quia sed error.",
+          "example": "Word Omnis error placeat nulla. Omnis natus sed beatae.",
+          "id": 1,
+          "word": "yeah yeah",
+          "youtube_id": "5154daf9e73"
         }
       ];
 
       Ajax.callSuccess(
         'http://www.urbandictionary.com/iphone/search/videos?random=1',
-        {videos:videos}
+        {videos: videos}
       );
 
       expect(megaplaya.api_playQueue).toHaveBeenCalledWith(videos);

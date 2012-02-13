@@ -4,7 +4,7 @@
  * track_pageview('/jamiew')
  * track_event(['Videos', 'Play', 'Optional 3rd field, e.g. video title'])
  * track_goal('Purchase', 100)
-*/
+ */
 
 function genetify_enabled() {
   return (typeof(genetify) != "undefined" && genetify.pageview_xid);
@@ -38,12 +38,12 @@ function track_event(args) {
   }
 
   if (mixpanel_enabled()) {
-    mpq.push(["track", args[1]+": "+args[2], {'title': args[3]}]);
+    mpq.push(["track", args[1] + ": " + args[2], {'title': args[3]}]);
   }
 }
 
 function track_goal(name, score) {
-  debug("### track_goal, name="+name+" score="+score);
+  debug("### track_goal, name=" + name + " score=" + score);
 
   // GA logs goals using the urls
 
