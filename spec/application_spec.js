@@ -56,26 +56,17 @@ describe("Application", function () {
     });
 
     it("fetches video info from VHX and fetches thumbs from UD", function () {
-      var urlForArgs = function (args) { return args[0].url };
-      var urls = $.map($.ajax.argsForCall, urlForArgs);
-
-      expect(urls).toEqual([
+      expect(Ajax.allUrls()).toEqual([
         'http://api.vhx.tv/info.json?url=undefined',
         'http://www.urbandictionary.com/uncacheable.php?ids=1'
       ]);
     });
 
     it("shows the vote counts", function () {
-      var ajaxOptions;
-
-      $.each($.ajax.argsForCall, function (index, args) {
-        if (args[0].url == 'http://www.urbandictionary.com/uncacheable.php?ids=1') {
-          ajaxOptions = args[0];
-        }
-      });
-
-      expect(ajaxOptions).toBeDefined();
-      ajaxOptions.success({thumbs: [{thumbs_up: 5, thumbs_down: 8}]});
+      Ajax.callSuccess(
+        'http://www.urbandictionary.com/uncacheable.php?ids=1',
+        {thumbs:[ {thumbs_up:5, thumbs_down:8} ]}
+      );
 
       expect($('#vote_up .vote_count')).toHaveText(5);
       expect($('#vote_down .vote_count')).toHaveText(8);
