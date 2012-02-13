@@ -1,6 +1,7 @@
 describe("Application", function() {
   beforeEach(function() {
-    jasmine.Ajax.useMock();
+    spyOn($, 'ajax');
+    spyOn(window, 'alert');
 
     window.urls = [];
     window.track_pageview = function() {};
@@ -22,13 +23,13 @@ describe("Application", function() {
       expect($("#word_txt a")).toHaveText("the word");
       expect($("#word_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=the+word");
     });
-  
+
     it("prints the definition and example, and links brackets to urbandic in a new window", function() {
       expect($("#definition_txt")).toHaveText("the bird is the word");
       expect($("#definition_txt a")).toHaveText("is the word");
       expect($("#definition_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=is%20the%20word");
       expect($("#definition_txt a")).toHaveAttr("target", "_blank");
-    
+
       expect($("#example_txt")).toHaveText("everybody knows the bird is the word");
       expect($("#example_txt a")).toHaveText("bird");
       expect($("#example_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=bird");
@@ -37,11 +38,13 @@ describe("Application", function() {
   });
 
   describe("megaplaya_loaded", function() {
-    xit("loads words from urbandictionary.com", function() {
+    it("shows an error if the API returns zero videos", function() {
       window.is_mobile = true;
       megaplaya_loaded();
-      
-      spyOn(window, "alert");
+
+      expect($.ajax).toHaveBeenCalled();
+      $.ajax.mostRecentCall.args[0].success({videos: []});
+
       expect(window.alert).toHaveBeenCalledWith("Error, no videos found!");
     });
   });
