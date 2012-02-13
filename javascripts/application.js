@@ -443,10 +443,9 @@ function parse_videos_from_response(resp, offset) {
   return urls;
 }
 
-var api_host = document.location.hostname == "staging.urbandictionary.tv" ? "staging.urbandictionary.com" : "www.urbandictionary.com";
-
-var videos_api_url = 'http://' + api_host + '/iphone/search/videos',
-    urban_current_word = false; // ghetto shimmy, FIXME
+var api_host = "www.urbandictionary.com";
+var videos_api_url = 'http://' + api_host + '/iphone/search/videos';
+var urban_current_word = false; // ghetto shimmy, FIXME
 
 function load_videos(word) {
   if (word) {
