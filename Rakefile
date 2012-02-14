@@ -1,8 +1,7 @@
 task :default => :deploy
 
-desc 'Deploy'
 task :deploy do
-  sh 'git push gh-pages master'
+  sh 'git push'
 end
 
 task :server do
