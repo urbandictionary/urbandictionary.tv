@@ -60,9 +60,12 @@ describe("Application", function () {
   });
 
   describe("megaplaya_loaded", function () {
+    beforeEach(function() {
+      window.is_mobile = true;
+    });
+
     describe("with a word in the permalink", function () {
       it("appends to the playlist", function () {
-        window.is_mobile = true;
         permalink.get.andReturn("a word");
         megaplaya_loaded();
 
@@ -99,7 +102,6 @@ describe("Application", function () {
 
     describe("with no word in the permalink", function () {
       beforeEach(function () {
-        window.is_mobile = true;
         megaplaya_loaded();
       });
 
