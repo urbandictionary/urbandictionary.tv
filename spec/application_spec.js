@@ -29,8 +29,9 @@ describe("Application", function () {
       expect($("#example_txt a")).toHaveAttr("target", "_blank");
     });
 
-    xit("shows a link to the next word", function() {
-      expect($('#next_word')).toHaveText("asdfhj");
+    it("shows a link to the next word", function() {
+      expect($('#next_word')).toHaveText(DOUCHEBAG.word);
+      expect($('#next_word a')).toHaveAttr("href", "/#douchebag");
     });
 
     it("sets the permalink", function () {
