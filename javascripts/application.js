@@ -18,12 +18,7 @@ $.ajaxSetup({
   dataType: 'jsonp'
 });
 
-function document_ready() {
-  load_player();
-
-  if (!jQuery.browser.mozilla)
-    $(document.body).addClass("crop");
-
+function addClickListeners() {
   $('#more_info_btn').click(function () {
     $('#video_info_text').toggle();
     if ($('#video_info_text').is(":visible")) {
@@ -65,6 +60,15 @@ function document_ready() {
     $("#suggest_overlay .wrap").toggle();
     track_event('show_make_video');
   });
+}
+
+function document_ready() {
+  load_player();
+
+  if (!jQuery.browser.mozilla)
+    $(document.body).addClass("crop");
+
+  addClickListeners();
   redraw();
 
   $(window).bind('hashchange', permalink.hashchange);
@@ -106,7 +110,6 @@ function debug(string) {
       console.log(string);
     }
   } catch (e) {
-
   }
 }
 
@@ -183,17 +186,14 @@ function megaplaya_call(method, arg1, arg2) {
 }
 
 function megaplaya_callback(event_name, args) {
-
   switch (event_name) {
     case 'onVideoLoad':
       megaplaya_onvideoload(args);
       break;
     default:
-      // debug("Unhandled megaplaya event: ", event_name, args);
       break;
   }
 }
-
 
 // Called on every video load
 function megaplaya_onvideoload(args) {
