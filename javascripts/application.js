@@ -13,6 +13,11 @@ function reset_globals() {
 
 reset_globals();
 
+$.ajaxSetup({
+  type: 'GET',
+  dataType: 'jsonp'
+});
+
 function document_ready() {
   load_player();
 
@@ -251,12 +256,9 @@ function load_next_word(video_urls) {
 
 function fetch_video_info(video_url) {
   $.ajax({
-    type: "GET",
     url: "http://api.vhx.tv/info.json?url=" + encodeURIComponent(video_url),
-    dataType: 'jsonp',
     success: function (data) {
       var vid = data.video;
-      // debug("fetch_video_info() => ", vid);
       megaplaya_call("growl", "<p>You're watching <span class='title'>" + vid.title + "</span></p>");
 
       var pp = '<p class="title">' + vid.title + '</p>';
@@ -271,21 +273,20 @@ function fetch_video_info(video_url) {
 }
 
 function fetch_vote_counts(defid) {
-  var url = 'http://' + api_host + '/uncacheable.php?ids=' + defid;
+  var fetch_vote_counts_callback = function (data) {
+    var thumbs = data.thumbs[0];
+    if (thumbs) {
+      $('#vote_up .vote_count').html(thumbs.thumbs_up);
+      $('#vote_down .vote_count').html(thumbs.thumbs_down);
+    }
+    else {
+      debug("fetch_vote_counts: no thumbs data! aborting", data)
+    }
+  };
+
   $.ajax({
-    type: 'GET',
-    url: url,
-    dataType: 'jsonp',
-    success: function (data) {
-      var thumbs = data.thumbs[0];
-      if (thumbs) {
-        $('#vote_up .vote_count').html(thumbs.thumbs_up);
-        $('#vote_down .vote_count').html(thumbs.thumbs_down);
-      }
-      else {
-        debug("fetch_vote_counts: no thumbs data! aborting", data)
-      }
-    },
+    url: 'http://' + api_host + '/uncacheable.php?ids=' + defid,
+    success: fetch_vote_counts_callback,
     error: function () {
       alert("Error fetching vote counts")
     }
@@ -360,9 +361,7 @@ function hide_suggest_overlay() {
 function send_vote(defid, direction) {
   var url = "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction;
   $.ajax({
-    type: "GET",
     url: url,
-    dataType: 'jsonp',
     success: function (data) {
       if (data.status == 'saved') {
         var field = '#vote_' + direction + ' .vote_count',
@@ -412,14 +411,37 @@ function parse_videos_from_response(resp, offset) {
 }
 
 function load_videos(word) {
+  var load_videos_callback = function(resp) {
+    video_urls = parse_videos_from_response(resp);
+
+    // only one video plz
+    if (urban_current_word && video_urls.length > 0) {
+      video_urls = [video_urls[0]];
+    }
+
+    if (video_urls.length == 0) {
+      alert("Error, no videos found!");
+      return false;
+    }
+    else {
+      // If we're loading videos for a specific word, append other words
+      if (urban_current_word) {
+        $.ajax({
+          url: videos_api_url + '?random=1',
+          success: append_videos_callback
+        });
+      }
+
+      return megaplaya_call("playQueue", video_urls);
+    }
+  };
+
   if (word) {
     urban_current_word = word.split("-");
     debug("Loading videos for word: " + urban_current_word);
 
     $.ajax({
-      type: "GET",
       url: videos_api_url + '?word=' + encodeURIComponent(urban_current_word[0]),
-      dataType: 'jsonp',
       success: load_videos_callback
     });
   }
@@ -427,41 +449,9 @@ function load_videos(word) {
     urban_current_word = false;
 
     $.ajax({
-      type: "GET",
       url: videos_api_url + '?random=1',
-      dataType: 'jsonp',
       success: load_videos_callback
     });
-  }
-}
-
-// Replaces the current playlist
-function load_videos_callback(resp) {
-
-  debug("load_videos_callback()", resp);
-  video_urls = parse_videos_from_response(resp);
-
-  // only one video plz
-  if (urban_current_word && video_urls.length > 0) {
-    video_urls = [video_urls[0]];
-  }
-
-  if (video_urls.length == 0) {
-    alert("Error, no videos found!");
-    return false;
-  }
-  else {
-    // If we're loading videos for a specific word, append other words
-    if (urban_current_word) {
-      $.ajax({
-        type: "GET",
-        url: videos_api_url + '?random=1',
-        dataType: 'jsonp',
-        success: append_videos_callback
-      });
-    }
-
-    return megaplaya_call("playQueue", video_urls);
   }
 }
 
