@@ -32,11 +32,10 @@ function addClickListeners() {
   });
 
   $('#voting .vote').click(function () {
-    var defid = megaplaya_call("getCurrentVideo").defid,
-      direction = $(this).attr('rel');
+    var defid = megaplaya_call("getCurrentVideo").defid;
+    var direction = $(this).attr('rel');
     send_vote(defid, direction);
 
-    // skip to next definition on thumbs down
     if (this.id == 'vote_down') {
       next_definition();
     }
@@ -71,10 +70,9 @@ function document_ready() {
   addClickListeners();
   redraw();
 
-  $(window).bind('hashchange', permalink.hashchange);
+  $(window).on('hashchange', $.proxy(permalink.hashchange, permalink));
+  $(window).resize(redraw);
 }
-
-$(window).resize(redraw);
 
 function redraw() {
   var min_height = 500;
