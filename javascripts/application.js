@@ -68,10 +68,10 @@ function document_ready() {
     $(document.body).addClass("crop");
 
   addClickListeners();
-  viewRedraw();
+  view.redraw();
 
   $(window).on('hashchange', $.proxy(permalink.hashchange, permalink));
-  $(window).resize(viewRedraw);
+  $(window).resize(view.redraw);
 }
 
 // View related
@@ -121,7 +121,7 @@ function viewShowDefinition(word, def) {
   $('#word_overlay .word').delay(500).fadeIn(400);
   $('#word_overlay .definition').delay(2000).fadeIn(400);
 
-  viewRedraw();
+  view.redraw();
 }
 
 function viewHideDefinition() {
@@ -150,15 +150,23 @@ function viewShowSuggestOverlay() {
   $('#suggest_def').text(vid.word);
   $('#add_video_frame')[0].src = "http://www.urbandictionary.com/video.php?layout=tv&defid=" + vid.defid + "&word=" + encodeURIComponent(vid.word);
 
-  viewRedraw();
+  view.redraw();
 }
 
 function viewHideSuggestOverlay() {
   megaplaya_call("play");
   $('#suggest_overlay').fadeOut(200);
 
-  setTimeout(viewRedraw, 250);
+  setTimeout(view.redraw, 250);
 }
+
+var view = {
+  redraw: viewRedraw,
+  showDefinition: viewShowDefinition,
+  hideDefinition: viewHideDefinition,
+  showSuggestOverlay: viewShowSuggestOverlay,
+  hideSuggestOverlay: viewHideSuggestOverlay,
+};
 
 // Helpers
 function debug(string) {
@@ -289,7 +297,7 @@ function megaplaya_onvideoload(args) {
 
   // Hide definition overlay
   hide_timeout = setTimeout(function () {
-    viewRedraw();
+    view.redraw();
     viewHideDefinition();
   }, hide_delay);
 
