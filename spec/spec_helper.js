@@ -23,10 +23,6 @@ var AjaxSpy = {
     expect(list.length).toEqual(1);
     var matchedArgs = list[0];
     return matchedArgs[0];
-  },
-
-  callSuccess: function (url, data) {
-    this.find(url).success(data);
   }
 };
 

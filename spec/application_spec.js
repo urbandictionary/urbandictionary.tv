@@ -39,7 +39,7 @@ describe("Application", function () {
     });
 
     it("shows the vote counts", function () {
-      AjaxSpy.callSuccess(WWW + '/uncacheable.php?ids=964771', {thumbs: [ {thumbs_up: 5, thumbs_down: 8} ]});
+      AjaxSpy.find(WWW + '/uncacheable.php?ids=964771').success({thumbs: [ {thumbs_up: 5, thumbs_down: 8} ]});
 
       expect($('#vote_up .vote_count')).toHaveText(5);
       expect($('#vote_down .vote_count')).toHaveText(8);
@@ -56,7 +56,7 @@ describe("Application", function () {
         permalink.get.andReturn("douche bag");
         megaplaya_loaded();
 
-        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?word=douche%20bag', {videos: [DOUCHEBAG]});
+        AjaxSpy.find(WWW + '/iphone/search/videos?word=douche%20bag').success({videos: [DOUCHEBAG]});
 
         expect(video_urls).toEqual([
           {
@@ -71,7 +71,7 @@ describe("Application", function () {
           }
         ]);
 
-        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: [CYBERHOBO]});
+        AjaxSpy.find(WWW + '/iphone/search/videos?random=1').success({videos: [CYBERHOBO]});
 
         expect($.pluck(video_urls, 'id')).toEqual([DOUCHEBAG.id, CYBERHOBO.id]);
 
@@ -86,12 +86,12 @@ describe("Application", function () {
       });
 
       it("shows an error if the API returns zero videos", function () {
-        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: []});
+        AjaxSpy.find(WWW + '/iphone/search/videos?random=1').success({videos: []});
         expect(window.alert).toHaveBeenCalledWith("Error, no videos found!");
       });
 
       it("adds videos to the queue when they are returned by the API", function () {
-        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: [JOCKEYBRAWL, CYBERHOBO]});
+        AjaxSpy.find(WWW + '/iphone/search/videos?random=1').success({videos: [JOCKEYBRAWL, CYBERHOBO]});
         expect(megaplaya.api_playQueue).toHaveBeenCalledWith([JOCKEYBRAWL, CYBERHOBO]);
       });
     });
