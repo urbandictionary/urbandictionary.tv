@@ -273,13 +273,7 @@ function sendVote(defid, direction) {
     }
   };
 
-  $.ajax({
-    url: API_ROOT + "vote?defid=" + defid + "&direction=" + direction,
-    success: successCallback,
-    error: function () {
-      track_event("send_vote_error");
-    }
-  });
+  $.get(API_ROOT + "vote", {defid: defid, direction: direction}, successCallback);
 }
 
 function videosFromResponse(response) {
