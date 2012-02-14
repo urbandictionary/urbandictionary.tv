@@ -51,7 +51,7 @@ function addClickListeners() {
   });
 
   $('#word_overlay').click(function () {
-    hide_definition();
+    viewHideDefinition();
   });
 
   $('#make_video').click(function (e) {
@@ -68,13 +68,14 @@ function document_ready() {
     $(document.body).addClass("crop");
 
   addClickListeners();
-  redraw();
+  viewRedraw();
 
   $(window).on('hashchange', $.proxy(permalink.hashchange, permalink));
-  $(window).resize(redraw);
+  $(window).resize(viewRedraw);
 }
 
-function redraw() {
+// View related
+function viewRedraw() {
   var min_height = 500;
   $('#player').height(min_height);
 
@@ -96,6 +97,45 @@ function redraw() {
   $('.overlay').css("top", "75px");
   $('.overlay').height($(window).height() - 75);
   $('.overlay').width($(window).width());
+}
+
+function viewShowDefinition(word, def) {
+  if (!jQuery.browser.mozilla)
+    $(document.body).addClass("crop");
+
+  document.body.scrollTop = 0;
+
+  $('#word_overlay, #word_overlay .word, #word_overlay .definition').show();
+  $('#word_overlay .word').text(word);
+  printBrackets(def, $('#word_overlay .definition').empty());
+
+  $('#word_overlay .wrap')[0].style.marginTop = '0';
+  var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
+  $('#word_overlay .wrap')[0].style.marginTop = ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos) + 'px';
+
+  $('#word_overlay .word, #word_overlay .definition').hide();
+  $('#word_overlay')[0].style.top = "75px";
+
+  $('#word_overlay').fadeIn(400);
+
+  $('#word_overlay .word').delay(500).fadeIn(400);
+  $('#word_overlay .definition').delay(2000).fadeIn(400);
+
+  viewRedraw();
+}
+
+function viewHideDefinition() {
+  // show video once the definition is hidden (mobile-only)
+  if (is_mobile) {
+    $('#player').html('<object width="100%" height="100%"><param name="movie" value="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3" type="application/x-shockwave-flash" width="100%" height="100%" allowscriptaccess="always" allowfullscreen="true"></embed></object>')
+  }
+
+  $('#word_overlay').fadeOut(400);
+  $(document.body).delay(410).removeClass("crop");
+
+  setTimeout(function () {
+    $('#word_overlay')[0].style.top = $(window).height() + "px";
+  }, 500)
 }
 
 // Helpers
@@ -222,13 +262,13 @@ function megaplaya_onvideoload(args) {
 
   // Load things
   permalink.set(escaped_word); //  + "-" + video.id
-  show_definition(video.word, video.definition);
+  viewShowDefinition(video.word, video.definition);
   load_next_word(video_urls);
 
   // Hide definition overlay
   hide_timeout = setTimeout(function () {
-    redraw();
-    hide_definition();
+    viewRedraw();
+    viewHideDefinition();
   }, hide_delay);
 
   // Load metadata for this video & definition
@@ -295,45 +335,6 @@ function next_definition() {
   megaplaya_call("nextVideo");
 }
 
-function show_definition(word, def) {
-  if (!jQuery.browser.mozilla)
-    $(document.body).addClass("crop");
-
-  document.body.scrollTop = 0;
-
-  $('#word_overlay, #word_overlay .word, #word_overlay .definition').show();
-  $('#word_overlay .word').text(word);
-  printBrackets(def, $('#word_overlay .definition').empty());
-
-  $('#word_overlay .wrap')[0].style.marginTop = '0';
-  var pos = (($(window).height() - 75) / 2 - $('#word_overlay .wrap').height() / 2);
-  $('#word_overlay .wrap')[0].style.marginTop = ($('#word_overlay .wrap').height() > $(window).height() - 75 ? '50' : pos) + 'px';
-
-  $('#word_overlay .word, #word_overlay .definition').hide();
-  $('#word_overlay')[0].style.top = "75px";
-
-  $('#word_overlay').fadeIn(400);
-
-  $('#word_overlay .word').delay(500).fadeIn(400);
-  $('#word_overlay .definition').delay(2000).fadeIn(400);
-
-  redraw();
-}
-
-function hide_definition() {
-  // show video once the definition is hidden (mobile-only)
-  if (is_mobile) {
-    $('#player').html('<object width="100%" height="100%"><param name="movie" value="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3" type="application/x-shockwave-flash" width="100%" height="100%" allowscriptaccess="always" allowfullscreen="true"></embed></object>')
-  }
-
-  $('#word_overlay').fadeOut(400);
-  $(document.body).delay(410).removeClass("crop");
-
-  setTimeout(function () {
-    $('#word_overlay')[0].style.top = $(window).height() + "px";
-  }, 500)
-}
-
 function show_suggest_overlay() {
   megaplaya_call("pause");
   document.body.scrollTop = 0;
@@ -346,14 +347,14 @@ function show_suggest_overlay() {
   $('#suggest_def').text(vid.word);
   $('#add_video_frame')[0].src = "http://www.urbandictionary.com/video.php?layout=tv&defid=" + vid.defid + "&word=" + encodeURIComponent(vid.word);
 
-  redraw();
+  viewRedraw();
 }
 
 function hide_suggest_overlay() {
   megaplaya_call("play");
   $('#suggest_overlay').fadeOut(200);
 
-  setTimeout(redraw, 250);
+  setTimeout(viewRedraw, 250);
 }
 
 function send_vote(defid, direction) {
