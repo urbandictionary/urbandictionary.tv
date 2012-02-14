@@ -84,5 +84,7 @@ describe("voting", function () {
 
     expect($("#vote_up .vote_img")).not.toHaveClass("on");
     expect($("#vote_down .vote_img")).not.toHaveClass("on");
+
+    expect(current_video_index).toEqual(1);
   });
 });

@@ -34,20 +34,20 @@ function addClickListeners() {
   $('#voting .vote').click(function () {
     var defid = megaplaya_call("getCurrentVideo").defid;
     var direction = $(this).attr('rel');
-    send_vote(defid, direction);
+    sendVote(defid, direction);
 
     if (this.id == 'vote_down') {
-      next_definition();
+      nextDefinition();
     }
   });
 
   $('#suggest_video').click(function () {
-    show_suggest_overlay();
+    viewShowSuggestOverlay();
     track_event('show_suggest_video');
   });
 
   $('#suggest_overlay').click(function () {
-    hide_suggest_overlay();
+    viewHideSuggestOverlay();
   });
 
   $('#word_overlay').click(function () {
@@ -136,6 +136,28 @@ function viewHideDefinition() {
   setTimeout(function () {
     $('#word_overlay')[0].style.top = $(window).height() + "px";
   }, 500)
+}
+
+function viewShowSuggestOverlay() {
+  megaplaya_call("pause");
+  document.body.scrollTop = 0;
+  $('#suggest_overlay').fadeIn(200);
+
+  $('#suggest_overlay .wrap')[0].style.display = '';
+  $('#suggest_overlay .wrap')[1].style.display = 'none';
+  // set data in overlay
+  var vid = megaplaya_call("getCurrentVideo");
+  $('#suggest_def').text(vid.word);
+  $('#add_video_frame')[0].src = "http://www.urbandictionary.com/video.php?layout=tv&defid=" + vid.defid + "&word=" + encodeURIComponent(vid.word);
+
+  viewRedraw();
+}
+
+function viewHideSuggestOverlay() {
+  megaplaya_call("play");
+  $('#suggest_overlay').fadeOut(200);
+
+  setTimeout(viewRedraw, 250);
 }
 
 // Helpers
@@ -263,7 +285,7 @@ function megaplaya_onvideoload(args) {
   // Load things
   permalink.set(escaped_word); //  + "-" + video.id
   viewShowDefinition(video.word, video.definition);
-  load_next_word(video_urls);
+  loadNextWord(video_urls);
 
   // Hide definition overlay
   hide_timeout = setTimeout(function () {
@@ -272,27 +294,27 @@ function megaplaya_onvideoload(args) {
   }, hide_delay);
 
   // Load metadata for this video & definition
-  fetch_video_info(video.url);
-  fetch_vote_counts(video.defid);
+  fetchVideoInfo(video.url);
+  fetchVoteCounts(video.defid);
 
   track_pageview("/" + escaped_word);
 }
 
-function load_next_word(video_urls) {
+function loadNextWord(video_urls) {
   var video = megaplaya_call("getCurrentVideo"),
     next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
   if (next_word) {
     debug("Showing #next_definition: " + next_word);
     $('#next_word').html('<a href="/#' + permalink.encode(next_word) + '">' + next_word + '</a>');
-    $('#next_definition').fadeIn(250);
+    $('#nextDefinition').fadeIn(250);
   }
   else {
     // debug("No #next_definition available, can't show");
-    $('#next_definition').hide();
+    $('#nextDefinition').hide();
   }
 }
 
-function fetch_video_info(video_url) {
+function fetchVideoInfo(video_url) {
   $.ajax({
     url: "http://api.vhx.tv/info.json?url=" + encodeURIComponent(video_url),
     success: function (data) {
@@ -310,55 +332,33 @@ function fetch_video_info(video_url) {
   });
 }
 
-function fetch_vote_counts(defid) {
-  var fetch_vote_counts_callback = function (data) {
+function fetchVoteCounts(defid) {
+  var successCallback = function (data) {
     var thumbs = data.thumbs[0];
     if (thumbs) {
       $('#vote_up .vote_count').html(thumbs.thumbs_up);
       $('#vote_down .vote_count').html(thumbs.thumbs_down);
     }
     else {
-      debug("fetch_vote_counts: no thumbs data! aborting", data)
+      debug("fetchVoteCounts: no thumbs data! aborting", data)
     }
   };
 
   $.ajax({
     url: 'http://' + api_host + '/uncacheable.php?ids=' + defid,
-    success: fetch_vote_counts_callback,
+    success: successCallback,
     error: function () {
       alert("Error fetching vote counts")
     }
   });
 }
 
-function next_definition() {
+function nextDefinition() {
   megaplaya_call("nextVideo");
 }
 
-function show_suggest_overlay() {
-  megaplaya_call("pause");
-  document.body.scrollTop = 0;
-  $('#suggest_overlay').fadeIn(200);
-
-  $('#suggest_overlay .wrap')[0].style.display = '';
-  $('#suggest_overlay .wrap')[1].style.display = 'none';
-  // set data in overlay
-  var vid = megaplaya_call("getCurrentVideo");
-  $('#suggest_def').text(vid.word);
-  $('#add_video_frame')[0].src = "http://www.urbandictionary.com/video.php?layout=tv&defid=" + vid.defid + "&word=" + encodeURIComponent(vid.word);
-
-  viewRedraw();
-}
-
-function hide_suggest_overlay() {
-  megaplaya_call("play");
-  $('#suggest_overlay').fadeOut(200);
-
-  setTimeout(viewRedraw, 250);
-}
-
-function send_vote(defid, direction) {
-  var send_vote_callback = function (data) {
+function sendVote(defid, direction) {
+  var successCallback = function (data) {
     if (data.status == 'saved') {
       var field = '#vote_' + direction + ' .vote_count',
         number_text = $(field).text();
@@ -394,15 +394,15 @@ function send_vote(defid, direction) {
 
   $.ajax({
     url: "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction,
-    success: send_vote_callback,
+    success: successCallback,
     error: function () {
-      debug("send_vote: error fetching vote data");
+      debug("sendVote: error fetching vote data");
       track_event("send_vote_error");
     }
   });
 }
 
-function parse_videos_from_response(response) {
+function videosFromResponse(response) {
   return $.map(response.videos, function (entry, index) {
     entry.index = index;
     entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
@@ -411,8 +411,8 @@ function parse_videos_from_response(response) {
 }
 
 function load_videos(word) {
-  var load_videos_callback = function(response) {
-    video_urls = parse_videos_from_response(response);
+  var successCallback = function(response) {
+    video_urls = videosFromResponse(response);
 
     // only one video plz
     if (urban_current_word && video_urls.length > 0) {
@@ -428,7 +428,7 @@ function load_videos(word) {
       if (urban_current_word) {
         $.ajax({
           url: videos_api_url + '?random=1',
-          success: append_videos_callback
+          success: appendVideosCallback
         });
       }
 
@@ -442,7 +442,7 @@ function load_videos(word) {
 
     $.ajax({
       url: videos_api_url + '?word=' + encodeURIComponent(urban_current_word[0]),
-      success: load_videos_callback
+      success: successCallback
     });
   }
   else {
@@ -450,21 +450,20 @@ function load_videos(word) {
 
     $.ajax({
       url: videos_api_url + '?random=1',
-      success: load_videos_callback
+      success: successCallback
     });
   }
 }
 
 // Add to the current playlist rather than replacing
-function append_videos_callback(response) {
-  new_urls = parse_videos_from_response(response);
-  debug("append_videos_callback(): " + new_urls.length + ' new urls');
+function appendVideosCallback(response) {
+  new_urls = videosFromResponse(response);
 
   video_urls = video_urls.concat(new_urls);
   megaplaya_call("loadQueue", video_urls);
   megaplaya_call("setQueueAt", 0);
 
-  if (!$('#next_definition').is(':visible')) {
-    load_next_word(video_urls);
+  if (!$('#nextDefinition').is(':visible')) {
+    loadNextWord(video_urls);
   }
 }
