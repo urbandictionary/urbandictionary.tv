@@ -54,7 +54,7 @@ describe("Application", function () {
     describe("with a word in the permalink", function () {
       it("adds one video for that word to the playlist, plus other random videos", function () {
         permalink.get.andReturn("douche bag");
-        megaplaya_loaded();
+        documentReady();
 
         AjaxSpy.find(WWW + '/iphone/search/videos?word=douche%20bag').success({videos: [DOUCHEBAG]});
 
@@ -82,7 +82,7 @@ describe("Application", function () {
 
     describe("with no word in the permalink", function () {
       beforeEach(function () {
-        megaplaya_loaded();
+        documentReady();
       });
 
       it("shows an error if the API returns zero videos", function () {
