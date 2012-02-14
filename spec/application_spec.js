@@ -148,8 +148,10 @@ describe("Application", function () {
 
       AjaxSpy.callSuccess(
         'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
-        {}
+        {'status': 'saved'}
       );
+
+      expect($("#vote_up .vote_count")).toHaveText(6);
     });
 
     xit("sends a down-vote and skips to the next video", function () {
