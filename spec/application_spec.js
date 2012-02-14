@@ -154,6 +154,7 @@ describe("Application", function () {
       );
 
       expect($("#vote_up .vote_count")).toHaveText(1);
+      expect($("#vote_up .vote_img")).toHaveClass("on");
     });
 
     xit("sends a down-vote and skips to the next video", function () {
