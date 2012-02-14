@@ -1,39 +1,3 @@
-var TEST_VIDEOS = [
-  {
-    defid: 1,
-    definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
-    example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
-    id: 1,
-    word: "yeah yeah",
-    youtube_id: "5154daf9e73"
-
-  },
-  {
-    defid: 2,
-    definition: "Ignored",
-    example: "Ignored",
-    id: 2,
-    word: "no no",
-    youtube_id: "fdslajfdl"
-  },
-  {
-    defid: 3,
-    definition: "Random",
-    example: "Random",
-    id: 3,
-    word: "r r",
-    youtube_id: "jklvvxzljkc"
-  },
-  {
-    definition: "the bird [is the word]",
-    word: "the word",
-    example: "everybody knows the [bird] is the word",
-    defid: 1,
-    id: 1,
-    youtube_id: "5154daf9e73"
-  }
-];
-
 describe("Application", function () {
   beforeEach(resetAppGlobals);
   beforeEach(copyFixtures);
@@ -42,40 +6,42 @@ describe("Application", function () {
 
   describe("megaplaya_onvideoload", function () {
     beforeEach(function () {
-      megaplaya.api_getCurrentVideo.andReturn(TEST_VIDEOS[3]);
+      megaplaya.api_getCurrentVideo.andReturn(CYBERHOBO);
       megaplaya_callback('onVideoLoad');
     });
 
     it("prints the word and links to urbandic", function () {
-      expect($("#word_txt a")).toHaveText("the word");
-      expect($("#word_txt a")).toHaveAttr("href", WWW + "/define.php?term=the+word");
+      expect($("#word_txt a")).toHaveText("cyberhobo");
+      expect($("#word_txt a")).toHaveAttr("href", WWW + "/define.php?term=cyberhobo");
     });
 
     it("prints the definition and example, and links brackets to urbandic in a new window", function () {
-      expect($("#definition_txt")).toHaveText("the bird is the word");
-      expect($("#definition_txt a")).toHaveText("is the word");
-      expect($("#definition_txt a")).toHaveAttr("href", WWW + "/define.php?term=is%20the%20word");
+      expect($("#definition_txt")).toHaveText(/A cyberhobo works/);
+      expect($("#definition_txt a")).toHaveText("regular hobo");
+      expect($("#definition_txt a")).toHaveAttr("href", WWW + "/define.php?term=regular%20hobo");
       expect($("#definition_txt a")).toHaveAttr("target", "_blank");
 
-      expect($("#example_txt")).toHaveText("everybody knows the bird is the word");
-      expect($("#example_txt a")).toHaveText("bird");
-      expect($("#example_txt a")).toHaveAttr("href", WWW + "/define.php?term=bird");
+      expect($("#example_txt")).toHaveText(/The dot commer turned cyberhobo/);
+      expect($("#example_txt a")).toHaveText("dot commer");
+      expect($("#example_txt a")).toHaveAttr("href", WWW + "/define.php?term=dot%20commer");
       expect($("#example_txt a")).toHaveAttr("target", "_blank");
     });
 
     it("sets the permalink", function () {
-      expect(permalink.set).toHaveBeenCalledWith("the+word");
+      expect(permalink.set).toHaveBeenCalledWith("cyberhobo");
     });
 
     it("fetches video info from VHX and fetches thumbs from UD", function () {
       expect(AjaxSpy.allUrls()).toEqual([
         'http://api.vhx.tv/info.json?url=undefined',
-        WWW + '/uncacheable.php?ids=1'
+        WWW + '/uncacheable.php?ids=964771'
       ]);
     });
 
     it("shows the vote counts", function () {
-      AjaxSpy.callSuccess(WWW + '/uncacheable.php?ids=1', {thumbs: [ {thumbs_up: 5, thumbs_down: 8} ]});
+      AjaxSpy.callSuccess(WWW + '/uncacheable.php?ids=964771', {thumbs: [
+        {thumbs_up: 5, thumbs_down: 8}
+      ]});
 
       expect($('#vote_up .vote_count')).toHaveText(5);
       expect($('#vote_down .vote_count')).toHaveText(8);
@@ -89,27 +55,27 @@ describe("Application", function () {
 
     describe("with a word in the permalink", function () {
       it("adds one video for that word to the playlist, plus other random videos", function () {
-        permalink.get.andReturn("a word");
+        permalink.get.andReturn("douche bag");
         megaplaya_loaded();
 
-        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?word=a%20word', {videos: TEST_VIDEOS.slice(0, 1)});
+        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?word=douche%20bag', {videos: [DOUCHEBAG]});
 
         expect(video_urls).toEqual([
           {
-            defid: 1,
-            definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
-            example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
-            id: 1,
-            word: "yeah yeah",
-            youtube_id: "5154daf9e73",
+            defid: DOUCHEBAG.defid,
+            definition: DOUCHEBAG.definition,
+            example: DOUCHEBAG.example,
+            id: DOUCHEBAG.id,
+            word: DOUCHEBAG.word,
+            youtube_id: DOUCHEBAG.youtube_id,
             index: 0,
-            url: "http://youtube.com/watch?v=5154daf9e73"
+            url: "http://youtube.com/watch?v=qqXi8WmQ_WM"
           }
         ]);
 
-        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: TEST_VIDEOS.slice(2, 3)});
+        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: [CYBERHOBO]});
 
-        expect($.pluck(video_urls, 'id')).toEqual([1, 3]);
+        expect($.pluck(video_urls, 'id')).toEqual([DOUCHEBAG.id, CYBERHOBO.id]);
       });
     });
 
@@ -124,8 +90,8 @@ describe("Application", function () {
       });
 
       it("adds videos to the queue when they are returned by the API", function () {
-        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: TEST_VIDEOS});
-        expect(megaplaya.api_playQueue).toHaveBeenCalledWith(TEST_VIDEOS);
+        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: [JOCKEYBRAWL, CYBERHOBO]});
+        expect(megaplaya.api_playQueue).toHaveBeenCalledWith([JOCKEYBRAWL, CYBERHOBO]);
       });
     });
   });
