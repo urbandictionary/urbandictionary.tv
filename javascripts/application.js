@@ -51,7 +51,7 @@ function addClickListeners() {
   });
 
   $('#word_overlay').click(function () {
-    view.hideDefinition();
+    view.hideDefinitionOverlay();
   });
 
   $('#make_video').click(function (e) {
@@ -104,8 +104,7 @@ function loadPlayer() {
       'allowFullScreen': true,
       'allowScriptAccess': 'always'
     });
-  }
-  else {
+  } else {
     megaplaya_loaded();
   }
 }
@@ -179,14 +178,12 @@ function megaplaya_callback(event_name, args) {
 function megaplaya_onvideoload(args) {
   $(".vote_img").removeClass("on");
 
-  var video = megaplaya_call("getCurrentVideo"),
-    word = video.word,
-    escaped_word = permalink.encode(word);
+  var video = megaplaya_call("getCurrentVideo");
+  var word = video.word;
+  var escaped_word = permalink.encode(word);
 
   $('#word_txt').html('<a href="http://www.urbandictionary.com/define.php?term=' + escaped_word + '" target="_blank">' + video.word + '</a>');
   printBrackets(video.definition, $('#definition_txt').empty());
-
-  $('#example_txt').html(video.example);
   printBrackets(video.example, $('#example_txt').empty());
 
   if (hide_timeout) {
@@ -197,20 +194,19 @@ function megaplaya_onvideoload(args) {
   var hide_delay = video.definition.length * 40;
   if (hide_delay < 4000) {
     hide_delay = 4000;
-  }
-  else if (hide_delay > 8000) {
+  } else if (hide_delay > 8000) {
     hide_delay = 8000;
   }
 
   // Load things
-  permalink.set(escaped_word); //  + "-" + video.id
-  view.showDefinition(video.word, video.definition);
+  permalink.set(escaped_word);
+  view.showDefinitionOverlay(video.word, video.definition);
   loadNextWord(video_urls);
 
   // Hide definition overlay
   hide_timeout = setTimeout(function () {
     view.redraw();
-    view.hideDefinition();
+    view.hideDefinitionOverlay();
   }, hide_delay);
 
   // Load metadata for this video & definition
@@ -224,12 +220,13 @@ function loadNextWord(video_urls) {
   var video = megaplaya_call("getCurrentVideo");
   var next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
 
+  console.log(video);
+  console.log(video_urls);
+
   if (next_word) {
-    debug("Showing #next_definition: " + next_word);
     $('#next_word').html('<a href="/#' + permalink.encode(next_word) + '">' + next_word + '</a>');
     $('#next_definition').fadeIn(250);
-  }
-  else {
+  } else {
     $('#next_definition').hide();
   }
 }
@@ -259,17 +256,11 @@ function fetchVoteCounts(defid) {
       $('#vote_up .vote_count').html(thumbs.thumbs_up);
       $('#vote_down .vote_count').html(thumbs.thumbs_down);
     }
-    else {
-      debug("fetchVoteCounts: no thumbs data! aborting", data)
-    }
   };
 
   $.ajax({
     url: 'http://' + api_host + '/uncacheable.php?ids=' + defid,
-    success: successCallback,
-    error: function () {
-      alert("Error fetching vote counts")
-    }
+    success: successCallback
   });
 }
 
@@ -300,7 +291,6 @@ function sendVote(defid, direction) {
     url: "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction,
     success: successCallback,
     error: function () {
-      debug("sendVote: error fetching vote data");
       track_event("send_vote_error");
     }
   });
@@ -326,8 +316,7 @@ function loadVideos(word) {
     if (video_urls.length == 0) {
       alert("Error, no videos found!");
       return false;
-    }
-    else {
+    } else {
       // If we're loading videos for a specific word, append other words
       if (urban_current_word) {
         $.ajax({url: videos_api_url + '?random=1', success: appendVideosCallback});
@@ -344,8 +333,7 @@ function loadVideos(word) {
       url: videos_api_url + '?word=' + encodeURIComponent(urban_current_word[0]),
       success: successCallback
     });
-  }
-  else {
+  } else {
     urban_current_word = false;
 
     $.ajax({
