@@ -112,7 +112,7 @@ function megaplaya_loaded() {
     megaplaya_addListeners();
   }
 
-  load_videos(permalink.get());
+  loadVideos(permalink.get());
 }
 
 function megaplaya_addListeners() {
@@ -215,8 +215,9 @@ function megaplaya_onvideoload(args) {
 }
 
 function loadNextWord(video_urls) {
-  var video = megaplaya_call("getCurrentVideo"),
-    next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
+  var video = megaplaya_call("getCurrentVideo");
+  var next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
+
   if (next_word) {
     debug("Showing #next_definition: " + next_word);
     $('#next_word').html('<a href="/#' + permalink.encode(next_word) + '">' + next_word + '</a>');
@@ -290,14 +291,6 @@ function sendVote(defid, direction) {
       }
     }
     else {
-      if (data.status == "duplicate") {
-        debug("send_vote() error: duplicate vote");
-      }
-      else {
-        debug("send_vote() error: unhandled status => " + data.status);
-      }
-
-      // if dupe, still turn the like btn on anyway.
       if (direction == 'up') {
         $("#vote_" + direction + " .vote_img").addClass("on");
       }
@@ -324,7 +317,7 @@ function videosFromResponse(response) {
   });
 }
 
-function load_videos(word) {
+function loadVideos(word) {
   var successCallback = function(response) {
     video_urls = videosFromResponse(response);
 
@@ -371,13 +364,12 @@ function load_videos(word) {
 
 // Add to the current playlist rather than replacing
 function appendVideosCallback(response) {
-  new_urls = videosFromResponse(response);
+  video_urls = video_urls.concat(videosFromResponse(response));
 
-  video_urls = video_urls.concat(new_urls);
   megaplaya_call("loadQueue", video_urls);
   megaplaya_call("setQueueAt", 0);
 
-  if (!$('#nextDefinition').is(':visible')) {
+  if (!$('#next_definition').is(':visible')) {
     loadNextWord(video_urls);
   }
 }

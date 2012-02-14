@@ -23,7 +23,7 @@ Permalink.prototype = {
 
   hashchange: function () {
     if (!this.ignoreHashchange) {
-      load_videos(this.get());
+      loadVideos(this.get());
     }
     this.ignoreHashchange = false;
   }

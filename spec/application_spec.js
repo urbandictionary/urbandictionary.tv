@@ -76,6 +76,9 @@ describe("Application", function () {
         AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: [CYBERHOBO]});
 
         expect($.pluck(video_urls, 'id')).toEqual([DOUCHEBAG.id, CYBERHOBO.id]);
+
+        expect(megaplaya.api_loadQueue).toHaveBeenCalledWith(video_urls);
+        expect(megaplaya.api_setQueueAt).toHaveBeenCalledWith(0);
       });
     });
 
