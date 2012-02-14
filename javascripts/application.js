@@ -4,8 +4,8 @@ function reset_globals() {
   window.is_mobile = /iphone|ipad|ipod|android|mobile/i.exec(navigator.userAgent) != undefined;
   window.current_video_index = 0;
   window.hide_timeout = false;
-  window.api_host = "www.urbandictionary.com";
-  window.videos_api_url = 'http://' + api_host + '/iphone/search/videos';
+  window.api_host = "api.urbandictionary.com";
+  window.videos_api_url = 'http://' + api_host + '/v0/videos';
   window.urban_current_word = false; // ghetto shimmy, FIXME
   window.video_urls = false;
   window.permalink = new Permalink(window.location);
@@ -97,12 +97,12 @@ function debug(string) {
 function loadPlayer() {
   if (!is_mobile) {
     $('#player').flash({
-      'swf': 'http://vhx.tv/embed/megaplaya',
-      'width': '100%;',
-      'height': '100%',
-      'wmode': 'transparent',
-      'allowFullScreen': true,
-      'allowScriptAccess': 'always'
+      swf: 'http://vhx.tv/embed/megaplaya',
+      width: '100%;',
+      height: '100%',
+      wmode: 'transparent',
+      allowFullScreen: true,
+      allowScriptAccess: 'always'
     });
   } else {
     megaplaya_loaded();
@@ -256,7 +256,7 @@ function fetchVoteCounts(defid) {
   };
 
   $.ajax({
-    url: 'http://' + api_host + '/uncacheable.php?ids=' + defid,
+    url: 'http://' + api_host + '/v0/uncacheable?ids=' + defid,
     success: successCallback
   });
 }
@@ -285,7 +285,7 @@ function sendVote(defid, direction) {
   };
 
   $.ajax({
-    url: "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction,
+    url: "http://" + api_host + "/v0/vote?defid=" + defid + "&direction=" + direction,
     success: successCallback,
     error: function () {
       track_event("send_vote_error");
@@ -316,7 +316,7 @@ function loadVideos(word) {
     } else {
       // If we're loading videos for a specific word, append other words
       if (urban_current_word) {
-        $.ajax({url: videos_api_url + '?random=1', success: appendVideosCallback});
+        $.ajax({url: videos_api_url, success: appendVideosCallback});
       }
 
       return megaplaya_call("playQueue", video_urls);
@@ -333,10 +333,7 @@ function loadVideos(word) {
   } else {
     urban_current_word = false;
 
-    $.ajax({
-      url: videos_api_url + '?random=1',
-      success: successCallback
-    });
+    $.ajax({ url: videos_api_url, success: successCallback });
   }
 }
 

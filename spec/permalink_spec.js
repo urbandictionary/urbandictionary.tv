@@ -36,6 +36,6 @@ describe("Permalink", function () {
 
     expect($.ajax).toHaveBeenCalled();
     expect($.ajax.callCount).toEqual(1);
-    expect($.ajax.mostRecentCall.args[0].url).toEqual("http://www.urbandictionary.com/iphone/search/videos?word=whatever");
+    expect($.ajax.mostRecentCall.args[0].url).toEqual("http://api.urbandictionary.com/v0/videos?word=whatever");
   });
 });

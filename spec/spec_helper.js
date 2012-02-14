@@ -12,15 +12,16 @@ var AjaxSpy = {
   },
 
   find: function(url) {
-    expect($.ajax).toHaveBeenCalled();
-
-    var list = $.grep($.ajax.argsForCall, function (args) {
-      return args[0].url == url;
+    var ajaxArgs = $.map($.ajax.argsForCall, function(args) {
+      return args[0];
     });
+    expect($.pluck(ajaxArgs, 'url')).toContain(url);
 
-    expect(list.length).toEqual(1);
-    var matchedArgs = list[0];
-    return matchedArgs[0];
+    var argsWithUrl = $.grep(ajaxArgs, function (args) {
+      return args.url == url;
+    });
+    expect(argsWithUrl.length).toEqual(1);
+    return argsWithUrl[0];
   }
 };
 
