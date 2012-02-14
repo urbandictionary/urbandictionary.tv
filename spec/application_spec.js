@@ -68,12 +68,12 @@ describe("Application", function () {
 
         var videos = [
           {
-            "defid": 1,
-            "definition": "Minus distinctio aperiam facere. In veniam quia sed error.",
-            "example": "Word Omnis error placeat nulla. Omnis natus sed beatae.",
-            "id": 1,
-            "word": "yeah yeah",
-            "youtube_id": "5154daf9e73"
+            defid: 1,
+            definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
+            example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
+            id: 1,
+            word: "yeah yeah",
+            youtube_id: "5154daf9e73"
           }
         ];
 
@@ -81,6 +81,19 @@ describe("Application", function () {
           WWW + '/iphone/search/videos?word=a%20word',
           {videos: videos}
         );
+
+        expect(video_urls).toEqual([
+          {
+            defid: 1,
+            definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
+            example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
+            id: 1,
+            word: "yeah yeah",
+            youtube_id: "5154daf9e73",
+            index: 0,
+            url: "http://youtube.com/watch?v=5154daf9e73" 
+          }
+        ]);
       });
     });
 
@@ -102,12 +115,12 @@ describe("Application", function () {
       it("adds videos to the queue when they are returned by the API", function () {
         var videos = [
           {
-            "defid": 1,
-            "definition": "Minus distinctio aperiam facere. In veniam quia sed error.",
-            "example": "Word Omnis error placeat nulla. Omnis natus sed beatae.",
-            "id": 1,
-            "word": "yeah yeah",
-            "youtube_id": "5154daf9e73"
+            defid: 1,
+            definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
+            example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
+            id: 1,
+            word: "yeah yeah",
+            youtube_id: "5154daf9e73"
           }
         ];
 
