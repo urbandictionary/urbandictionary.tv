@@ -73,14 +73,14 @@ describe("Application", function () {
     });
 
     it("fetches video info from VHX and fetches thumbs from UD", function () {
-      expect(Ajax.allUrls()).toEqual([
+      expect(AjaxSpy.allUrls()).toEqual([
         'http://api.vhx.tv/info.json?url=undefined',
         'http://www.urbandictionary.com/uncacheable.php?ids=1'
       ]);
     });
 
     it("shows the vote counts", function () {
-      Ajax.callSuccess(
+      AjaxSpy.callSuccess(
         'http://www.urbandictionary.com/uncacheable.php?ids=1',
         {thumbs: [
           {thumbs_up: 5, thumbs_down: 8}
@@ -99,7 +99,7 @@ describe("Application", function () {
     });
 
     it("shows an error if the API returns zero videos", function () {
-      Ajax.callSuccess(
+      AjaxSpy.callSuccess(
         'http://www.urbandictionary.com/iphone/search/videos?random=1',
         {videos: []}
       );
@@ -119,7 +119,7 @@ describe("Application", function () {
         }
       ];
 
-      Ajax.callSuccess(
+      AjaxSpy.callSuccess(
         'http://www.urbandictionary.com/iphone/search/videos?random=1',
         {videos: videos}
       );
@@ -146,7 +146,7 @@ describe("Application", function () {
 
       $("#voting .vote[rel='up']").click();
 
-      Ajax.callSuccess(
+      AjaxSpy.callSuccess(
         'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
         {}
       );
@@ -185,7 +185,7 @@ describe("Application", function () {
 
       $("#voting .vote[rel='down']").click();
 
-      Ajax.callSuccess(
+      AjaxSpy.callSuccess(
         'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
         {}
       );

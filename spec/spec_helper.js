@@ -1,4 +1,4 @@
-var Ajax = {
+var AjaxSpy = {
   allUrls: function () {
     return $.map($.ajax.argsForCall, function (args) {
       return args[0].url;
@@ -8,12 +8,19 @@ var Ajax = {
   callSuccess: function (url, data) {
     expect($.ajax).toHaveBeenCalled();
 
-    var ajaxOptions;
-    $.each($.ajax.argsForCall, function (index, args) {
-      if (args[0].url == url) {
-        ajaxOptions = args[0];
-        return false;
-      }
+    function detect(list, condition) {
+      var found;
+      $.each(list, function (index, args) {
+        if (condition(args)) {
+          found = args[0];
+        }
+      });
+
+      return found;
+    }
+
+    var ajaxOptions = detect($.ajax.argsForCall, function (args) {
+      return args[0].url == url;
     });
 
     expect(ajaxOptions).toBeDefined();
