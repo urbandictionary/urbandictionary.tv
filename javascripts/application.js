@@ -229,30 +229,25 @@ function loadNextWord(video_urls) {
 }
 
 function fetchVideoInfo(video_url) {
-  $.ajax({
-    url: "http://api.vhx.tv/info.json?url=" + encodeURIComponent(video_url),
-    success: function (data) {
-      var video = data.video;
-      megaplaya_call("growl", "<p>You're watching <span class='title'>" + video.title + "</span></p>");
+  $.get("http://api.vhx.tv/info.json", {url: video_url}, function (data) {
+    var video = data.video;
+    megaplaya_call("growl", "<p>You're watching <span class='title'>" + video.title + "</span></p>");
 
-      var pp = '<p class="title">' + video.title + '</p>';
-      pp += '<a href="' + video.url + '" target="_blank">' + video.url + '</a></p>';
-      pp += '<p class="desc">' + video.description + '</p>';
-      $('#video_info_text').html(pp);
-    }
+    var pp = '<p class="title">' + video.title + '</p>';
+    pp += '<a href="' + video.url + '" target="_blank">' + video.url + '</a></p>';
+    pp += '<p class="desc">' + video.description + '</p>';
+    $('#video_info_text').html(pp);
   });
 }
 
 function fetchVoteCounts(defid) {
-  var successCallback = function (data) {
+  $.get(API_ROOT + 'uncacheable', {ids: defid}, function (data) {
     var thumbs = data.thumbs[0];
     if (thumbs) {
       $('#vote_up .vote_count').html(thumbs.thumbs_up);
       $('#vote_down .vote_count').html(thumbs.thumbs_down);
     }
-  };
-
-  $.get(API_ROOT + 'uncacheable', {ids: defid}, successCallback);
+  });
 }
 
 function nextDefinition() {
