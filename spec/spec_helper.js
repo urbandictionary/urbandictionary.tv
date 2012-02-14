@@ -46,7 +46,9 @@ function resetSpies() {
     api_getCurrentVideo: jasmine.createSpy(),
     api_addListener: jasmine.createSpy(),
     api_playQueue: jasmine.createSpy(),
-    api_nextVideo: jasmine.createSpy()
+    api_nextVideo: jasmine.createSpy(),
+    api_loadQueue: jasmine.createSpy(),
+    api_setQueueAt: jasmine.createSpy()
   };
 }
 

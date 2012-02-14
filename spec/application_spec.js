@@ -65,11 +65,11 @@ describe("Application", function () {
     });
 
     describe("with a word in the permalink", function () {
-      it("appends to the playlist", function () {
+      it("adds one video for that word to the playlist, plus other random videos", function () {
         permalink.get.andReturn("a word");
         megaplaya_loaded();
 
-        var videos = [
+        var videos_for_word = [
           {
             defid: 1,
             definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
@@ -77,12 +77,20 @@ describe("Application", function () {
             id: 1,
             word: "yeah yeah",
             youtube_id: "5154daf9e73"
+          },
+          {
+            defid: 2,
+            definition: "Ignored",
+            example: "Ignored",
+            id: 2,
+            word: "no no",
+            youtube_id: "fdslajfdl"
           }
         ];
 
         AjaxSpy.callSuccess(
           WWW + '/iphone/search/videos?word=a%20word',
-          {videos: videos}
+          {videos: videos_for_word}
         );
 
         expect(video_urls).toEqual([
@@ -95,6 +103,45 @@ describe("Application", function () {
             youtube_id: "5154daf9e73",
             index: 0,
             url: "http://youtube.com/watch?v=5154daf9e73" 
+          }
+        ]);
+
+        var random_videos = [
+          {
+            defid: 3,
+            definition: "Random",
+            example: "Random",
+            id: 3,
+            word: "r r",
+            youtube_id: "jklvvxzljkc"
+          }
+        ];
+
+        AjaxSpy.callSuccess(
+          WWW + '/iphone/search/videos?random=1',
+          {videos: random_videos}
+        );
+
+        expect(video_urls).toEqual([
+          {
+            defid: 1,
+            definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
+            example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
+            id: 1,
+            word: "yeah yeah",
+            youtube_id: "5154daf9e73",
+            index: 0,
+            url: "http://youtube.com/watch?v=5154daf9e73"
+          },
+          {
+            defid: 3,
+            definition: "Random",
+            example: "Random",
+            id: 3,
+            word: "r r",
+            youtube_id: "jklvvxzljkc",
+            index: 0,
+            url: "http://youtube.com/watch?v=jklvvxzljkc"
           }
         ]);
       });

@@ -402,13 +402,17 @@ function send_vote(defid, direction) {
   });
 }
 
+function parse_videos_from_response(response) {
+  return $.map(response.videos, function (entry, index) {
+    entry.index = index;
+    entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
+    return entry;
+  });
+}
+
 function load_videos(word) {
   var load_videos_callback = function(response) {
-    video_urls = $.map(response.videos, function (entry, index) {
-      entry.index = index;
-      entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
-      return entry;
-    });
+    video_urls = parse_videos_from_response(response);
 
     // only one video plz
     if (urban_current_word && video_urls.length > 0) {
@@ -452,8 +456,8 @@ function load_videos(word) {
 }
 
 // Add to the current playlist rather than replacing
-function append_videos_callback(resp) {
-  new_urls = parse_videos_from_response(resp);
+function append_videos_callback(response) {
+  new_urls = parse_videos_from_response(response);
   debug("append_videos_callback(): " + new_urls.length + ' new urls');
 
   video_urls = video_urls.concat(new_urls);
