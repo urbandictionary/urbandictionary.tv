@@ -359,42 +359,43 @@ function hide_suggest_overlay() {
 }
 
 function send_vote(defid, direction) {
-  var url = "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction;
-  $.ajax({
-    url: url,
-    success: function (data) {
-      if (data.status == 'saved') {
-        var field = '#vote_' + direction + ' .vote_count',
-          number_text = $(field).text();
+  var send_vote_callback = function (data) {
+    if (data.status == 'saved') {
+      var field = '#vote_' + direction + ' .vote_count',
+        number_text = $(field).text();
 
-        // Only light up the icon for upvotes; downvotes skip the video
-        if (direction == 'up') {
-          $("#vote_" + direction + " .vote_img").addClass("on");
-        }
+      // Only light up the icon for upvotes; downvotes skip the video
+      if (direction == 'up') {
+        $("#vote_" + direction + " .vote_img").addClass("on");
+      }
 
-        if (number_text == undefined || number_text == '') {
-          $(field).html(1);
-        }
-        else {
-          $(field).html(parseInt(number_text) + 1);
-        }
+      if (number_text == undefined || number_text == '') {
+        $(field).html(1);
       }
       else {
-        if (data.status == "duplicate") {
-          debug("send_vote() error: duplicate vote");
-        }
-        else {
-          debug("send_vote() error: unhandled status => " + data.status);
-        }
-
-        // if dupe, still turn the like btn on anyway.
-        if (direction == 'up') {
-          $("#vote_" + direction + " .vote_img").addClass("on");
-        }
-
-        track_event("send_vote_" + direction);
+        $(field).html(parseInt(number_text) + 1);
       }
-    },
+    }
+    else {
+      if (data.status == "duplicate") {
+        debug("send_vote() error: duplicate vote");
+      }
+      else {
+        debug("send_vote() error: unhandled status => " + data.status);
+      }
+
+      // if dupe, still turn the like btn on anyway.
+      if (direction == 'up') {
+        $("#vote_" + direction + " .vote_img").addClass("on");
+      }
+
+      track_event("send_vote_" + direction);
+    }
+  };
+
+  $.ajax({
+    url: "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction,
+    success: send_vote_callback,
     error: function () {
       debug("send_vote: error fetching vote data");
       track_event("send_vote_error");
