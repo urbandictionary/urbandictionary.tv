@@ -1,3 +1,5 @@
+var WWW = 'http://www.urbandictionary.com';
+
 describe("Application", function () {
   describe("bugs", function () {
     describe("in the app", function () {
@@ -55,18 +57,18 @@ describe("Application", function () {
 
     it("prints the word and links to urbandic", function () {
       expect($("#word_txt a")).toHaveText("the word");
-      expect($("#word_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=the+word");
+      expect($("#word_txt a")).toHaveAttr("href", WWW + "/define.php?term=the+word");
     });
 
     it("prints the definition and example, and links brackets to urbandic in a new window", function () {
       expect($("#definition_txt")).toHaveText("the bird is the word");
       expect($("#definition_txt a")).toHaveText("is the word");
-      expect($("#definition_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=is%20the%20word");
+      expect($("#definition_txt a")).toHaveAttr("href", WWW + "/define.php?term=is%20the%20word");
       expect($("#definition_txt a")).toHaveAttr("target", "_blank");
 
       expect($("#example_txt")).toHaveText("everybody knows the bird is the word");
       expect($("#example_txt a")).toHaveText("bird");
-      expect($("#example_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=bird");
+      expect($("#example_txt a")).toHaveAttr("href", WWW + "/define.php?term=bird");
       expect($("#example_txt a")).toHaveAttr("target", "_blank");
     });
 
@@ -77,13 +79,13 @@ describe("Application", function () {
     it("fetches video info from VHX and fetches thumbs from UD", function () {
       expect(AjaxSpy.allUrls()).toEqual([
         'http://api.vhx.tv/info.json?url=undefined',
-        'http://www.urbandictionary.com/uncacheable.php?ids=1'
+        WWW + '/uncacheable.php?ids=1'
       ]);
     });
 
     it("shows the vote counts", function () {
       AjaxSpy.callSuccess(
-        'http://www.urbandictionary.com/uncacheable.php?ids=1',
+        WWW + '/uncacheable.php?ids=1',
         {thumbs: [
           {thumbs_up: 5, thumbs_down: 8}
         ]}
@@ -102,7 +104,7 @@ describe("Application", function () {
 
     it("shows an error if the API returns zero videos", function () {
       AjaxSpy.callSuccess(
-        'http://www.urbandictionary.com/iphone/search/videos?random=1',
+        WWW + '/iphone/search/videos?random=1',
         {videos: []}
       );
 
@@ -122,7 +124,7 @@ describe("Application", function () {
       ];
 
       AjaxSpy.callSuccess(
-        'http://www.urbandictionary.com/iphone/search/videos?random=1',
+        WWW + '/iphone/search/videos?random=1',
         {videos: videos}
       );
 
@@ -151,7 +153,7 @@ describe("Application", function () {
       $("#voting .vote[rel='up']").click();
 
       AjaxSpy.callSuccess(
-        'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
+        WWW + '/thumbs.php?defid=1&direction=up',
         {'status': 'saved'}
       );
 
@@ -164,7 +166,7 @@ describe("Application", function () {
       $("#vote_up .vote_count").html(50);
 
       AjaxSpy.callSuccess(
-        'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
+        WWW + '/thumbs.php?defid=1&direction=up',
         {'status': 'saved'}
       );
 
@@ -175,7 +177,7 @@ describe("Application", function () {
       $("#voting .vote[rel='up']").click();
 
       AjaxSpy.callSuccess(
-        'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
+        WWW + '/thumbs.php?defid=1&direction=up',
         {'status': 'duplicate'}
       );
 
@@ -186,7 +188,7 @@ describe("Application", function () {
       $("#voting .vote[rel='down']").click();
 
       AjaxSpy.callSuccess(
-        'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
+        WWW + '/thumbs.php?defid=1&direction=up',
         {}
       );
     });
