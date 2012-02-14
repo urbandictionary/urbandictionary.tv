@@ -36,7 +36,7 @@ describe("Application", function () {
     });
 
     it("sets the permalink", function () {
-      expect(Permalink.set).toHaveBeenCalledWith("the+word");
+      expect(permalink.set).toHaveBeenCalledWith("the+word");
     });
 
     it("fetches video info from VHX and fetches thumbs from UD", function () {
@@ -60,10 +60,10 @@ describe("Application", function () {
   });
 
   describe("megaplaya_loaded", function () {
-    describe("with a word in the Permalink", function () {
+    describe("with a word in the permalink", function () {
       it("appends to the playlist", function () {
         window.is_mobile = true;
-        Permalink.get.andReturn("a word");
+        permalink.get.andReturn("a word");
         megaplaya_loaded();
 
         var videos = [
@@ -84,7 +84,7 @@ describe("Application", function () {
       });
     });
 
-    describe("with no word in the Permalink", function () {
+    describe("with no word in the permalink", function () {
       beforeEach(function () {
         window.is_mobile = true;
         megaplaya_loaded();

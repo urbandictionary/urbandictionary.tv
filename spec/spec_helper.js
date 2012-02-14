@@ -9,7 +9,7 @@ $.select = function(list, callback) {
   });
 
   return found;
-}
+};
 
 var AjaxSpy = {
   allUrls: function () {
@@ -60,6 +60,6 @@ beforeEach(function () {
 });
 
 function spyOnPermalink() {
-  spyOn(Permalink, 'set');
-  spyOn(Permalink, 'get');
+  spyOn(permalink, 'set');
+  spyOn(permalink, 'get');
 }

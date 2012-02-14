@@ -8,6 +8,7 @@ function reset_globals() {
   window.videos_api_url = 'http://' + api_host + '/iphone/search/videos';
   window.urban_current_word = false; // ghetto shimmy, FIXME
   window.video_urls = false;
+  window.permalink = new Permalink(window.location);
 }
 
 reset_globals();
@@ -61,7 +62,7 @@ function document_ready() {
   });
   redraw();
 
-  $(window).bind('hashchange', Permalink.hashchange);
+  $(window).bind('hashchange', permalink.hashchange);
 }
 
 $(window).resize(redraw);
@@ -129,7 +130,7 @@ function megaplaya_loaded() {
     megaplaya_addListeners();
   }
 
-  load_videos(Permalink.get());
+  load_videos(permalink.get());
 }
 
 function megaplaya_addListeners() {
@@ -195,7 +196,7 @@ function megaplaya_onvideoload(args) {
 
   var video = megaplaya_call("getCurrentVideo"),
     word = video.word,
-    escaped_word = Permalink.encode(word);
+    escaped_word = permalink.encode(word);
 
   $('#word_txt').html('<a href="http://www.urbandictionary.com/define.php?term=' + escaped_word + '" target="_blank">' + video.word + '</a>');
   printBrackets(video.definition, $('#definition_txt').empty());
@@ -217,7 +218,7 @@ function megaplaya_onvideoload(args) {
   }
 
   // Load things
-  Permalink.set(escaped_word); //  + "-" + video.id
+  permalink.set(escaped_word); //  + "-" + video.id
   show_definition(video.word, video.definition);
   load_next_word(video_urls);
 
@@ -239,7 +240,7 @@ function load_next_word(video_urls) {
     next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
   if (next_word) {
     debug("Showing #next_definition: " + next_word);
-    $('#next_word').html('<a href="/#' + Permalink.encode(next_word) + '">' + next_word + '</a>');
+    $('#next_word').html('<a href="/#' + permalink.encode(next_word) + '">' + next_word + '</a>');
     $('#next_definition').fadeIn(250);
   }
   else {
@@ -477,38 +478,3 @@ function append_videos_callback(resp) {
     load_next_word(video_urls);
   }
 }
-
-// permalink/url/history router
-var Permalink = {
-  set: function (url) {
-    debug("Permalink.set()", url);
-    this.ignoreHashchange = true;
-    this._windowLocation().hash = this.encode(url);
-    return this.get();
-  },
-
-  ignoreHashchange: false,
-
-  _windowLocation: function () {
-    return window.location;
-  },
-
-  get: function () {
-    var hash = this._windowLocation().hash.replace(/^\#/, '')
-    hash = decodeURIComponent(hash).replace(/\+/g, ' ');
-    return hash;
-  },
-
-  encode: function (word) {
-    word = word.toLowerCase();
-    return encodeURIComponent(word).replace(/\%20/g, '+').replace(/\%2B/g, '+');
-  },
-
-  hashchange: function () {
-    debug("Permalink.hashchange(), skip=" + this.ignoreHashchange + " permalink=" + Permalink.get());
-    if (!this.ignoreHashchange) {
-      load_videos(Permalink.get());
-    }
-    this.ignoreHashchange = false;
-  }
-};

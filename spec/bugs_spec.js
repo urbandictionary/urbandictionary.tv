@@ -1,6 +1,6 @@
 describe("bugs", function () {
   describe("in the app", function () {
-    it("double encodes the word in Permalink.set on line 224");
+    it("double encodes the word in permalink.set on line 224");
     it("doesn't pass the video URL to the VHX API, so the growl doesn't show");
     it("doesn't HTML escape the video title in the growl");
     it("splits the current word by spaces on line 446");
