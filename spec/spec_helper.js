@@ -1,5 +1,3 @@
-var WWW = 'http://www.urbandictionary.com';
-
 $.pluck = function(list, attribute) {
   return $.map(list, function(item) {
     return item[attribute];

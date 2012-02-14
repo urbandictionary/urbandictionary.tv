@@ -14,18 +14,18 @@ describe("Application", function () {
 
     it("prints the word and links to urbandic", function () {
       expect($("#word_txt a")).toHaveText("cyberhobo");
-      expect($("#word_txt a")).toHaveAttr("href", WWW + "/define.php?term=cyberhobo");
+      expect($("#word_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=cyberhobo");
     });
 
     it("prints the definition and example, and links brackets to urbandic in a new window", function () {
       expect($("#definition_txt")).toHaveText(/A cyberhobo works/);
       expect($("#definition_txt a")).toHaveText("regular hobo");
-      expect($("#definition_txt a")).toHaveAttr("href", WWW + "/define.php?term=regular%20hobo");
+      expect($("#definition_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=regular%20hobo");
       expect($("#definition_txt a")).toHaveAttr("target", "_blank");
 
       expect($("#example_txt")).toHaveText(/The dot commer turned cyberhobo/);
       expect($("#example_txt a")).toHaveText("dot commer");
-      expect($("#example_txt a")).toHaveAttr("href", WWW + "/define.php?term=dot%20commer");
+      expect($("#example_txt a")).toHaveAttr("href", "http://www.urbandictionary.com/define.php?term=dot%20commer");
       expect($("#example_txt a")).toHaveAttr("target", "_blank");
     });
 
@@ -41,12 +41,12 @@ describe("Application", function () {
     it("fetches video info from VHX and fetches thumbs from UD", function () {
       expect(AjaxSpy.allUrls()).toEqual([
         'http://api.vhx.tv/info.json?url=http%3A%2F%2Fyoutube.com%2Fwatch%3Fv%3Dy-D_5Pnl0Nc',
-        WWW + '/uncacheable.php?ids=964771'
+        'http://www.urbandictionary.com/uncacheable.php?ids=964771'
       ]);
     });
 
     it("shows the vote counts", function () {
-      AjaxSpy.find(WWW + '/uncacheable.php?ids=964771').success({thumbs: [
+      AjaxSpy.find('http://www.urbandictionary.com/uncacheable.php?ids=964771').success({thumbs: [
         {thumbs_up: 5, thumbs_down: 8}
       ]});
 
@@ -66,7 +66,7 @@ describe("Application", function () {
           permalink.get.andReturn("douche bag");
           documentReady();
 
-          AjaxSpy.find(WWW + '/iphone/search/videos?word=douche%20bag').success({videos: [DOUCHEBAG]});
+          AjaxSpy.find('http://www.urbandictionary.com/iphone/search/videos?word=douche%20bag').success({videos: [DOUCHEBAG]});
 
           expect(video_urls).toEqual([
             {
@@ -81,7 +81,7 @@ describe("Application", function () {
             }
           ]);
 
-          AjaxSpy.find(WWW + '/iphone/search/videos?random=1').success({videos: [CYBERHOBO]});
+          AjaxSpy.find('http://www.urbandictionary.com/iphone/search/videos?random=1').success({videos: [CYBERHOBO]});
 
           expect($.pluck(video_urls, 'id')).toEqual([DOUCHEBAG.id, CYBERHOBO.id]);
           expect(megaplaya.api_loadQueue).toHaveBeenCalledWith(video_urls);
@@ -95,14 +95,14 @@ describe("Application", function () {
         });
 
         it("adds videos to the queue when they are returned by the API", function () {
-          AjaxSpy.find(WWW + '/iphone/search/videos?random=1').success({videos: [JOCKEYBRAWL, CYBERHOBO]});
+          AjaxSpy.find('http://www.urbandictionary.com/iphone/search/videos?random=1').success({videos: [JOCKEYBRAWL, CYBERHOBO]});
 
           expect($.pluck(video_urls, 'id')).toEqual([JOCKEYBRAWL.id, CYBERHOBO.id]);
           expect(megaplaya.api_playQueue).toHaveBeenCalledWith([JOCKEYBRAWL, CYBERHOBO]);
         });
 
         it("shows an error if the API returns zero videos", function () {
-          AjaxSpy.find(WWW + '/iphone/search/videos?random=1').success({videos: []});
+          AjaxSpy.find('http://www.urbandictionary.com/iphone/search/videos?random=1').success({videos: []});
           expect(window.alert).toHaveBeenCalledWith("Error, no videos found!");
         });
       });
