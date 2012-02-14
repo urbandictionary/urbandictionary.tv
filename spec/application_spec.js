@@ -98,4 +98,11 @@ describe("Application", function () {
       });
     });
   });
+
+  describe("document ready", function() {
+    it("adds flash to the page", function() {
+      window.is_mobile = true;
+      documentReady();
+    })
+  })
 });

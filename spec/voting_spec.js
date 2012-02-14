@@ -8,32 +8,15 @@ describe("voting", function () {
     window.is_mobile = true;
     documentReady();
 
-    video_urls = [
-      {
-        "defid": 1,
-        "definition": "Minus distinctio aperiam facere.",
-        "example": "Word Omnis error placeat nulla.",
-        "id": 1,
-        "word": "yeah yeah",
-        "youtube_id": "5154daf9e73"
-      },
-      {
-        "defid": 2,
-        "definition": "In veniam quia sed error.",
-        "example": "Omnis natus sed beatae.",
-        "id": 2,
-        "word": "no no",
-        "youtube_id": "47231987"
-      },
-    ];
+    video_urls = [ DOUCHEBAG, JOCKEYBRAWL ];
   });
 
   it("sends an up-vote", function () {
     $("#voting .vote[rel='up']").click();
 
     AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=1&direction=up',
-      {'status': 'saved'}
+      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=up',
+      {status: 'saved'}
     );
 
     expect($("#vote_up .vote_count")).toHaveText(1);
@@ -45,8 +28,8 @@ describe("voting", function () {
     $("#vote_up .vote_count").html(50);
 
     AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=1&direction=up',
-      {'status': 'saved'}
+      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=up',
+      {status: 'saved'}
     );
 
     expect($("#vote_up .vote_count")).toHaveText(51);
@@ -56,8 +39,8 @@ describe("voting", function () {
     $("#voting .vote[rel='up']").click();
 
     AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=1&direction=up',
-      {'status': 'duplicate'}
+      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=up',
+      {status: 'duplicate'}
     );
 
     expect($("#vote_up .vote_img")).toHaveClass("on");
@@ -67,8 +50,8 @@ describe("voting", function () {
     $("#voting .vote[rel='down']").click();
 
     AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=1&direction=down',
-      {'status': 'duplicate'}
+      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=down',
+      {status: 'duplicate'}
     );
 
     expect($("#vote_down .vote_img")).not.toHaveClass("on");
@@ -78,8 +61,8 @@ describe("voting", function () {
     $("#voting .vote[rel='down']").click();
 
     AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=1&direction=down',
-      {'status': 'saved'}
+      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=down',
+      {status: 'saved'}
     );
 
     expect($("#vote_up .vote_img")).not.toHaveClass("on");
