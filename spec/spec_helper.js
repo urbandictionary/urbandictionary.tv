@@ -1,3 +1,14 @@
+$.select = function(list, callback) {
+  var found = [];
+  $.each(list, function (index, args) {
+    if (callback(args)) {
+      found.push(args);
+    }
+  });
+
+  return found;
+}
+
 var AjaxSpy = {
   allUrls: function () {
     return $.map($.ajax.argsForCall, function (args) {
@@ -8,18 +19,7 @@ var AjaxSpy = {
   callSuccess: function (url, data) {
     expect($.ajax).toHaveBeenCalled();
 
-    function select(list, condition) {
-      var found = [];
-      $.each(list, function (index, args) {
-        if (condition(args)) {
-          found.push(args);
-        }
-      });
-
-      return found;
-    }
-
-    var argsForUrl = select($.ajax.argsForCall, function (args) {
+    var argsForUrl = $.select($.ajax.argsForCall, function (args) {
       return args[0].url == url;
     });
 
