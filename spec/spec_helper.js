@@ -16,14 +16,17 @@ var AjaxSpy = {
     });
   },
 
+  argsForUrl: function(url) {
+    return $.select($.ajax.argsForCall, function (args) {
+      return args[0].url == url;
+    });
+  },
+
   callSuccess: function (url, data) {
     expect($.ajax).toHaveBeenCalled();
 
-    var argsForUrl = $.select($.ajax.argsForCall, function (args) {
-      return args[0].url == url;
-    });
-
-    expect(argsForUrl.length).toEqual(1);
-    argsForUrl[0][0].success(data);
+    var list = this.argsForUrl(url);
+    expect(list.length).toEqual(1);
+    list[0][0].success(data);
   }
 };
