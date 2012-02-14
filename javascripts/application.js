@@ -220,9 +220,6 @@ function loadNextWord(video_urls) {
   var video = megaplaya_call("getCurrentVideo");
   var next_word = video_urls[video.index + 1] ? video_urls[video.index + 1].word : false;
 
-  console.log(video);
-  console.log(video_urls);
-
   if (next_word) {
     $('#next_word').html('<a href="/#' + permalink.encode(next_word) + '">' + next_word + '</a>');
     $('#next_definition').fadeIn(250);

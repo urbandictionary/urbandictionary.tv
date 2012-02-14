@@ -7982,7 +7982,6 @@
           };
           // Use insertBefore instead of appendChild  to circumvent an IE6 bug.
           // This arises when a base node is used (#2709 and #4378).
-          console.log("inserting Before");
           head.insertBefore( script, head.firstChild );
         },
 
