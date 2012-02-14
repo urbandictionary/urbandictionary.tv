@@ -59,6 +59,8 @@ function addClickListeners() {
     $("#suggest_overlay .wrap").toggle();
     track_event('show_make_video');
   });
+
+  $('#next_definition').click(nextDefinition);
 }
 
 function document_ready() {
@@ -221,11 +223,10 @@ function loadNextWord(video_urls) {
   if (next_word) {
     debug("Showing #next_definition: " + next_word);
     $('#next_word').html('<a href="/#' + permalink.encode(next_word) + '">' + next_word + '</a>');
-    $('#nextDefinition').fadeIn(250);
+    $('#next_definition').fadeIn(250);
   }
   else {
-    // debug("No #next_definition available, can't show");
-    $('#nextDefinition').hide();
+    $('#next_definition').hide();
   }
 }
 
@@ -275,24 +276,16 @@ function nextDefinition() {
 function sendVote(defid, direction) {
   var successCallback = function (data) {
     if (data.status == 'saved') {
-      var field = '#vote_' + direction + ' .vote_count',
-        number_text = $(field).text();
-
-      // Only light up the icon for upvotes; downvotes skip the video
       if (direction == 'up') {
-        $("#vote_" + direction + " .vote_img").addClass("on");
+        $("#vote_up .vote_img").addClass("on");
       }
 
-      if (number_text == undefined || number_text == '') {
-        $(field).html(1);
-      }
-      else {
-        $(field).html(parseInt(number_text) + 1);
-      }
-    }
-    else {
+      var element = $('#vote_' + direction + ' .vote_count');
+      var current = (parseInt(element.text()) || 0);
+      element.text(current + 1);
+    } else {
       if (direction == 'up') {
-        $("#vote_" + direction + " .vote_img").addClass("on");
+        $("#vote_up .vote_img").addClass("on");
       }
 
       track_event("send_vote_" + direction);
@@ -333,10 +326,7 @@ function loadVideos(word) {
     else {
       // If we're loading videos for a specific word, append other words
       if (urban_current_word) {
-        $.ajax({
-          url: videos_api_url + '?random=1',
-          success: appendVideosCallback
-        });
+        $.ajax({url: videos_api_url + '?random=1', success: appendVideosCallback});
       }
 
       return megaplaya_call("playQueue", video_urls);
@@ -345,7 +335,6 @@ function loadVideos(word) {
 
   if (word) {
     urban_current_word = word.split("-");
-    debug("Loading videos for word: " + urban_current_word);
 
     $.ajax({
       url: videos_api_url + '?word=' + encodeURIComponent(urban_current_word[0]),
