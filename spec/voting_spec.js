@@ -1,11 +1,8 @@
 describe("voting", function () {
-  beforeEach(function () {
-    spyOn($, 'ajax');
-  });
-
   beforeEach(resetAppGlobals);
   beforeEach(copyFixtures);
   beforeEach(resetMegaplayaSpy);
+  beforeEach(spyOnPermalink);
 
   beforeEach(function () {
     window.is_mobile = true;

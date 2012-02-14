@@ -2,8 +2,6 @@ describe("Permalink", function () {
   var mockLocation;
 
   beforeEach(function () {
-    spyOn($, 'ajax');
-
     mockLocation = {};
     spyOn(Permalink, "_windowLocation").andReturn(mockLocation);
 

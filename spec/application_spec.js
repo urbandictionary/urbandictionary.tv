@@ -1,14 +1,8 @@
 describe("Application", function () {
-  beforeEach(function () {
-    spyOn($, 'ajax');
-    spyOn(window, 'alert');
-    spyOn(Permalink, 'set');
-    spyOn(Permalink, 'get');
-  });
-
   beforeEach(resetAppGlobals);
   beforeEach(copyFixtures);
   beforeEach(resetMegaplayaSpy);
+  beforeEach(spyOnPermalink);
 
   describe("megaplaya_onvideoload", function () {
     beforeEach(function () {

@@ -56,3 +56,13 @@ function resetMegaplayaSpy() {
 function copyFixtures() {
   $("#fixtures").html($("#original_fixtures").text());
 }
+
+beforeEach(function () {
+  spyOn($, 'ajax');
+  spyOn(window, 'alert');
+});
+
+function spyOnPermalink() {
+  spyOn(Permalink, 'set');
+  spyOn(Permalink, 'get');
+}
