@@ -68,7 +68,7 @@ function addWindowListeners() {
   $(window).resize(view.redraw);
 }
 
-function document_ready() {
+function documentReady() {
   loadPlayer();
 
   if (!jQuery.browser.mozilla)

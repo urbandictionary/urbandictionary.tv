@@ -6,7 +6,7 @@ describe("voting", function () {
 
   beforeEach(function () {
     window.is_mobile = true;
-    document_ready();
+    documentReady();
 
     video_urls = [
       {
