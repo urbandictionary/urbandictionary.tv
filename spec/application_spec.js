@@ -1,9 +1,17 @@
 describe("Application", function () {
-  describe("bugs found while writing tests", function () {
-    it("double encodes the word in Permalink.set on line 224");
-    it("doesn't pass the video URL to the VHX API, so the growl doesn't show");
-    it("doesn't HTML escape the video title in the growl");
-    it("splits the current word by spaces on line 446");
+  describe("bugs", function () {
+    describe("in the app", function () {
+      it("double encodes the word in Permalink.set on line 224");
+      it("doesn't pass the video URL to the VHX API, so the growl doesn't show");
+      it("doesn't HTML escape the video title in the growl");
+      it("splits the current word by spaces on line 446");
+    });
+
+    describe("in the tests", function () {
+      it("doesn't reset the HTML fixtures on every spec");
+      it("doesn't test when is_mobile is false");
+      it("doesn't reset all the globals in the app");
+    });
   });
 
   beforeEach(function () {
@@ -13,6 +21,7 @@ describe("Application", function () {
     spyOn(Permalink, 'get');
 
     window.urls = [];
+    window.video_urls = false;
 
     window.track_pageview = jasmine.createSpy();
     window.track_event = jasmine.createSpy();
@@ -118,6 +127,18 @@ describe("Application", function () {
   describe("voting", function () {
     it("sends an up-vote", function () {
       document_ready();
+
+      video_urls = [
+        {
+          "defid": 1,
+          "definition": "Minus distinctio aperiam facere. In veniam quia sed error.",
+          "example": "Word Omnis error placeat nulla. Omnis natus sed beatae.",
+          "id": 1,
+          "word": "yeah yeah",
+          "youtube_id": "5154daf9e73"
+        }
+      ];
+
       $("#voting .vote[rel='up']").click();
 
       Ajax.callSuccess(
@@ -126,8 +147,14 @@ describe("Application", function () {
       );
     });
 
-    it("sends a down-vote and skips to the next video", function () {
+    xit("sends a down-vote and skips to the next video", function () {
+      document_ready();
+      $("#voting .vote[rel='down']").click();
 
+      Ajax.callSuccess(
+        'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
+        {}
+      );
     });
   });
 });
