@@ -8,22 +8,22 @@ var AjaxSpy = {
   callSuccess: function (url, data) {
     expect($.ajax).toHaveBeenCalled();
 
-    function detect(list, condition) {
-      var found;
+    function select(list, condition) {
+      var found = [];
       $.each(list, function (index, args) {
         if (condition(args)) {
-          found = args[0];
+          found.push(args);
         }
       });
 
       return found;
     }
 
-    var ajaxOptions = detect($.ajax.argsForCall, function (args) {
+    var argsForUrl = select($.ajax.argsForCall, function (args) {
       return args[0].url == url;
     });
 
-    expect(ajaxOptions).toBeDefined();
-    ajaxOptions.success(data);
+    expect(argsForUrl.length).toEqual(1);
+    argsForUrl[0][0].success(data);
   }
 };
