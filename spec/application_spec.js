@@ -99,8 +99,14 @@ describe("Application", function () {
 
   describe("document ready", function() {
     it("adds flash to the page", function() {
-      window.is_mobile = true;
+      jQuery.fn.flash = jasmine.createSpy();
+
+      window.is_mobile = false;
       documentReady();
+
+      expect(jQuery.fn.flash).toHaveBeenCalled();
+      expect(jQuery.fn.flash.mostRecentCall.object).toEqual($('#player'));
+      expect(jQuery.fn.flash.mostRecentCall.args[0].swf).toEqual('http://vhx.tv/embed/megaplaya');
     })
   })
 });

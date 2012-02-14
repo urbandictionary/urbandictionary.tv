@@ -35,14 +35,7 @@ function resetSpies() {
   window.track_pageview = jasmine.createSpy();
   window.track_event = jasmine.createSpy();
 
-  window.megaplaya = {
-    api_getCurrentVideo: jasmine.createSpy(),
-    api_addListener: jasmine.createSpy(),
-    api_playQueue: jasmine.createSpy(),
-    api_nextVideo: jasmine.createSpy(),
-    api_loadQueue: jasmine.createSpy(),
-    api_setQueueAt: jasmine.createSpy()
-  };
+  window.megaplaya = jasmine.createSpyObj('megaplaya', ['api_getCurrentVideo', 'api_addListener', 'api_playQueue', 'api_nextVideo', 'api_loadQueue', 'api_setQueueAt']);
 }
 
 function copyFixtures() {
