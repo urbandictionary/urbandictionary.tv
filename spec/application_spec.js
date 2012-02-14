@@ -39,9 +39,7 @@ describe("Application", function () {
     });
 
     it("shows the vote counts", function () {
-      AjaxSpy.callSuccess(WWW + '/uncacheable.php?ids=964771', {thumbs: [
-        {thumbs_up: 5, thumbs_down: 8}
-      ]});
+      AjaxSpy.callSuccess(WWW + '/uncacheable.php?ids=964771', {thumbs: [ {thumbs_up: 5, thumbs_down: 8} ]});
 
       expect($('#vote_up .vote_count')).toHaveText(5);
       expect($('#vote_down .vote_count')).toHaveText(8);

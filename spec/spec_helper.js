@@ -13,18 +13,20 @@ var AjaxSpy = {
     });
   },
 
-  argsForUrl: function(url) {
-    return $.grep($.ajax.argsForCall, function (args) {
+  find: function(url) {
+    expect($.ajax).toHaveBeenCalled();
+
+    var list = $.grep($.ajax.argsForCall, function (args) {
       return args[0].url == url;
     });
+
+    expect(list.length).toEqual(1);
+    var matchedArgs = list[0];
+    return matchedArgs[0];
   },
 
   callSuccess: function (url, data) {
-    expect($.ajax).toHaveBeenCalled();
-
-    var list = this.argsForUrl(url);
-    expect(list.length).toEqual(1);
-    list[0][0].success(data);
+    this.find(url).success(data);
   }
 };
 

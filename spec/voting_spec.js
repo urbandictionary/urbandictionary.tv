@@ -14,10 +14,7 @@ describe("voting", function () {
   it("sends an up-vote", function () {
     $("#voting .vote[rel='up']").click();
 
-    AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=up',
-      {status: 'saved'}
-    );
+    AjaxSpy.callSuccess(WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=up', {status: 'saved'});
 
     expect($("#vote_up .vote_count")).toHaveText(1);
     expect($("#vote_up .vote_img")).toHaveClass("on");
@@ -27,10 +24,7 @@ describe("voting", function () {
     $("#voting .vote[rel='up']").click();
     $("#vote_up .vote_count").html(50);
 
-    AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=up',
-      {status: 'saved'}
-    );
+    AjaxSpy.callSuccess(WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=up', {status: 'saved'});
 
     expect($("#vote_up .vote_count")).toHaveText(51);
   });
@@ -38,10 +32,7 @@ describe("voting", function () {
   it("sends an up-vote which is a duplicate, but sets the CSS class anyway", function () {
     $("#voting .vote[rel='up']").click();
 
-    AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=up',
-      {status: 'duplicate'}
-    );
+    AjaxSpy.callSuccess(WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=up', {status: 'duplicate'});
 
     expect($("#vote_up .vote_img")).toHaveClass("on");
   });
@@ -49,10 +40,7 @@ describe("voting", function () {
   it("sends a down-vote which is a duplicate, but doesn't set the CSS class", function () {
     $("#voting .vote[rel='down']").click();
 
-    AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=down',
-      {status: 'duplicate'}
-    );
+    AjaxSpy.callSuccess(WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=down', {status: 'duplicate'});
 
     expect($("#vote_down .vote_img")).not.toHaveClass("on");
   });
@@ -60,10 +48,7 @@ describe("voting", function () {
   it("sends a down-vote and skips to the next video", function () {
     $("#voting .vote[rel='down']").click();
 
-    AjaxSpy.callSuccess(
-      WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=down',
-      {status: 'saved'}
-    );
+    AjaxSpy.callSuccess(WWW + '/thumbs.php?defid=' + DOUCHEBAG.defid + '&direction=down', {status: 'saved'});
 
     expect($("#vote_up .vote_img")).not.toHaveClass("on");
     expect($("#vote_down .vote_img")).not.toHaveClass("on");
