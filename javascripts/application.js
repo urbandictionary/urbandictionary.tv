@@ -232,12 +232,12 @@ function fetchVideoInfo(video_url) {
   $.ajax({
     url: "http://api.vhx.tv/info.json?url=" + encodeURIComponent(video_url),
     success: function (data) {
-      var vid = data.video;
-      megaplaya_call("growl", "<p>You're watching <span class='title'>" + vid.title + "</span></p>");
+      var video = data.video;
+      megaplaya_call("growl", "<p>You're watching <span class='title'>" + video.title + "</span></p>");
 
-      var pp = '<p class="title">' + vid.title + '</p>';
-      pp += '<a href="' + vid.url + '" target="_blank">' + vid.url + '</a></p>';
-      pp += '<p class="desc">' + vid.description + '</p>';
+      var pp = '<p class="title">' + video.title + '</p>';
+      pp += '<a href="' + video.url + '" target="_blank">' + video.url + '</a></p>';
+      pp += '<p class="desc">' + video.description + '</p>';
       $('#video_info_text').html(pp);
     },
     error: function () {

@@ -5,12 +5,6 @@ $.pluck = function(list, attribute) {
 };
 
 var AjaxSpy = {
-  allUrls: function () {
-    return $.map($.ajax.argsForCall, function (args) {
-      return args[0].url;
-    });
-  },
-
   find: function(url) {
     var ajaxArgs = $.map($.ajax.argsForCall, function(args) {
       return args[0];
@@ -34,7 +28,15 @@ function resetSpies() {
   window.track_pageview = jasmine.createSpy();
   window.track_event = jasmine.createSpy();
 
-  window.megaplaya = jasmine.createSpyObj('megaplaya', ['api_getCurrentVideo', 'api_addListener', 'api_playQueue', 'api_nextVideo', 'api_loadQueue', 'api_setQueueAt']);
+  window.megaplaya = jasmine.createSpyObj('megaplaya', [
+    'api_getCurrentVideo',
+    'api_addListener',
+    'api_playQueue',
+    'api_nextVideo',
+    'api_loadQueue',
+    'api_setQueueAt',
+    'api_growl'
+  ]);
 }
 
 function copyFixtures() {

@@ -38,16 +38,29 @@ describe("Application", function () {
       expect(permalink.set).toHaveBeenCalledWith("cyberhobo");
     });
 
-    it("fetches video info from VHX and fetches thumbs from UD", function () {
-      expect(AjaxSpy.allUrls()).toEqual([
-        'http://api.vhx.tv/info.json?url=http%3A%2F%2Fyoutube.com%2Fwatch%3Fv%3Dy-D_5Pnl0Nc',
-        'http://api.urbandictionary.com/v0/uncacheable?ids=964771'
-      ]);
+    it("shows the video info from VHX", function() {
+      AjaxSpy.find('http://api.vhx.tv/info.json?url=http%3A%2F%2Fyoutube.com%2Fwatch%3Fv%3Dy-D_5Pnl0Nc')
+        .success({
+          video: {
+            description: "http://cyberhobo.com - what is a CyberHobo anyways?",
+            title: "What is a CyberHobo",
+            url: "http://www.youtube.com/watch?v=y-D_5Pnl0Nc"
+          }
+        }
+      );
+
+      expect(megaplaya.api_growl).toHaveBeenCalledWith("<p>You're watching <span class='title'>What is a CyberHobo</span></p>");
+      expect($('#video_info_text')).toHaveText(/What is a CyberHobo/);
+      expect($('#video_info_text')).toHaveText(/cyberhobo\.com/);
+      expect($('#video_info_text a')).toHaveAttr("href", "http://www.youtube.com/watch?v=y-D_5Pnl0Nc");
+      expect($('#video_info_text a')).toHaveText("http://www.youtube.com/watch?v=y-D_5Pnl0Nc");
     });
 
     it("shows the vote counts", function () {
       AjaxSpy.find('http://api.urbandictionary.com/v0/uncacheable?ids=964771')
-        .success({thumbs: [ {thumbs_up: 5, thumbs_down: 8} ]});
+        .success({thumbs: [
+          {thumbs_up: 5, thumbs_down: 8}
+        ]});
 
       expect($('#vote_up .vote_count')).toHaveText(5);
       expect($('#vote_down .vote_count')).toHaveText(8);
