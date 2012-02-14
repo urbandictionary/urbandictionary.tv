@@ -4,20 +4,18 @@ $.pluck = function(list, attribute) {
   });
 };
 
-var AjaxSpy = {
-  find: function(url) {
-    var ajaxArgs = $.map($.ajax.argsForCall, function(args) {
-      return args[0];
-    });
-    expect($.pluck(ajaxArgs, 'url')).toContain(url);
+function findAjaxOptionsFor(url) {
+  var ajaxArgs = $.map($.ajax.argsForCall, function(args) {
+    return args[0];
+  });
+  expect($.pluck(ajaxArgs, 'url')).toContain(url);
 
-    var argsWithUrl = $.grep(ajaxArgs, function (args) {
-      return args.url == url;
-    });
-    expect(argsWithUrl.length).toEqual(1);
-    return argsWithUrl[0];
-  }
-};
+  var argsWithUrl = $.grep(ajaxArgs, function (args) {
+    return args.url == url;
+  });
+  expect(argsWithUrl.length).toEqual(1);
+  return argsWithUrl[0];
+}
 
 function resetAppGlobals() {
   reset_globals();
