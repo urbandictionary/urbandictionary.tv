@@ -128,11 +128,6 @@ function megaplaya_addListeners() {
 
   $.each(events, function (index, value) {
     megaplaya.api_addListener(value, "function() { megaplaya_callback('" + value + "', arguments); }");
-
-    // "pause" => megaplaya.api_pause();
-    // function megaplaya_call(method) {
-    //   (megaplaya["api_" + method])();
-    // }
   });
 }
 
