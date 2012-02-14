@@ -224,7 +224,6 @@ function megaplaya_onvideoload(args) {
   // Load metadata for this video & definition
   fetch_video_info(video.url);
   fetch_vote_counts(video.defid);
-  // inject_socialmedia(video);
 
   track_pageview("/" + escaped_word);
 }
@@ -241,25 +240,6 @@ function load_next_word(video_urls) {
     // debug("No #next_definition available, can't show");
     $('#next_definition').hide();
   }
-}
-
-function inject_socialmedia(video) {
-  var html = '',
-    server = window.location.protocol + '//' + window.location.host,
-    url = server + '/' + Permalink.encode(video.word),
-    word = video.word;
-
-  // html += '<div class="twitter"><a href="https://twitter.com/share" class="twitter-share-button" data-text="I\'m learning about "' + word.replace(/'/g, '\'') + '" on urbandictionary.tv: ' + url + '" data-count="none">Tweet</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div>';
-
-  html += '<div class="twitter"><iframe allowtransparency="true" frameborder="0" scrolling="no" src="//platform.twitter.com/widgets/tweet_button.html?count=none&url=http://urbandictionary.tv&text=I\'m watching \"' + word.replace(/'/g, '\'') + '\" on urbandictionary.tv" style="width:130px; height:20px;"></iframe></div>';
-  html += '<div class="facebook"><iframe src="//www.facebook.com/plugins/like.php?href=' + url + '&amp;send=false&amp;layout=button_count&amp;width=100&amp;show_faces=false&amp;action=like&amp;colorscheme=dark&amp;font=lucida+grande&amp;height=21&amp;appId=202084943139708" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:21px;" allowTransparency="true"></iframe></div>';
-
-  // <div class="google">
-  //   <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-  //   <div class="g-plusone" data-size="medium" data-annotation="none"></div>
-  // </div>
-
-  $('#socialmedia_entry').html(html);
 }
 
 function fetch_video_info(video_url) {
@@ -285,13 +265,11 @@ function fetch_video_info(video_url) {
 
 function fetch_vote_counts(defid) {
   var url = 'http://' + api_host + '/uncacheable.php?ids=' + defid;
-  // debug("fetch_vote_counts() url=", url);
   $.ajax({
     type: 'GET',
     url: url,
     dataType: 'jsonp',
     success: function (data) {
-      // debug("fetch_vote_counts() success data=>", data);
       var thumbs = data.thumbs[0];
       if (thumbs) {
         $('#vote_up .vote_count').html(thumbs.thumbs_up);
@@ -309,8 +287,6 @@ function fetch_vote_counts(defid) {
 
 function next_definition() {
   megaplaya_call("nextVideo");
-
-  // TODO if we're running low on videos, load more
 }
 
 function show_definition(word, def) {
@@ -344,10 +320,6 @@ function hide_definition() {
     $('#player').html('<object width="100%" height="100%"><param name="movie" value="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3" type="application/x-shockwave-flash" width="100%" height="100%" allowscriptaccess="always" allowfullscreen="true"></embed></object>')
   }
 
-  // TODO: Add getDuration hook to megaplaya
-  //if (megaplaya.api_getDuration() < 8000)
-  //  megaplaya.api_seek(0);
-
   $('#word_overlay').fadeOut(400);
   $(document.body).delay(410).removeClass("crop");
 
@@ -380,13 +352,11 @@ function hide_suggest_overlay() {
 
 function send_vote(defid, direction) {
   var url = "http://" + api_host + "/thumbs.php?defid=" + defid + "&direction=" + direction;
-  // debug(">> send_vote", url);
   $.ajax({
     type: "GET",
     url: url,
     dataType: 'jsonp',
     success: function (data) {
-      // debug("Vote response =>", data);
       if (data.status == 'saved') {
         var field = '#vote_' + direction + ' .vote_count',
           number_text = $(field).text();

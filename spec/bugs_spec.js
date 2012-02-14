@@ -4,6 +4,7 @@ describe("bugs", function () {
     it("doesn't pass the video URL to the VHX API, so the growl doesn't show");
     it("doesn't HTML escape the video title in the growl");
     it("splits the current word by spaces on line 446");
+    // TODO if we're running low on videos, load more
   });
 
   describe("in the tests", function () {
