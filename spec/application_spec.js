@@ -131,7 +131,7 @@ describe("Application", function () {
   });
 
   describe("voting", function () {
-    it("sends an up-vote", function () {
+    beforeEach(function () {
       window.is_mobile = true;
       document_ready();
 
@@ -145,7 +145,9 @@ describe("Application", function () {
           "youtube_id": "5154daf9e73"
         }
       ];
+    });
 
+    it("sends an up-vote", function () {
       $("#voting .vote[rel='up']").click();
 
       AjaxSpy.callSuccess(
@@ -157,37 +159,30 @@ describe("Application", function () {
       expect($("#vote_up .vote_img")).toHaveClass("on");
     });
 
+    it("sends an up-vote and adds one to the existing HTML", function () {
+      $("#voting .vote[rel='up']").click();
+      $("#vote_up .vote_count").html(50);
+
+      AjaxSpy.callSuccess(
+        'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
+        {'status': 'saved'}
+      );
+
+      expect($("#vote_up .vote_count")).toHaveText(51);
+    });
+
+    it("sends an up-vote which is a duplicate, but sets the CSS class anyway", function () {
+      $("#voting .vote[rel='up']").click();
+
+      AjaxSpy.callSuccess(
+        'http://www.urbandictionary.com/thumbs.php?defid=1&direction=up',
+        {'status': 'duplicate'}
+      );
+
+      expect($("#vote_up .vote_img")).toHaveClass("on");
+    });
+
     xit("sends a down-vote and skips to the next video", function () {
-      window.is_mobile = true;
-      document_ready();
-
-      video_urls = [
-        {
-          "defid": 1,
-          "definition": "Minus distinctio aperiam facere.",
-          "example": "Word Omnis error placeat nulla.",
-          "id": 1,
-          "word": "yeah yeah",
-          "youtube_id": "5154daf9e73"
-        },
-        {
-          "defid": 2,
-          "definition": "In veniam quia sed error.",
-          "example": "Omnis natus sed beatae.",
-          "id": 2,
-          "word": "nah nah",
-          "youtube_id": "5154daf9e73"
-        },
-        {
-          "defid": 3,
-          "definition": "In veniam quia sed error.",
-          "example": "Omnis natus sed beatae.",
-          "id": 3,
-          "word": "nah nah",
-          "youtube_id": "5154daf9e73"
-        }
-      ];
-
       $("#voting .vote[rel='down']").click();
 
       AjaxSpy.callSuccess(
