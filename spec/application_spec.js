@@ -29,6 +29,8 @@ describe("Application", function () {
     window.track_pageview = jasmine.createSpy();
     window.track_event = jasmine.createSpy();
 
+    $("#fixtures").html($("#original_fixtures").text());
+
     window.megaplaya = {
       api_getCurrentVideo: jasmine.createSpy(),
       api_addListener: jasmine.createSpy(),
@@ -151,7 +153,7 @@ describe("Application", function () {
         {'status': 'saved'}
       );
 
-      expect($("#vote_up .vote_count")).toHaveText(6);
+      expect($("#vote_up .vote_count")).toHaveText(1);
     });
 
     xit("sends a down-vote and skips to the next video", function () {
