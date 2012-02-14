@@ -1,11 +1,11 @@
+var API_ROOT = "http://api.urbandictionary.com/v0/";
+
 function reset_globals() {
   window.megaplaya = false;
   window.keyboard_disabled = false;
   window.is_mobile = /iphone|ipad|ipod|android|mobile/i.exec(navigator.userAgent) != undefined;
   window.current_video_index = 0;
   window.hide_timeout = false;
-  window.api_host = "api.urbandictionary.com";
-  window.videos_api_url = 'http://' + api_host + '/v0/videos';
   window.urban_current_word = false; // ghetto shimmy, FIXME
   window.video_urls = false;
   window.permalink = new Permalink(window.location);
@@ -239,9 +239,6 @@ function fetchVideoInfo(video_url) {
       pp += '<a href="' + video.url + '" target="_blank">' + video.url + '</a></p>';
       pp += '<p class="desc">' + video.description + '</p>';
       $('#video_info_text').html(pp);
-    },
-    error: function () {
-      alert("Error fetching data")
     }
   });
 }
@@ -255,10 +252,7 @@ function fetchVoteCounts(defid) {
     }
   };
 
-  $.ajax({
-    url: 'http://' + api_host + '/v0/uncacheable?ids=' + defid,
-    success: successCallback
-  });
+  $.get(API_ROOT + 'uncacheable', {ids: defid}, successCallback);
 }
 
 function nextDefinition() {
@@ -285,7 +279,7 @@ function sendVote(defid, direction) {
   };
 
   $.ajax({
-    url: "http://" + api_host + "/v0/vote?defid=" + defid + "&direction=" + direction,
+    url: API_ROOT + "vote?defid=" + defid + "&direction=" + direction,
     success: successCallback,
     error: function () {
       track_event("send_vote_error");
@@ -316,7 +310,7 @@ function loadVideos(word) {
     } else {
       // If we're loading videos for a specific word, append other words
       if (urban_current_word) {
-        $.ajax({url: videos_api_url, success: appendVideosCallback});
+        $.ajax({url: API_ROOT + 'videos', success: appendVideosCallback});
       }
 
       return megaplaya_call("playQueue", video_urls);
@@ -327,13 +321,13 @@ function loadVideos(word) {
     urban_current_word = word.split("-");
 
     $.ajax({
-      url: videos_api_url + '?word=' + encodeURIComponent(urban_current_word[0]),
+      url: API_ROOT + 'videos?word=' + encodeURIComponent(urban_current_word[0]),
       success: successCallback
     });
   } else {
     urban_current_word = false;
 
-    $.ajax({ url: videos_api_url, success: successCallback });
+    $.ajax({ url: API_ROOT + 'videos', success: successCallback });
   }
 }
 

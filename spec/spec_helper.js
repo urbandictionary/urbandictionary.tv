@@ -4,7 +4,7 @@ $.pluck = function(list, attribute) {
   });
 };
 
-function findAjaxOptionsFor(url) {
+function findAjaxOptionsFor(url, data) {
   var ajaxArgs = $.map($.ajax.argsForCall, function(args) {
     return args[0];
   });
@@ -14,7 +14,13 @@ function findAjaxOptionsFor(url) {
     return args.url == url;
   });
   expect(argsWithUrl.length).toEqual(1);
-  return argsWithUrl[0];
+  var ajaxOptions = argsWithUrl[0];
+
+  if (data) {
+    expect(ajaxOptions.data).toEqual(data);
+  }
+
+  return ajaxOptions;
 }
 
 function resetAppGlobals() {
