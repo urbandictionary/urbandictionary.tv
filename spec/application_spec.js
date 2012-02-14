@@ -140,12 +140,20 @@ describe("Application", function () {
       video_urls = [
         {
           "defid": 1,
-          "definition": "Minus distinctio aperiam facere. In veniam quia sed error.",
-          "example": "Word Omnis error placeat nulla. Omnis natus sed beatae.",
+          "definition": "Minus distinctio aperiam facere.",
+          "example": "Word Omnis error placeat nulla.",
           "id": 1,
           "word": "yeah yeah",
           "youtube_id": "5154daf9e73"
-        }
+        },
+        {
+          "defid": 2,
+          "definition": "In veniam quia sed error.",
+          "example": "Omnis natus sed beatae.",
+          "id": 2,
+          "word": "no no",
+          "youtube_id": "47231987"
+        },
       ];
     });
 
@@ -184,13 +192,27 @@ describe("Application", function () {
       expect($("#vote_up .vote_img")).toHaveClass("on");
     });
 
-    xit("sends a down-vote and skips to the next video", function () {
+    it("sends a down-vote which is a duplicate, but doesn't set the CSS class", function () {
       $("#voting .vote[rel='down']").click();
 
       AjaxSpy.callSuccess(
-        WWW + '/thumbs.php?defid=1&direction=up',
-        {}
+        WWW + '/thumbs.php?defid=1&direction=down',
+        {'status': 'duplicate'}
       );
+
+      expect($("#vote_down .vote_img")).not.toHaveClass("on");
+    });
+
+    it("sends a down-vote and skips to the next video", function () {
+      $("#voting .vote[rel='down']").click();
+
+      AjaxSpy.callSuccess(
+        WWW + '/thumbs.php?defid=1&direction=down',
+        {'status': 'saved'}
+      );
+
+      expect($("#vote_up .vote_img")).not.toHaveClass("on");
+      expect($("#vote_down .vote_img")).not.toHaveClass("on");
     });
   });
 });
