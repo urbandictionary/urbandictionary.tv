@@ -1,14 +1,9 @@
 var WWW = 'http://www.urbandictionary.com';
 
-$.select = function(list, callback) {
-  var found = [];
-  $.each(list, function (index, args) {
-    if (callback(args)) {
-      found.push(args);
-    }
+$.pluck = function(list, attribute) {
+  return $.map(list, function(item) {
+    return item[attribute];
   });
-
-  return found;
 };
 
 var AjaxSpy = {
@@ -19,7 +14,7 @@ var AjaxSpy = {
   },
 
   argsForUrl: function(url) {
-    return $.select($.ajax.argsForCall, function (args) {
+    return $.grep($.ajax.argsForCall, function (args) {
       return args[0].url == url;
     });
   },

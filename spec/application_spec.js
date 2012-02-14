@@ -1,3 +1,39 @@
+var TEST_VIDEOS = [
+  {
+    defid: 1,
+    definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
+    example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
+    id: 1,
+    word: "yeah yeah",
+    youtube_id: "5154daf9e73"
+
+  },
+  {
+    defid: 2,
+    definition: "Ignored",
+    example: "Ignored",
+    id: 2,
+    word: "no no",
+    youtube_id: "fdslajfdl"
+  },
+  {
+    defid: 3,
+    definition: "Random",
+    example: "Random",
+    id: 3,
+    word: "r r",
+    youtube_id: "jklvvxzljkc"
+  },
+  {
+    definition: "the bird [is the word]",
+    word: "the word",
+    example: "everybody knows the [bird] is the word",
+    defid: 1,
+    id: 1,
+    youtube_id: "5154daf9e73"
+  }
+];
+
 describe("Application", function () {
   beforeEach(resetAppGlobals);
   beforeEach(copyFixtures);
@@ -6,15 +42,7 @@ describe("Application", function () {
 
   describe("megaplaya_onvideoload", function () {
     beforeEach(function () {
-      megaplaya.api_getCurrentVideo.andReturn({
-        definition: "the bird [is the word]",
-        word: "the word",
-        example: "everybody knows the [bird] is the word",
-        defid: 1,
-        id: 1,
-        youtube_id: "5154daf9e73"
-      });
-
+      megaplaya.api_getCurrentVideo.andReturn(TEST_VIDEOS[3]);
       megaplaya_callback('onVideoLoad');
     });
 
@@ -47,12 +75,7 @@ describe("Application", function () {
     });
 
     it("shows the vote counts", function () {
-      AjaxSpy.callSuccess(
-        WWW + '/uncacheable.php?ids=1',
-        {thumbs: [
-          {thumbs_up: 5, thumbs_down: 8}
-        ]}
-      );
+      AjaxSpy.callSuccess(WWW + '/uncacheable.php?ids=1', {thumbs: [ {thumbs_up: 5, thumbs_down: 8} ]});
 
       expect($('#vote_up .vote_count')).toHaveText(5);
       expect($('#vote_down .vote_count')).toHaveText(8);
@@ -69,58 +92,7 @@ describe("Application", function () {
         permalink.get.andReturn("a word");
         megaplaya_loaded();
 
-        var videos_for_word = [
-          {
-            defid: 1,
-            definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
-            example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
-            id: 1,
-            word: "yeah yeah",
-            youtube_id: "5154daf9e73"
-          },
-          {
-            defid: 2,
-            definition: "Ignored",
-            example: "Ignored",
-            id: 2,
-            word: "no no",
-            youtube_id: "fdslajfdl"
-          }
-        ];
-
-        AjaxSpy.callSuccess(
-          WWW + '/iphone/search/videos?word=a%20word',
-          {videos: videos_for_word}
-        );
-
-        expect(video_urls).toEqual([
-          {
-            defid: 1,
-            definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
-            example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
-            id: 1,
-            word: "yeah yeah",
-            youtube_id: "5154daf9e73",
-            index: 0,
-            url: "http://youtube.com/watch?v=5154daf9e73" 
-          }
-        ]);
-
-        var random_videos = [
-          {
-            defid: 3,
-            definition: "Random",
-            example: "Random",
-            id: 3,
-            word: "r r",
-            youtube_id: "jklvvxzljkc"
-          }
-        ];
-
-        AjaxSpy.callSuccess(
-          WWW + '/iphone/search/videos?random=1',
-          {videos: random_videos}
-        );
+        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?word=a%20word', {videos: TEST_VIDEOS.slice(0, 1)});
 
         expect(video_urls).toEqual([
           {
@@ -132,18 +104,12 @@ describe("Application", function () {
             youtube_id: "5154daf9e73",
             index: 0,
             url: "http://youtube.com/watch?v=5154daf9e73"
-          },
-          {
-            defid: 3,
-            definition: "Random",
-            example: "Random",
-            id: 3,
-            word: "r r",
-            youtube_id: "jklvvxzljkc",
-            index: 0,
-            url: "http://youtube.com/watch?v=jklvvxzljkc"
           }
         ]);
+
+        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: TEST_VIDEOS.slice(2, 3)});
+
+        expect($.pluck(video_urls, 'id')).toEqual([1, 3]);
       });
     });
 
@@ -153,32 +119,13 @@ describe("Application", function () {
       });
 
       it("shows an error if the API returns zero videos", function () {
-        AjaxSpy.callSuccess(
-          WWW + '/iphone/search/videos?random=1',
-          {videos: []}
-        );
-
+        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: []});
         expect(window.alert).toHaveBeenCalledWith("Error, no videos found!");
       });
 
       it("adds videos to the queue when they are returned by the API", function () {
-        var videos = [
-          {
-            defid: 1,
-            definition: "Minus distinctio aperiam facere. In veniam quia sed error.",
-            example: "Word Omnis error placeat nulla. Omnis natus sed beatae.",
-            id: 1,
-            word: "yeah yeah",
-            youtube_id: "5154daf9e73"
-          }
-        ];
-
-        AjaxSpy.callSuccess(
-          WWW + '/iphone/search/videos?random=1',
-          {videos: videos}
-        );
-
-        expect(megaplaya.api_playQueue).toHaveBeenCalledWith(videos);
+        AjaxSpy.callSuccess(WWW + '/iphone/search/videos?random=1', {videos: TEST_VIDEOS});
+        expect(megaplaya.api_playQueue).toHaveBeenCalledWith(TEST_VIDEOS);
       });
     });
   });
