@@ -21,25 +21,11 @@ describe("Application", function () {
     spyOn(window, 'alert');
     spyOn(Permalink, 'set');
     spyOn(Permalink, 'get');
-
-    window.current_video_index = 0;
-    window.is_mobile = false;
-
-    window.urls = [];
-    window.video_urls = false;
-
-    window.track_pageview = jasmine.createSpy();
-    window.track_event = jasmine.createSpy();
-
-    $("#fixtures").html($("#original_fixtures").text());
-
-    window.megaplaya = {
-      api_getCurrentVideo: jasmine.createSpy(),
-      api_addListener: jasmine.createSpy(),
-      api_playQueue: jasmine.createSpy(),
-      api_nextVideo: jasmine.createSpy()
-    };
   });
+
+  beforeEach(resetAppGlobals);
+  beforeEach(copyFixtures);
+  beforeEach(resetMegaplayaSpy);
 
   describe("megaplaya_onvideoload", function () {
     beforeEach(function () {
