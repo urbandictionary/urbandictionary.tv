@@ -255,7 +255,7 @@ function nextDefinition() {
 }
 
 function sendVote(defid, direction) {
-  var successCallback = function (data) {
+  $.get(API_ROOT + "vote", {defid: defid, direction: direction}, function (data) {
     if (data.status == 'saved') {
       if (direction == 'up') {
         $("#vote_up .vote_img").addClass("on");
@@ -271,9 +271,7 @@ function sendVote(defid, direction) {
 
       track_event("send_vote_" + direction);
     }
-  };
-
-  $.get(API_ROOT + "vote", {defid: defid, direction: direction}, successCallback);
+  });
 }
 
 function videosFromResponse(response) {
@@ -299,7 +297,16 @@ function loadVideos(word) {
     } else {
       // If we're loading videos for a specific word, append other words
       if (urban_current_word) {
-        $.ajax({url: API_ROOT + 'videos', success: appendVideosCallback});
+        $.get(API_ROOT + 'videos', function(response) {
+          video_urls = video_urls.concat(videosFromResponse(response));
+
+          megaplaya_call("loadQueue", video_urls);
+          megaplaya_call("setQueueAt", 0);
+
+          if (!$('#next_definition').is(':visible')) {
+            loadNextWord(video_urls);
+          }
+        });
       }
 
       return megaplaya_call("playQueue", video_urls);
@@ -317,17 +324,5 @@ function loadVideos(word) {
     urban_current_word = false;
 
     $.ajax({ url: API_ROOT + 'videos', success: successCallback });
-  }
-}
-
-// Add to the current playlist rather than replacing
-function appendVideosCallback(response) {
-  video_urls = video_urls.concat(videosFromResponse(response));
-
-  megaplaya_call("loadQueue", video_urls);
-  megaplaya_call("setQueueAt", 0);
-
-  if (!$('#next_definition').is(':visible')) {
-    loadNextWord(video_urls);
   }
 }
