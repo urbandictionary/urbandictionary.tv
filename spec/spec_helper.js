@@ -1,3 +1,5 @@
+var WWW = 'http://www.urbandictionary.com';
+
 $.select = function(list, callback) {
   var found = [];
   $.each(list, function (index, args) {

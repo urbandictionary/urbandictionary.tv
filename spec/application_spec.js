@@ -1,5 +1,3 @@
-var WWW = 'http://www.urbandictionary.com';
-
 describe("Application", function () {
   beforeEach(function () {
     spyOn($, 'ajax');
