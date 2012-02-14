@@ -63,17 +63,21 @@ function addClickListeners() {
   $('#next_definition').click(nextDefinition);
 }
 
+function addWindowListeners() {
+  $(window).on('hashchange', $.proxy(permalink.hashchange, permalink));
+  $(window).resize(view.redraw);
+}
+
 function document_ready() {
-  load_player();
+  loadPlayer();
 
   if (!jQuery.browser.mozilla)
     $(document.body).addClass("crop");
 
   addClickListeners();
-  view.redraw();
+  addWindowListeners();
 
-  $(window).on('hashchange', $.proxy(permalink.hashchange, permalink));
-  $(window).resize(view.redraw);
+  view.redraw();
 }
 
 // Helpers
@@ -90,7 +94,7 @@ function debug(string) {
 }
 
 // VHX Megaplaya scaffolding
-function load_player() {
+function loadPlayer() {
   if (!is_mobile) {
     $('#player').flash({
       'swf': 'http://vhx.tv/embed/megaplaya',
