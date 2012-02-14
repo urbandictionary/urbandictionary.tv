@@ -20,6 +20,9 @@ describe("Application", function () {
     spyOn(Permalink, 'set');
     spyOn(Permalink, 'get');
 
+    window.current_video_index = 0;
+    window.is_mobile = false;
+
     window.urls = [];
     window.video_urls = false;
 
@@ -29,7 +32,8 @@ describe("Application", function () {
     window.megaplaya = {
       api_getCurrentVideo: jasmine.createSpy(),
       api_addListener: jasmine.createSpy(),
-      api_playQueue: jasmine.createSpy()
+      api_playQueue: jasmine.createSpy(),
+      api_nextVideo: jasmine.createSpy()
     };
   });
 
@@ -126,6 +130,7 @@ describe("Application", function () {
 
   describe("voting", function () {
     it("sends an up-vote", function () {
+      window.is_mobile = true;
       document_ready();
 
       video_urls = [
@@ -148,7 +153,36 @@ describe("Application", function () {
     });
 
     xit("sends a down-vote and skips to the next video", function () {
+      window.is_mobile = true;
       document_ready();
+
+      video_urls = [
+        {
+          "defid": 1,
+          "definition": "Minus distinctio aperiam facere.",
+          "example": "Word Omnis error placeat nulla.",
+          "id": 1,
+          "word": "yeah yeah",
+          "youtube_id": "5154daf9e73"
+        },
+        {
+          "defid": 2,
+          "definition": "In veniam quia sed error.",
+          "example": "Omnis natus sed beatae.",
+          "id": 2,
+          "word": "nah nah",
+          "youtube_id": "5154daf9e73"
+        },
+        {
+          "defid": 3,
+          "definition": "In veniam quia sed error.",
+          "example": "Omnis natus sed beatae.",
+          "id": 3,
+          "word": "nah nah",
+          "youtube_id": "5154daf9e73"
+        }
+      ];
+
       $("#voting .vote[rel='down']").click();
 
       Ajax.callSuccess(
