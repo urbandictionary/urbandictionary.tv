@@ -34,17 +34,14 @@ var AjaxSpy = {
 };
 
 function resetAppGlobals() {
-  window.current_video_index = 0;
+  reset_globals();
   window.is_mobile = false;
-
-  window.urls = [];
-  window.video_urls = false;
-
-  window.track_pageview = jasmine.createSpy();
-  window.track_event = jasmine.createSpy();
 }
 
-function resetMegaplayaSpy() {
+function resetSpies() {
+  window.track_pageview = jasmine.createSpy();
+  window.track_event = jasmine.createSpy();
+
   window.megaplaya = {
     api_getCurrentVideo: jasmine.createSpy(),
     api_addListener: jasmine.createSpy(),

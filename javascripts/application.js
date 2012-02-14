@@ -1,7 +1,16 @@
-// Work
-var megaplaya = false;
-var keyboard_disabled = false;
-var is_mobile = /iphone|ipad|ipod|android|mobile/i.exec(navigator.userAgent) != undefined;
+function reset_globals() {
+  window.megaplaya = false;
+  window.keyboard_disabled = false;
+  window.is_mobile = /iphone|ipad|ipod|android|mobile/i.exec(navigator.userAgent) != undefined;
+  window.current_video_index = 0;
+  window.hide_timeout = false;
+  window.api_host = "www.urbandictionary.com";
+  window.videos_api_url = 'http://' + api_host + '/iphone/search/videos';
+  window.urban_current_word = false; // ghetto shimmy, FIXME
+  window.video_urls = false;
+}
+
+reset_globals();
 
 function document_ready() {
   load_player();
@@ -131,8 +140,6 @@ function megaplaya_addListeners() {
   });
 }
 
-var current_video_index = 0;
-
 function megaplaya_call(method, arg1, arg2) {
   if (is_mobile) {
     switch (method) {
@@ -183,7 +190,6 @@ function megaplaya_callback(event_name, args) {
 
 
 // Called on every video load
-var hide_timeout = false;
 function megaplaya_onvideoload(args) {
   $(".vote_img").removeClass("on");
 
@@ -397,17 +403,12 @@ function send_vote(defid, direction) {
 }
 
 function parse_videos_from_response(resp, offset) {
-  urls = $.map(resp.videos, function (entry, i) {
+  return $.map(resp.videos, function (entry, i) {
     entry.index = i + (offset > 0 ? offset : 0);
     entry.url = "http://youtube.com/watch?v=" + entry.youtube_id;
     return entry;
   });
-  return urls;
 }
-
-var api_host = "www.urbandictionary.com";
-var videos_api_url = 'http://' + api_host + '/iphone/search/videos';
-var urban_current_word = false; // ghetto shimmy, FIXME
 
 function load_videos(word) {
   if (word) {
@@ -434,7 +435,6 @@ function load_videos(word) {
 }
 
 // Replaces the current playlist
-var video_urls = false;
 function load_videos_callback(resp) {
 
   debug("load_videos_callback()", resp);

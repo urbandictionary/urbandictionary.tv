@@ -1,7 +1,7 @@
 describe("voting", function () {
   beforeEach(resetAppGlobals);
   beforeEach(copyFixtures);
-  beforeEach(resetMegaplayaSpy);
+  beforeEach(resetSpies);
   beforeEach(spyOnPermalink);
 
   beforeEach(function () {

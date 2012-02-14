@@ -1,7 +1,7 @@
 describe("Application", function () {
   beforeEach(resetAppGlobals);
   beforeEach(copyFixtures);
-  beforeEach(resetMegaplayaSpy);
+  beforeEach(resetSpies);
   beforeEach(spyOnPermalink);
 
   describe("megaplaya_onvideoload", function () {
