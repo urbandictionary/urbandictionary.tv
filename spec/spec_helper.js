@@ -24,7 +24,7 @@ function findAjax(url, data) {
 }
 
 function resetAppGlobals() {
-  reset_globals();
+  resetGlobals();
   window.is_mobile = false;
 }
 

@@ -1,6 +1,23 @@
 var API_ROOT = "http://api.urbandictionary.com/v0/";
 
-function reset_globals() {
+function documentReady() {
+  $.ajaxSetup({
+    type: 'GET',
+    dataType: 'jsonp'
+  });
+
+  loadPlayer();
+
+  if (!jQuery.browser.mozilla)
+    $(document.body).addClass("crop");
+
+  addClickListeners();
+  addWindowListeners();
+
+  view.redraw();
+}
+
+function resetGlobals() {
   window.megaplaya = false;
   window.keyboard_disabled = false;
   window.is_mobile = /iphone|ipad|ipod|android|mobile/i.exec(navigator.userAgent) != undefined;
@@ -11,12 +28,7 @@ function reset_globals() {
   window.permalink = new Permalink(window.location);
 }
 
-reset_globals();
-
-$.ajaxSetup({
-  type: 'GET',
-  dataType: 'jsonp'
-});
+resetGlobals();
 
 function addClickListeners() {
   $('#more_info_btn').click(function () {
@@ -62,18 +74,6 @@ function addClickListeners() {
 function addWindowListeners() {
   $(window).on('hashchange', $.proxy(permalink.hashchange, permalink));
   $(window).resize(view.redraw);
-}
-
-function documentReady() {
-  loadPlayer();
-
-  if (!jQuery.browser.mozilla)
-    $(document.body).addClass("crop");
-
-  addClickListeners();
-  addWindowListeners();
-
-  view.redraw();
 }
 
 window.debug = function() {
