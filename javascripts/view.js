@@ -84,3 +84,9 @@ view.hideSuggestOverlay = function() {
 
   setTimeout(view.redraw, 250);
 };
+
+view.toggleMoreInfo = function () {
+  var element = $('#video_info_text');
+  element.toggle();
+  $(this).html(element.is(":visible") ? "Hide info" : "More info");
+};

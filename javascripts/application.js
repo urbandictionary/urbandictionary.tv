@@ -31,32 +31,17 @@ function resetGlobals() {
 resetGlobals();
 
 function addClickListeners() {
-  $('#more_info_btn').click(function () {
-    var element = $('#video_info_text');
-    element.toggle();
-    $(this).html(element.is(":visible") ? "Hide info" : "More info");
-  });
-
+  $('#more_info_btn').click(view.toggleMoreInfo);
   $('#voting .vote').click(voteClicked);
-
-  $('#suggest_video').click(function () {
-    view.showSuggestOverlay();
-  });
-
-  $('#suggest_overlay').click(function () {
-    view.hideSuggestOverlay();
-  });
-
-  $('#word_overlay').click(function () {
-    view.hideDefinitionOverlay();
-  });
+  $('#suggest_video').click(view.showSuggestOverlay);
+  $('#suggest_overlay').click(view.hideSuggestOverlay);
+  $('#word_overlay').click(view.hideDefinitionOverlay);
+  $('#next_definition').click(nextDefinition);
 
   $('#make_video').click(function (e) {
     e.stopPropagation();
     $("#suggest_overlay .wrap").toggle();
   });
-
-  $('#next_definition').click(nextDefinition);
 }
 
 function addWindowListeners() {
