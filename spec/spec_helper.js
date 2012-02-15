@@ -4,7 +4,7 @@ $.pluck = function(list, attribute) {
   });
 };
 
-function findAjaxOptionsFor(url, data) {
+function findAjax(url, data) {
   var ajaxArgs = $.map($.ajax.argsForCall, function(args) {
     return args[0];
   });

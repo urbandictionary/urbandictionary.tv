@@ -39,7 +39,7 @@ describe("Application", function () {
     });
 
     it("shows the video info from VHX", function() {
-      findAjaxOptionsFor('http://api.vhx.tv/info.json', {url: 'http://youtube.com/watch?v=y-D_5Pnl0Nc'})
+      findAjax('http://api.vhx.tv/info.json', {url: 'http://youtube.com/watch?v=y-D_5Pnl0Nc'})
         .success({
           video: {
             description: "http://cyberhobo.com - what is a CyberHobo anyways?",
@@ -57,7 +57,7 @@ describe("Application", function () {
     });
 
     it("shows the vote counts", function () {
-      findAjaxOptionsFor('http://api.urbandictionary.com/v0/uncacheable', {ids: 964771})
+      findAjax('http://api.urbandictionary.com/v0/uncacheable', {ids: 964771})
         .success({thumbs: [
           {thumbs_up: 5, thumbs_down: 8}
         ]});
@@ -74,12 +74,13 @@ describe("Application", function () {
       });
 
       describe("with a word in the permalink", function () {
-        it("adds one video for that word to the playlist, plus other random videos", function () {
+        it("adds one video for that word to the playlist, then adds other random videos", function () {
           permalink.get.andReturn("douche bag");
           documentReady();
 
-          findAjaxOptionsFor('http://api.urbandictionary.com/v0/videos?word=douche%20bag')
-            .success({videos: [DOUCHEBAG]});
+          var ajaxOptions = findAjax('http://api.urbandictionary.com/v0/videos', {word: 'douche bag'});
+          $.ajax.reset();
+          ajaxOptions.success({videos: [DOUCHEBAG]});
 
           expect(video_urls).toEqual([
             {
@@ -94,7 +95,7 @@ describe("Application", function () {
             }
           ]);
 
-          findAjaxOptionsFor('http://api.urbandictionary.com/v0/videos').success({videos: [CYBERHOBO]});
+          findAjax('http://api.urbandictionary.com/v0/videos').success({videos: [CYBERHOBO]});
 
           expect($.pluck(video_urls, 'id')).toEqual([DOUCHEBAG.id, CYBERHOBO.id]);
           expect(megaplaya.api_loadQueue).toHaveBeenCalledWith(video_urls);
@@ -108,7 +109,7 @@ describe("Application", function () {
         });
 
         it("adds videos to the queue when they are returned by the API", function () {
-          findAjaxOptionsFor('http://api.urbandictionary.com/v0/videos')
+          findAjax('http://api.urbandictionary.com/v0/videos')
             .success({videos: [JOCKEYBRAWL, CYBERHOBO]});
 
           expect($.pluck(video_urls, 'id')).toEqual([JOCKEYBRAWL.id, CYBERHOBO.id]);
@@ -116,7 +117,7 @@ describe("Application", function () {
         });
 
         it("shows an error if the API returns zero videos", function () {
-          findAjaxOptionsFor('http://api.urbandictionary.com/v0/videos').success({videos: []});
+          findAjax('http://api.urbandictionary.com/v0/videos').success({videos: []});
           expect(window.alert).toHaveBeenCalledWith("Error, no videos found!");
         });
       });

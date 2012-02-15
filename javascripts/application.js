@@ -315,14 +315,9 @@ function loadVideos(word) {
 
   if (word) {
     urban_current_word = word.split("-");
-
-    $.ajax({
-      url: API_ROOT + 'videos?word=' + encodeURIComponent(urban_current_word[0]),
-      success: successCallback
-    });
+    $.get(API_ROOT + 'videos', {word: urban_current_word[0]}, successCallback);
   } else {
     urban_current_word = false;
-
-    $.ajax({ url: API_ROOT + 'videos', success: successCallback });
+    $.get(API_ROOT + 'videos', successCallback);
   }
 }
