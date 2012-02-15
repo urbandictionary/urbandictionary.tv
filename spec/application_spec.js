@@ -124,20 +124,20 @@ describe("Application", function () {
 
     describe("mobile is false", function() {
       beforeEach(function() {
-        jasmine.getEnv().currentSpec.spyOn(jQuery.fn, 'flash', true);
-
         window.is_mobile = false;
-        documentReady();
       });
 
       it("adds flash to the page", function() {
-        expect(jQuery.fn.flash).toHaveBeenCalled();
-        expect(jQuery.fn.flash.mostRecentCall.object).toEqual($('#player'));
-        expect(jQuery.fn.flash.mostRecentCall.args[0].swf).toEqual('http://vhx.tv/embed/megaplaya');
+        jasmine.getEnv().currentSpec.spyOn($.fn, 'flash', true);
+        documentReady();
+
+        expect($.fn.flash).toHaveBeenCalled();
+        expect($.fn.flash.mostRecentCall.object).toEqual($('#player'));
+        expect($.fn.flash.mostRecentCall.args[0].swf).toEqual('http://vhx.tv/embed/megaplaya');
       });
 
       it("adds a listener for the megaplaya onVideoLoad event", function() {
-        spyOn(jQuery.fn, 'children').andReturn([megaplaya]);
+        spyOn($.fn, 'children').andReturn([megaplaya]);
 
         megaplaya_loaded();
         expect(megaplaya.api_addListener).toHaveBeenCalled();
