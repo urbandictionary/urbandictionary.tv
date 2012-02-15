@@ -32,24 +32,12 @@ resetGlobals();
 
 function addClickListeners() {
   $('#more_info_btn').click(function () {
-    $('#video_info_text').toggle();
-    if ($('#video_info_text').is(":visible")) {
-      this.innerHTML = "Hide info";
-    }
-    else {
-      this.innerHTML = "More info";
-    }
+    var element = $('#video_info_text');
+    element.toggle();
+    $(this).html(element.is(":visible") ? "Hide info" : "More info");
   });
 
-  $('#voting .vote').click(function () {
-    var defid = megaplaya_call("getCurrentVideo").defid;
-    var direction = $(this).attr('rel');
-    sendVote(defid, direction);
-
-    if (this.id == 'vote_down') {
-      nextDefinition();
-    }
-  });
+  $('#voting .vote').click(voteClicked);
 
   $('#suggest_video').click(function () {
     view.showSuggestOverlay();
@@ -241,16 +229,20 @@ function nextDefinition() {
   megaplaya_call("nextVideo");
 }
 
-function sendVote(defid, direction) {
-  $.get(API_ROOT + "vote", {defid: defid, direction: direction}, function (data) {
-    if (direction == 'up') {
-      $("#vote_up .vote_img").addClass("on");
-    }
+function voteClicked() {
+  var data = {defid: megaplaya_call("getCurrentVideo").defid, direction: $(this).attr('rel')};
 
-    if (data.status == 'saved') {
-      var element = $('#vote_' + direction + ' .vote_count');
-      var current = (parseInt(element.text()) || 0);
-      element.text(current + 1);
+  $.get(API_ROOT + "vote", data, function (response) {
+    if (data.direction == 'up') {
+      $("#vote_up .vote_img").addClass("on");
+
+      if (response.status == 'saved') {
+        var element = $('#vote_' + data.direction + ' .vote_count');
+        var current = (parseInt(element.text()) || 0);
+        element.text(current + 1);
+      }
+    } else {
+      nextDefinition();
     }
   });
 }
