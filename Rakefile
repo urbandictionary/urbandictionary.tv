@@ -11,7 +11,7 @@ task :spec do
   sh 'open -a /Applications/Safari.app specs.html'
 end
 
-task :ci do
+task :travis do
   sh "which phantomjs" do |ok, res|
     fail "Cannot find phantomjs. brew install phantomjs or install from phantomjs.org" unless ok
   end
