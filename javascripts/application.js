@@ -23,11 +23,9 @@ function addClickListeners() {
     $('#video_info_text').toggle();
     if ($('#video_info_text').is(":visible")) {
       this.innerHTML = "Hide info";
-      track_event('hide_more_info');
     }
     else {
       this.innerHTML = "More info";
-      track_event('show_more_info');
     }
   });
 
@@ -43,7 +41,6 @@ function addClickListeners() {
 
   $('#suggest_video').click(function () {
     view.showSuggestOverlay();
-    track_event('show_suggest_video');
   });
 
   $('#suggest_overlay').click(function () {
@@ -57,7 +54,6 @@ function addClickListeners() {
   $('#make_video').click(function (e) {
     e.stopPropagation();
     $("#suggest_overlay .wrap").toggle();
-    track_event('show_make_video');
   });
 
   $('#next_definition').click(nextDefinition);
@@ -80,18 +76,9 @@ function documentReady() {
   view.redraw();
 }
 
-// Helpers
-function debug(string) {
-  try {
-    if (arguments.length > 1) {
-      console.log(arguments);
-    }
-    else {
-      console.log(string);
-    }
-  } catch (e) {
-  }
-}
+window.debug = function() {
+  console.log(arguments);
+};
 
 // VHX Megaplaya scaffolding
 function loadPlayer() {
@@ -268,8 +255,6 @@ function sendVote(defid, direction) {
       if (direction == 'up') {
         $("#vote_up .vote_img").addClass("on");
       }
-
-      track_event("send_vote_" + direction);
     }
   });
 }
@@ -283,7 +268,9 @@ function videosFromResponse(response) {
 }
 
 function loadVideos(word) {
-  var successCallback = function(response) {
+  urban_current_word = word;
+
+  $.get(API_ROOT + 'videos', {word: urban_current_word}, function(response) {
     video_urls = videosFromResponse(response);
 
     // only one video plz
@@ -311,13 +298,5 @@ function loadVideos(word) {
 
       return megaplaya_call("playQueue", video_urls);
     }
-  };
-
-  if (word) {
-    urban_current_word = word.split("-");
-    $.get(API_ROOT + 'videos', {word: urban_current_word[0]}, successCallback);
-  } else {
-    urban_current_word = false;
-    $.get(API_ROOT + 'videos', successCallback);
-  }
+  });
 }

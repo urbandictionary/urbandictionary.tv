@@ -30,7 +30,6 @@ function resetAppGlobals() {
 
 function resetSpies() {
   window.track_pageview = jasmine.createSpy();
-  window.track_event = jasmine.createSpy();
 
   window.megaplaya = jasmine.createSpyObj('megaplaya', [
     'api_getCurrentVideo',
