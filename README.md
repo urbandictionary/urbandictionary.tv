@@ -1,6 +1,6 @@
-<center><a href="http://travis-ci.org/apeckham/urbantv"><img src="https://secure.travis-ci.org/apeckham/urbantv.png?branch=ci" width="267" height="39"/></a></center>
-
 ## UrbanDictionary.TV
+
+<a href="http://travis-ci.org/apeckham/urbantv"><img src="https://secure.travis-ci.org/apeckham/urbantv.png?branch=ci" width="178" height="26"/></a>
 
 Pulls slang definitions from <http://urbandictionary.com> and plays
 them using the <http://vhx.tv> video player.
