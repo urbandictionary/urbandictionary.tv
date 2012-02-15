@@ -274,16 +274,9 @@ function loadVideos(word) {
   $.get(API_ROOT + 'videos', data, function(response) {
     video_urls = videosFromResponse(response);
 
-    // only one video plz
-    if (word && video_urls.length > 0) {
-      video_urls = [video_urls[0]];
-    }
-
     if (video_urls.length == 0) {
       alert("Error, no videos found!");
-      return false;
     } else {
-      // If we're loading videos for a specific word, append other words
       if (word) {
         $.get(API_ROOT + 'videos', function(response) {
           video_urls = video_urls.concat(videosFromResponse(response));
@@ -297,7 +290,7 @@ function loadVideos(word) {
         });
       }
 
-      return megaplaya_call("playQueue", video_urls);
+      megaplaya_call("playQueue", video_urls);
     }
   });
 }

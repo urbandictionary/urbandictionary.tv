@@ -74,30 +74,28 @@ describe("Application", function () {
       });
 
       describe("with a word in the permalink", function () {
-        it("adds one video for that word to the playlist, then adds other random videos", function () {
+        it("adds all videos for that word to the playlist, then adds other random videos", function () {
           permalink.get.andReturn("douche bag");
           documentReady();
 
           var ajaxOptions = findAjax('http://api.urbandictionary.com/v0/videos', {word: 'douche bag'});
           $.ajax.reset();
-          ajaxOptions.success({videos: [DOUCHEBAG]});
+          ajaxOptions.success({videos: [DOUCHEBAG, JOCKEYBRAWL]});
 
-          expect(video_urls).toEqual([
-            {
-              defid: DOUCHEBAG.defid,
-              definition: DOUCHEBAG.definition,
-              example: DOUCHEBAG.example,
-              id: DOUCHEBAG.id,
-              word: DOUCHEBAG.word,
-              youtube_id: DOUCHEBAG.youtube_id,
-              index: 0,
-              url: "http://youtube.com/watch?v=qqXi8WmQ_WM"
-            }
-          ]);
+          expect(video_urls[0]).toEqual({
+            defid: DOUCHEBAG.defid,
+            definition: DOUCHEBAG.definition,
+            example: DOUCHEBAG.example,
+            id: DOUCHEBAG.id,
+            word: DOUCHEBAG.word,
+            youtube_id: DOUCHEBAG.youtube_id,
+            index: 0,
+            url: "http://youtube.com/watch?v=qqXi8WmQ_WM"
+          });
 
           findAjax('http://api.urbandictionary.com/v0/videos').success({videos: [CYBERHOBO]});
 
-          expect($.pluck(video_urls, 'id')).toEqual([DOUCHEBAG.id, CYBERHOBO.id]);
+          expect($.pluck(video_urls, 'id')).toEqual([DOUCHEBAG.id, JOCKEYBRAWL.id, CYBERHOBO.id]);
           expect(megaplaya.api_loadQueue).toHaveBeenCalledWith(video_urls);
           expect(megaplaya.api_setQueueAt).toHaveBeenCalledWith(0);
         });
