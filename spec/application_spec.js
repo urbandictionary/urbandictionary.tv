@@ -109,8 +109,9 @@ describe("Application", function () {
         });
 
         it("adds videos to the queue when they are returned by the API", function () {
-          findAjax('http://api.urbandictionary.com/v0/videos')
-            .success({videos: [JOCKEYBRAWL, CYBERHOBO]});
+          var ajaxOptions = findAjax('http://api.urbandictionary.com/v0/videos');
+          expect(ajaxOptions.data.hasOwnProperty('word')).toBeFalsy();
+          ajaxOptions.success({videos: [JOCKEYBRAWL, CYBERHOBO]});
 
           expect($.pluck(video_urls, 'id')).toEqual([JOCKEYBRAWL.id, CYBERHOBO.id]);
           expect(megaplaya.api_playQueue).toHaveBeenCalledWith([JOCKEYBRAWL, CYBERHOBO]);

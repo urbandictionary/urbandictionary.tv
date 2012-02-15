@@ -243,18 +243,14 @@ function nextDefinition() {
 
 function sendVote(defid, direction) {
   $.get(API_ROOT + "vote", {defid: defid, direction: direction}, function (data) {
-    if (data.status == 'saved') {
-      if (direction == 'up') {
-        $("#vote_up .vote_img").addClass("on");
-      }
+    if (direction == 'up') {
+      $("#vote_up .vote_img").addClass("on");
+    }
 
+    if (data.status == 'saved') {
       var element = $('#vote_' + direction + ' .vote_count');
       var current = (parseInt(element.text()) || 0);
       element.text(current + 1);
-    } else {
-      if (direction == 'up') {
-        $("#vote_up .vote_img").addClass("on");
-      }
     }
   });
 }
@@ -270,11 +266,16 @@ function videosFromResponse(response) {
 function loadVideos(word) {
   urban_current_word = word;
 
-  $.get(API_ROOT + 'videos', {word: urban_current_word}, function(response) {
+  var data = {};
+  if (word) {
+    data.word = word;
+  }
+
+  $.get(API_ROOT + 'videos', data, function(response) {
     video_urls = videosFromResponse(response);
 
     // only one video plz
-    if (urban_current_word && video_urls.length > 0) {
+    if (word && video_urls.length > 0) {
       video_urls = [video_urls[0]];
     }
 
@@ -283,7 +284,7 @@ function loadVideos(word) {
       return false;
     } else {
       // If we're loading videos for a specific word, append other words
-      if (urban_current_word) {
+      if (word) {
         $.get(API_ROOT + 'videos', function(response) {
           video_urls = video_urls.concat(videosFromResponse(response));
 
