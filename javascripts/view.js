@@ -52,7 +52,11 @@ view.showDefinitionOverlay = function(word, def) {
 view.hideDefinitionOverlay = function() {
   // show video once the definition is hidden (mobile-only)
   if (is_mobile) {
-    $('#player').html('<object width="100%" height="100%"><param name="movie" value="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3" type="application/x-shockwave-flash" width="100%" height="100%" allowscriptaccess="always" allowfullscreen="true"></embed></object>')
+    var html = '<object width="100%" height="100%"><param name="movie" value="http://www.youtube.com/v/' +
+      video_urls[current_video_index].youtube_id +
+      '?version=3"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/' + video_urls[current_video_index].youtube_id + '?version=3" type="application/x-shockwave-flash" width="100%" height="100%" allowscriptaccess="always" allowfullscreen="true"></embed></object>';
+
+    $('#player').html(html)
   }
 
   $('#word_overlay').fadeOut(400);

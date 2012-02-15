@@ -50,7 +50,7 @@ function addWindowListeners() {
 }
 
 window.debug = function() {
-  console.log(arguments);
+  console.log(arguments[0], arguments[1], arguments[2], arguments[3]);
 };
 
 // VHX Megaplaya scaffolding
@@ -107,7 +107,6 @@ function megaplaya_call(method, arg1, arg2) {
 
 function megaplaya_loaded() {
   if (!is_mobile) {
-    debug(">> megaplaya_loaded()");
     megaplaya = $('#player').children()[0];
     megaplaya_call("setColor", "e86222");
     megaplaya.api_addListener("onVideoLoad", "function() { onVideoLoad(); }");
