@@ -38,7 +38,8 @@ function resetSpies() {
     'api_nextVideo',
     'api_loadQueue',
     'api_setQueueAt',
-    'api_growl'
+    'api_growl',
+    'api_setColor'
   ]);
 }
 

@@ -123,16 +123,34 @@ describe("Application", function () {
     });
 
     describe("mobile is false", function() {
-      it("adds flash to the page", function() {
-        jQuery.fn.flash = jasmine.createSpy();
+      beforeEach(function() {
+        jasmine.getEnv().currentSpec.spyOn(jQuery.fn, 'flash', true);
 
         window.is_mobile = false;
         documentReady();
+      });
 
+      it("adds flash to the page", function() {
         expect(jQuery.fn.flash).toHaveBeenCalled();
         expect(jQuery.fn.flash.mostRecentCall.object).toEqual($('#player'));
         expect(jQuery.fn.flash.mostRecentCall.args[0].swf).toEqual('http://vhx.tv/embed/megaplaya');
       });
+
+      it("adds a listener for the megaplaya onVideoLoad event", function() {
+        spyOn(jQuery.fn, 'children').andReturn([megaplaya]);
+
+        megaplaya_loaded();
+        expect(megaplaya.api_addListener).toHaveBeenCalled();
+        expect(megaplaya.api_setColor).toHaveBeenCalledWith("e86222");
+
+        var addListenerArgs = $.grep(megaplaya.api_addListener.argsForCall, function(args) {
+          return args[0] == 'onVideoLoad';
+        })[0];
+
+        megaplaya.api_getCurrentVideo.andReturn(CYBERHOBO);
+        eval('(' + addListenerArgs[1] + ')()');
+        expect(megaplaya.api_getCurrentVideo).toHaveBeenCalled();
+      });
     });
-  })
+  });
 });
