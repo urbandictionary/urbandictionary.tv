@@ -6,7 +6,7 @@ them using the <http://vhx.tv> video player.
 Everything is just HTML, CSS + javascript, and the website itself is
 hosted on [GitHub pages](http://pages.github.com/) and [CloudFlare](http://cloudflare.com/) (thanks)
 
-<a href="http://travis-ci.org/apeckham/urbantv"><img src="https://secure.travis-ci.org/apeckham/urbantv.png?branch=ci" width="178" height="26"/></a>
+<a href="http://travis-ci.org/apeckham/urbantv"><img src="https://secure.travis-ci.org/apeckham/urbantv.png?branch=travis" width="178" height="26"/></a>
 
 ## Authors
 

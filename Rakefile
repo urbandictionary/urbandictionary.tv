@@ -1,6 +1,6 @@
 task :default do
   sh 'git push origin gh-pages:gh-pages'
-  sh 'git push origin gh-pages:ci'
+  sh 'git push origin gh-pages:travis'
 end
 
 task :server do
