@@ -9,7 +9,7 @@ describe("Application", function () {
       video_urls = videosFromResponse({videos: [CYBERHOBO, DOUCHEBAG]});
 
       megaplaya.api_getCurrentVideo.andReturn(video_urls[0]);
-      megaplaya_callback('onVideoLoad');
+      onVideoLoad();
     });
 
     it("prints the word and links to urbandic", function () {

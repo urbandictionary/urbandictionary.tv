@@ -74,7 +74,7 @@ function megaplaya_call(method, arg1, arg2) {
     switch (method) {
       case "playQueue":
         current_video_index = 0;
-        megaplaya_onvideoload();
+        onVideoLoad();
         break;
 
       case "getCurrentVideo":
@@ -84,7 +84,7 @@ function megaplaya_call(method, arg1, arg2) {
       case "nextVideo":
         $('#player').html("");
         current_video_index++;
-        megaplaya_onvideoload();
+        onVideoLoad();
         break;
     }
   }
@@ -110,27 +110,13 @@ function megaplaya_loaded() {
     debug(">> megaplaya_loaded()");
     megaplaya = $('#player').children()[0];
     megaplaya_call("setColor", "e86222");
-    megaplaya_addListeners();
+    megaplaya.api_addListener("onVideoLoad", "function() { onVideoLoad(); }");
   }
 
   loadVideos(permalink.get());
 }
 
-function megaplaya_addListeners() {
-  var events = ['onVideoFinish', 'onVideoLoad', 'onError', 'onPause', 'onPlay', 'onFullscreen', 'onPlaybarShow', 'onPlaybarHide', 'onKeyboardDown'];
-
-  $.each(events, function (index, value) {
-    megaplaya.api_addListener(value, "function() { megaplaya_callback('" + value + "', arguments); }");
-  });
-}
-
-function megaplaya_callback(eventName) {
-  if (eventName == 'onVideoLoad') {
-    megaplaya_onvideoload();
-  }
-}
-
-function megaplaya_onvideoload() {
+function onVideoLoad() {
   $(".vote_img").removeClass("on");
 
   var video = megaplaya_call("getCurrentVideo");
