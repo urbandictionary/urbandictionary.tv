@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/apeckham/urbantv.png?branch=gh-pages)](http://travis-ci.org/apeckham/urbantv)
+[![Build Status](https://secure.travis-ci.org/apeckham/urbantv.png?branch=ci)](http://travis-ci.org/apeckham/urbantv)
 
 ## UrbanDictionary.TV
 

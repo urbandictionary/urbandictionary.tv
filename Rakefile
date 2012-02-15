@@ -1,7 +1,6 @@
-task :default => :deploy
-
-task :deploy do
-  sh 'git push'
+task :default do
+  sh 'git push origin gh-pages:gh-pages'
+  sh 'git push origin gh-pages:ci'
 end
 
 task :server do
