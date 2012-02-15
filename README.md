@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/apeckham/urbantv.png?branch=gh-pages)](http://travis-ci.org/apeckham/urbantv)
+
 ## UrbanDictionary.TV
 
 Pulls slang definitions from <http://urbandictionary.com> and plays
