@@ -16,7 +16,7 @@ task :ci do
     fail "Cannot find phantomjs. brew install phantomjs or install from phantomjs.org" unless ok
   end
 
-  sh "phantomjs lib/phantom-jasmine/run_jasmine_test.coffee file://#{File.expand_path("specs.html")}" do |ok, res|
+  sh "phantomjs lib/phantom-jasmine/run_jasmine_test.coffee http://urbandictionary.tv/specs.html}" do |ok, res|
     fail "Jasmine specs failed with #{res.inspect}" unless ok
   end
 end
