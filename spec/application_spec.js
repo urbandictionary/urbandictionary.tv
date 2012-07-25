@@ -57,7 +57,7 @@ describe("Application", function () {
     });
 
     it("shows the vote counts", function () {
-      findAjax('http://api.urbandictionary.com/v0/uncacheable', {ids: 964771})
+      findAjax('http://api.urbandictionary.com/v0/uncacheable', {ids: 964771, key: API_KEY})
         .success({thumbs: [
           {thumbs_up: 5, thumbs_down: 8}
         ]});

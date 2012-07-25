@@ -1,4 +1,5 @@
 var API_ROOT = "http://api.urbandictionary.com/v0/";
+var API_KEY = "af4302ea4b25374ec68cde5e117b0594";
 
 function documentReady() {
   $.ajaxSetup({
@@ -181,7 +182,7 @@ function fetchVideoInfo(video_url) {
 }
 
 function fetchVoteCounts(defid) {
-  $.get(API_ROOT + 'uncacheable', {ids: defid}, function (data) {
+  $.get(API_ROOT + 'uncacheable', {ids: defid, key: API_KEY}, function (data) {
     var thumbs = data.thumbs[0];
     if (thumbs) {
       $('#vote_up .vote_count').html(thumbs.thumbs_up);
