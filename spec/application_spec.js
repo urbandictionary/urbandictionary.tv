@@ -78,7 +78,7 @@ describe("Application", function () {
           permalink.get.andReturn("douche bag");
           documentReady();
 
-          var ajaxOptions = findAjax('http://api.urbandictionary.com/v0/videos', {word: 'douche bag'});
+          var ajaxOptions = findAjax('http://api.urbandictionary.com/v0/videos', {word: 'douche bag', key: API_KEY});
           $.ajax.reset();
           ajaxOptions.success({videos: [DOUCHEBAG, JOCKEYBRAWL]});
 

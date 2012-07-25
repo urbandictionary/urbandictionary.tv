@@ -37,6 +37,6 @@ describe("Permalink", function () {
     expect($.ajax).toHaveBeenCalled();
     expect($.ajax.callCount).toEqual(1);
     expect($.ajax.mostRecentCall.args[0].url).toEqual("http://api.urbandictionary.com/v0/videos");
-    expect($.ajax.mostRecentCall.args[0].data).toEqual({word: "whatever"});
+    expect($.ajax.mostRecentCall.args[0].data).toEqual({word: "whatever", key: API_KEY});
   });
 });

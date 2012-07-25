@@ -224,7 +224,7 @@ function videosFromResponse(response) {
 function loadVideos(word) {
   urban_current_word = word;
 
-  var data = {};
+  var data = {key: API_KEY};
   if (word) {
     data.word = word;
   }
