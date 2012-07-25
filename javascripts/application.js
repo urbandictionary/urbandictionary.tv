@@ -196,7 +196,7 @@ function nextDefinition() {
 }
 
 function voteClicked() {
-  var data = {defid: megaplaya_call("getCurrentVideo").defid, direction: $(this).attr('rel')};
+  var data = {defid: megaplaya_call("getCurrentVideo").defid, direction: $(this).attr('rel'), key: API_KEY};
 
   $.get(API_ROOT + "vote", data, function (response) {
     if (data.direction == 'up') {
