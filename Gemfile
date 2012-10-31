@@ -1,5 +1,5 @@
 source :rubygems
 
-group :test do
-  gem "rake"
-end
+gem 'sinatra'
+gem 'thin'
+gem 'rake', group: 'development'
