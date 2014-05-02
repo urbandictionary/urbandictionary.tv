@@ -39,7 +39,7 @@ describe("Application", function () {
     });
 
     it("shows the video info from VHX", function() {
-      findAjax('http://api.vhx.tv/info.json', {url: 'http://youtube.com/watch?v=y-D_5Pnl0Nc'})
+      findAjax('http://api.community.vhx.tv/info.json', {url: 'http://youtube.com/watch?v=y-D_5Pnl0Nc'})
         .success({
           video: {
             description: "http://cyberhobo.com - what is a CyberHobo anyways?",

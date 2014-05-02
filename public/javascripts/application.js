@@ -170,7 +170,7 @@ function loadNextWord(video_urls) {
 }
 
 function fetchVideoInfo(video_url) {
-  $.get("http://api.vhx.tv/info.json", {url: video_url}, function (data) {
+  $.get("http://api.community.vhx.tv/info.json", {url: video_url}, function (data) {
     var video = data.video;
     megaplaya_call("growl", "<p>You're watching <span class='title'>" + video.title + "</span></p>");
 
